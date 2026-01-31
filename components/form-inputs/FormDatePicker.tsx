@@ -20,7 +20,7 @@ type FormDatePickerProps<T extends FieldValues> = Omit<
   FormTextInputProps<T>,
   "rightSection"
 > & {
-  datePickerProps: Pick<
+  datePickerProps?: Pick<
     ComponentProps<typeof DateTimePickerInput>,
     "display" | "formatter" | "mode"
   >;
