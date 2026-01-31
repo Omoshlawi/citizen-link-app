@@ -29,10 +29,10 @@ import {
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { cancelFollowUpSchema } from "@/constants/schemas";
 import { useFollowUpApi } from "@/hooks/useFollowUp";
 import { handleApiErrors } from "@/lib/api";
 import { getFollowUpCanceletionReasonDisplay } from "@/lib/helpers";
+import { cancelFollowUpSchema } from "@/lib/schemas";
 import { CancelFollowUpFormData } from "@/types/follow-up";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";

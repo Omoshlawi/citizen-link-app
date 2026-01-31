@@ -5,7 +5,7 @@ import { ArrowRightIcon } from "@/components/ui/icon";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { forgotPasswordSchema } from "@/constants/schemas";
+import { forgotPasswordSchema } from "@/lib/schemas";
 import { ForgotPasswordFormData } from "@/types/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";

@@ -1,4 +1,6 @@
 import { useDocumentCases } from "@/hooks/use-document-cases";
+import { authClient } from "@/lib/auth-client";
+import { BASE_URL } from "@/lib/constants";
 import { getAddressDisplay } from "@/lib/helpers";
 import { Briefcase, FileUser, IdCard, MapPin } from "lucide-react-native";
 import React from "react";
@@ -17,8 +19,9 @@ import { VStack } from "../ui/vstack";
 
 const CasesListView = () => {
   const { cases, error, isLoading, ...pagination } = useDocumentCases();
+  const { data: userSession, isPending } = authClient.useSession();
 
-  if (isLoading) {
+  if (isLoading || isPending) {
     return <Spinner />;
   }
   if (error) {
@@ -34,6 +37,9 @@ const CasesListView = () => {
         ItemSeparatorComponent={() => <Box className="h-2" />}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
+          const url = item.document?.images?.[0]?.url;
+          console.log(`${BASE_URL}/api/files/stream?fileName=${url}`);
+
           return (
             <Card
               size="md"
@@ -41,14 +47,18 @@ const CasesListView = () => {
               className="dark:bg-background-btn"
             >
               <HStack className="items-center" space="sm">
-                {item.document?.images?.[0].url ? (
+                {url ? (
                   <Image
                     source={{
-                      uri: item.document?.images?.[0].url,
+                      uri: `${BASE_URL}/api/files/stream?fileName=${url}`,
+                      headers: {
+                        Authorization: `Bearer ${userSession?.session.token}`,
+                      },
                     }}
                     alt="Logo"
                     size="lg"
                     className="aspect-1 rounded-sm"
+                    resizeMode="cover"
                   />
                 ) : (
                   <Icon

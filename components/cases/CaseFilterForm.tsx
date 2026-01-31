@@ -1,4 +1,4 @@
-import { caseFilterSchema } from "@/constants/schemas";
+import { caseFilterSchema } from "@/lib/schemas";
 import { CaseFilterFormData } from "@/types/cases";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, SlidersHorizontal } from "lucide-react-native";

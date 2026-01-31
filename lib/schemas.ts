@@ -1,6 +1,5 @@
-import z from "zod";
-
-import { PHONE_NUMBER_REGEX } from ".";
+import { z } from "zod";
+import { PHONE_NUMBER_REGEX } from "./constants";
 
 const optionalString = z
   .string()

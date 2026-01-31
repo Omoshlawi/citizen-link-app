@@ -12,9 +12,9 @@ import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { clientSchema } from "@/constants/schemas";
 import { useClientApi } from "@/hooks/useClients";
 import { handleApiErrors } from "@/lib/api";
+import { clientSchema } from "@/lib/schemas";
 import { Client, ClientFormData } from "@/types/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle, IdCard, Phone, UserCircle } from "lucide-react-native";
@@ -98,7 +98,6 @@ const AddClientScreen = () => {
         Object.entries(errors ?? {}).forEach(([field, error]) => {
           form.setError(field as keyof ClientFormData, { message: error });
         });
-
       }
     }
   };

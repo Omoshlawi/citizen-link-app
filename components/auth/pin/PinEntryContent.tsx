@@ -2,10 +2,10 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/constants/schemas";
+import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/lib/schemas";
+import VirtualKeyboard from "../VirtualKeyboard";
 import PinEntryHeader from "./PinEntryHeader";
 import PinInputSection from "./PinInputSection";
-import VirtualKeyboard from "../VirtualKeyboard";
 
 interface PinEntryContentProps {
   /** Current PIN value */
@@ -32,17 +32,17 @@ interface PinEntryContentProps {
 
 /**
  * PinEntryContent Component
- * 
+ *
  * Displays the PIN entry interface for local authentication.
  * Handles PIN input, validation, and authentication attempts.
- * 
+ *
  * Features:
  * - PIN input display
  * - Virtual keyboard with optional biometric button
  * - Attempt counter display
  * - Auto-submit when PIN is complete
  * - Optional cancel button
- * 
+ *
  * @example
  * ```tsx
  * <PinEntryContent
@@ -150,4 +150,3 @@ export default function PinEntryContent({
     </VStack>
   );
 }
-

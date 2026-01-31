@@ -2,7 +2,7 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/constants/schemas";
+import { PIN_LENGTH } from "@/lib/schemas";
 import PinInputSection from "../pin/PinInputSection";
 import VirtualKeyboard from "../VirtualKeyboard";
 
@@ -23,17 +23,17 @@ interface PinConfirmStepProps {
 
 /**
  * PinConfirmStep Component
- * 
+ *
  * Displays the PIN confirmation step during local auth setup.
  * Requires users to re-enter their PIN to confirm it matches.
- * 
+ *
  * Features:
  * - PIN input display with validation
  * - Visual error feedback when PINs don't match
  * - Virtual keyboard for PIN entry
  * - Auto-submit when PIN matches and reaches full length
  * - Back button to return to PIN setup
- * 
+ *
  * @example
  * ```tsx
  * <PinConfirmStep
@@ -86,10 +86,7 @@ export default function PinConfirmStep({
 
   return (
     <VStack space="lg" className="items-center px-4 pb-4 pt-2">
-      <Text
-        size="2xl"
-        className="font-bold text-center text-typography-900"
-      >
+      <Text size="2xl" className="font-bold text-center text-typography-900">
         Confirm PIN
       </Text>
       <Text size="sm" className="text-center text-typography-500">
@@ -129,4 +126,3 @@ export default function PinConfirmStep({
     </VStack>
   );
 }
-

@@ -1,6 +1,6 @@
-import { addressSchema } from "@/constants/schemas";
 import { z } from "zod";
 import { DocumentCase } from "./cases";
+import { addressSchema } from "@/lib/schemas";
 
 export type AddressTypeValue =
   | "HOME"

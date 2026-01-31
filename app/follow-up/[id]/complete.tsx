@@ -31,10 +31,10 @@ import {
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { completeReferralSchema } from "@/constants/schemas";
 import { useReferralApi } from "@/hooks/useReferrals";
 import { handleApiErrors } from "@/lib/api";
 import { getReferralResultDisplay } from "@/lib/helpers";
+import { completeReferralSchema } from "@/lib/schemas";
 import { CompleteReferralFormData } from "@/types/screening";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";

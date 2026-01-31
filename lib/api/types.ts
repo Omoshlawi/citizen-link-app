@@ -1,6 +1,13 @@
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { User } from "better-auth";
 import { Organization } from "better-auth/plugins/organization";
+import { z } from "zod";
+import {
+  apiListQuerySchema,
+  apiPaginationQuerySchema,
+  apiRepresentationQuerySchema,
+  apiSortQuerySchema,
+} from "./schemas";
 
 export type APIFetchInit = Omit<AxiosRequestConfig, "url">;
 export type APIFetchResponse<T = any, K = any> = AxiosResponse<T, K>;
@@ -14,6 +21,16 @@ export interface PaginationControls {
   totalPages: number;
   totalCount: number;
 }
+
+export type ApiPaginationQuery = z.infer<typeof apiPaginationQuerySchema>;
+
+export type ApiSortQuery = z.infer<typeof apiSortQuerySchema>;
+
+export type ApiRepresentationQuery = z.infer<
+  typeof apiRepresentationQuerySchema
+>;
+
+export type ApiListQuery = z.infer<typeof apiListQuerySchema>;
 
 export interface APIListResponse<T> extends PaginationControls {
   results: T[];

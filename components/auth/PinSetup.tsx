@@ -7,12 +7,12 @@ import PinInputComponent from "@/components/ui/pin-input";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/constants/schemas";
 import {
   checkBiometricAvailability,
   setBiometricEnabled,
   setupPin,
 } from "@/lib/local-auth";
+import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/lib/schemas";
 import { useEffect, useState } from "react";
 
 interface PinSetupProps {

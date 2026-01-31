@@ -20,7 +20,7 @@ export const useDocumentCases = (params: Record<string, any> = {}) => {
   const { onPageChange, mergedSearchParams, showPagination } =
     useMergePaginationInfo({
       ...params,
-      v: "custom:include(lostDocumentCase,foundDocumentCase,document:include(type),address:include(locale))",
+      v: "custom:include(lostDocumentCase,foundDocumentCase,document:include(type,images),address:include(locale))",
     });
   const url = constructUrl(`/documents/cases`, mergedSearchParams);
   const { data, error, mutate, isLoading } =
@@ -264,3 +264,4 @@ export const useDocumentCaseApi = () => {
     rejectDocumentCase,
   };
 };
+

@@ -2,7 +2,7 @@ import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/constants/schemas";
+import { PIN_LENGTH, PIN_MIN_LENGTH } from "@/lib/schemas";
 import PinInputSection from "../pin/PinInputSection";
 import VirtualKeyboard from "../VirtualKeyboard";
 
@@ -21,16 +21,16 @@ interface PinSetupStepProps {
 
 /**
  * PinSetupStep Component
- * 
+ *
  * Displays the PIN creation step during local auth setup.
  * Allows users to create a new PIN using the virtual keyboard.
- * 
+ *
  * Features:
  * - PIN input display
  * - Virtual keyboard for PIN entry
  * - Auto-submit when PIN reaches full length
  * - Cancel option
- * 
+ *
  * @example
  * ```tsx
  * <PinSetupStep
@@ -76,10 +76,7 @@ export default function PinSetupStep({
 
   return (
     <VStack space="lg" className="items-center px-4 pb-4 pt-2">
-      <Text
-        size="2xl"
-        className="font-bold text-center text-typography-900"
-      >
+      <Text size="2xl" className="font-bold text-center text-typography-900">
         Set Up PIN
       </Text>
       <Text size="sm" className="text-center text-typography-500">
@@ -111,4 +108,3 @@ export default function PinSetupStep({
     </VStack>
   );
 }
-

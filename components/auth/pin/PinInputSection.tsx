@@ -1,6 +1,6 @@
 import { Box } from "@/components/ui/box";
 import PinInputComponent from "@/components/ui/pin-input";
-import { PIN_LENGTH } from "@/constants/schemas";
+import { PIN_LENGTH } from "@/lib/schemas";
 
 interface PinInputSectionProps {
   /** Current PIN value */
@@ -17,15 +17,15 @@ interface PinInputSectionProps {
 
 /**
  * PinInputSection Component
- * 
+ *
  * Displays the PIN input field with visual feedback.
  * Handles PIN display only - input is controlled via virtual keyboard.
- * 
+ *
  * Features:
  * - Visual PIN boxes with obscured text
  * - Auto-complete detection
  * - Error state indication
- * 
+ *
  * @example
  * ```tsx
  * <PinInputSection
@@ -61,4 +61,3 @@ export default function PinInputSection({
     </Box>
   );
 }
-

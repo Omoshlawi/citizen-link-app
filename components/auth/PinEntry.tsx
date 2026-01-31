@@ -1,10 +1,10 @@
 import Toaster from "@/components/toaster";
 import { useToast } from "@/components/ui/toast";
-import { PIN_MIN_LENGTH } from "@/constants/schemas";
 import {
   authenticateWithBiometrics,
   authenticateWithPin,
 } from "@/lib/local-auth";
+import { PIN_MIN_LENGTH } from "@/lib/schemas";
 import { useEffect, useState } from "react";
 import { Keyboard } from "react-native";
 import PinEntryContent from "./pin/PinEntryContent";

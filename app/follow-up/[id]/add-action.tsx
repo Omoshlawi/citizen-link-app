@@ -31,13 +31,13 @@ import {
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { outreachActionSchema } from "@/constants/schemas";
 import { useFollowUpApi } from "@/hooks/useFollowUp";
 import { handleApiErrors } from "@/lib/api";
 import {
   getOutreachActionTypeDisplay,
   getOutreachOutcomeDisplay,
 } from "@/lib/helpers";
+import { outreachActionSchema } from "@/lib/schemas";
 import { OutreachAction, OutreachActionFormData } from "@/types/follow-up";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";

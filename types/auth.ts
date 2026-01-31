@@ -5,7 +5,7 @@ import {
   phoneNumberSignInSchema,
   registerSchema,
   usernameSignInSchema,
-} from "@/constants/schemas";
+} from "@/lib/schemas";
 import z from "zod";
 
 export type EmailSignInFormData = z.infer<typeof emailSignInSchema>;

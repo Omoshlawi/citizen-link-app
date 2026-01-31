@@ -26,9 +26,9 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
-import { followUpSchema } from "@/constants/schemas";
 import { useFollowUpApi } from "@/hooks/useFollowUp";
 import { getFollowUpCategoryDisply, getPriorityDisplay } from "@/lib/helpers";
+import { followUpSchema } from "@/lib/schemas";
 import { FollowUpFormData } from "@/types/follow-up";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";

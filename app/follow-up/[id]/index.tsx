@@ -10,8 +10,8 @@ import { Icon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { DEFAULT_DATE_FORMAT } from "@/constants";
 import { useFollowUp } from "@/hooks/useFollowUp";
+import { DEFAULT_DATE_FORMAT } from "@/lib/constants/index";
 import {
   getFollowUpCategoryDisply,
   getOutreachActionTypeDisplay,
@@ -216,10 +216,10 @@ const FollowUpDetails = ({ followUp }: { followUp: FollowUp }) => {
               {outreachActions.map((action) => (
                 <ListTile
                   key={action.id}
-                  title={`${getOutreachActionTypeDisplay(
-                    action.actionType
-                  )}`}
-                  description={dayjs(action.actionDate).format(DEFAULT_DATE_FORMAT)}
+                  title={`${getOutreachActionTypeDisplay(action.actionType)}`}
+                  description={dayjs(action.actionDate).format(
+                    DEFAULT_DATE_FORMAT
+                  )}
                   leading={
                     <Icon
                       as={Calendar}

@@ -1,4 +1,4 @@
-import { clientSchema } from "@/constants/schemas";
+import { clientSchema } from "@/lib/schemas";
 import z from "zod";
 import { Screening } from "./screening";
 

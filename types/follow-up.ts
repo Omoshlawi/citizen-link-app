@@ -3,7 +3,7 @@ import {
   followUpSchema,
   outreachActionSchema,
   updateFollowUpSchema,
-} from "@/constants/schemas";
+} from "@/lib/schemas";
 import z from "zod";
 import { Client } from "./client";
 import { Referral, Screening } from "./screening";

@@ -2,7 +2,7 @@ import {
   completeReferralSchema,
   referralSchema,
   screenClientSchema,
-} from "@/constants/schemas";
+} from "@/lib/schemas";
 import z from "zod";
 import { Client } from "./client";
 import { Coordinates, HealthFacility } from "./facilities";
