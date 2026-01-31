@@ -5,6 +5,8 @@ import {
   FormControlError,
   FormControlErrorIcon,
   FormControlErrorText,
+  FormControlHelper,
+  FormControlHelperText,
   FormControlLabel,
   FormControlLabelText,
 } from "../ui/form-control";
@@ -100,6 +102,11 @@ const FormSelectInput = <T extends FieldValues>({
                 </FormControlErrorText>
               </FormControlError>
             )}
+            {helperText && !error && (
+            <FormControlHelper>
+              <FormControlHelperText>{helperText}</FormControlHelperText>
+            </FormControlHelper>
+          )}
           </FormControl>
         );
       }}
