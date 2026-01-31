@@ -1,9 +1,10 @@
 import { Icon } from "@/components/ui/icon";
 import { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
 import { PlatformPressable } from "@react-navigation/elements";
+import Color from "color";
 import * as Haptics from "expo-haptics";
 import { router } from "expo-router";
-import { Plus, Stethoscope, UserPlus } from "lucide-react-native";
+import { FileXIcon, ImageUp, Plus } from "lucide-react-native";
 import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import {
@@ -23,14 +24,14 @@ export function FloatingTabButton(props: BottomTabBarButtonProps) {
   const [pressed, setPressed] = useState(false);
   const [showActionsheet, setShowActionsheet] = React.useState(false);
   const handleClose = () => setShowActionsheet(false);
-  const handleStartScreening = () => {
+  const handleReportLostDocument = () => {
     handleClose();
-    router.push("/screen-client");
+    router.push("/document-case/add-found");
   };
 
-  const handleAddClient = () => {
+  const handleReportFoundDocument = () => {
     handleClose();
-    router.push("/add-client");
+    router.push("/document-case/add-found");
   };
 
   return (
@@ -85,32 +86,38 @@ export function FloatingTabButton(props: BottomTabBarButtonProps) {
           </ActionsheetItem>
           <HStack space="lg" className="w-full items-center">
             <TouchableOpacity
-              onPress={handleStartScreening}
-              className="flex-1 items-center bg-background-50 p-4 rounded-lg"
+              onPress={handleReportLostDocument}
+              className="flex-1 items-center p-4 rounded-lg"
               activeOpacity={0.5}
+              style={{
+                backgroundColor: Color("#ef4444").alpha(0.1).toString(),
+              }}
             >
               <VStack space="sm" className="items-center">
-                <Icon
-                  as={Stethoscope}
-                  size="xl"
-                  className="text-typography-500"
-                />
-                <Heading size="md">Lost Case</Heading>
+                <Icon as={FileXIcon} size="xl" className="text-red-500" />
+                <Heading size="md" className="text-red-500">
+                  Lost Case
+                </Heading>
                 <Text size="sm" className="text-typography-500">
-                  Begin new assessment
+                  Report Lost Document
                 </Text>
               </VStack>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleAddClient}
-              className="flex-1 items-center bg-background-50 p-4 rounded-lg"
+              onPress={handleReportFoundDocument}
+              className="flex-1 items-center p-4 rounded-lg"
               activeOpacity={0.5}
+              style={{
+                backgroundColor: Color("#14b8a6").alpha(0.1).toString(),
+              }}
             >
               <VStack space="sm" className="items-center">
-                <Icon as={UserPlus} size="xl" className="text-typography-500" />
-                <Heading size="md">Found Case</Heading>
+                <Icon as={ImageUp} size="xl" className="text-teal-500" />
+                <Heading size="md" className="text-teal-500">
+                  Found Case
+                </Heading>
                 <Text size="sm" className="text-typography-500">
-                  Register new client
+                  Report Found Document
                 </Text>
               </VStack>
             </TouchableOpacity>

@@ -122,23 +122,16 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="settings" options={{ headerShown: false }} />
             <Stack.Screen
+              name="document-case"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="notifications"
               options={{
                 headerShown: false,
               }}
             />
-            <Stack.Screen
-              name="add-client"
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="screen-client"
-              options={{
-                headerShown: false,
-              }}
-            />
+
             <Stack.Screen
               name="activities"
               options={{
