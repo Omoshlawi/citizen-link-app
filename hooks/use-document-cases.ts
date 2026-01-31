@@ -8,18 +8,22 @@ import {
 } from "@/lib/api";
 import {
   CaseDocumentFormData,
+  CaseFilterFormData,
   DocumentCase,
   DocumentImage,
   FoundDocumentCaseFormData,
   LostDocumentCaseFormData,
 } from "@/types/cases";
 import dayjs from "dayjs";
+import { useLocalSearchParams } from "expo-router";
 import { useMergePaginationInfo } from "./usePagination";
 
-export const useDocumentCases = (params: Record<string, any> = {}) => {
+export const useDocumentCases = (params: CaseFilterFormData = {}) => {
+  const p = useLocalSearchParams<Record<string, any>>();
   const { onPageChange, mergedSearchParams, showPagination } =
     useMergePaginationInfo({
-      ...params,
+      ...p,
+      ...(params as any),
       v: "custom:include(lostDocumentCase,foundDocumentCase,document:include(type,images),address:include(locale))",
     });
   const url = constructUrl(`/documents/cases`, mergedSearchParams);
@@ -264,4 +268,3 @@ export const useDocumentCaseApi = () => {
     rejectDocumentCase,
   };
 };
-

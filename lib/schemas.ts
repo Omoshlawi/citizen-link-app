@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { apiListQuerySchema } from "./api";
 import { PHONE_NUMBER_REGEX } from "./constants";
 
 const optionalString = z
@@ -192,6 +193,32 @@ export const lostDocumentCaseSchema = foundDocumentCaseSchema
     images: true,
   });
 
-export const caseFilterSchema = z.object({
-  caseType: z.string().optional(),
+export const caseFilterSchema = apiListQuerySchema.extend({
+  search: z.string().optional(),
+  documentType: z.uuid().optional(),
+  caseType: z.enum(["FOUND", "LOST"]).optional(),
+  ownerName: z.string().optional(),
+  eventDateFrom: z.iso.date().optional(),
+  eventDateTo: z.iso.date().optional(),
+  dateReportedFrom: z.iso.date().optional(),
+  dateReportedTo: z.iso.date().optional(),
+  tags: z.string().array().optional(),
+  documentIssuer: z.string().optional(),
+  documentNumber: z.string().optional(),
+  docuemtExpiryDateFrom: z.iso.date().optional(),
+  docuemtExpiryDateTo: z.iso.date().optional(),
+  docuemtIssueDateFrom: z.iso.date().optional(),
+  docuemtIssueDateTo: z.iso.date().optional(),
+  includeVoided: z
+    .stringbool({
+      truthy: ["true", "1"],
+      falsy: ["false", "0"],
+    })
+    .optional(),
+  includeForOtherUsers: z // TODO:  validate only for admin users else throw forbidden error
+    .stringbool({
+      truthy: ["true", "1"],
+      falsy: ["false", "0"],
+    })
+    .optional(),
 });

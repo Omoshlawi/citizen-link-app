@@ -217,11 +217,3 @@ export type FoundDocumentCaseFormData = z.infer<typeof foundDocumentCaseSchema>;
 export type LostDocumentCaseFormData = z.infer<typeof lostDocumentCaseSchema>;
 export type CaseDocumentFormData = z.infer<typeof caseDocumentSchema>;
 export type CaseFilterFormData = z.infer<typeof caseFilterSchema>;
-export type DocumentCasesFilterParams = ApiListQuery & {
-  search?: string;
-  documenttype?: string;
-  caseType?: CaseType;
-  ownerName?: string;
-  eventDateFrom?: Date;
-  eventDateTo?: Date;
-};

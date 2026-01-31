@@ -1,6 +1,8 @@
-import { RiskInterpretation } from "@/types/screening";
+import { useDocumentCases } from "@/hooks/use-document-cases";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { useRouter } from "expo-router";
 import { Search, SlidersVertical } from "lucide-react-native";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -15,22 +17,17 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 import CaseFilterForm from "./CaseFilterForm";
 
-type ClientFilterProps = {
-  search?: string;
-  onSearchChange?: (search: string) => void;
-  level?: RiskInterpretation | "";
-  onLevelChange?: (level: RiskInterpretation | "") => void;
-  count?: number;
-};
+type ClientFilterProps = {};
 
-const CasesFilter: FC<ClientFilterProps> = ({
-  search,
-  onSearchChange,
-  level,
-  onLevelChange,
-  count = 0,
-}) => {
+const CasesFilter: FC<ClientFilterProps> = () => {
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebouncedValue(search, 500);
+  useEffect(() => {
+    router.setParams({ search: debouncedSearch });
+  }, [debouncedSearch, router]);
   const [showActionsheet, setShowActionsheet] = React.useState(false);
+  const { totalCount } = useDocumentCases();
   const handleClose = () => setShowActionsheet(false);
   return (
     <VStack space="sm" className="">
@@ -49,7 +46,7 @@ const CasesFilter: FC<ClientFilterProps> = ({
           <InputField
             placeholder="Search ..."
             value={search}
-            onChangeText={onSearchChange}
+            onChangeText={setSearch}
           />
         </Input>
         <Button
@@ -70,7 +67,7 @@ const CasesFilter: FC<ClientFilterProps> = ({
         </Actionsheet>
       </HStack>
       <Text size="2xs" className="color-typography-link">
-        {count} Found Results{count !== 1 ? "s" : ""}
+        {totalCount} Found Results{totalCount !== 1 ? "s" : ""}
       </Text>
     </VStack>
   );

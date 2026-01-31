@@ -38,8 +38,6 @@ const CasesListView = () => {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
           const url = item.document?.images?.[0]?.url;
-          console.log(`${BASE_URL}/api/files/stream?fileName=${url}`);
-
           return (
             <Card
               size="md"
