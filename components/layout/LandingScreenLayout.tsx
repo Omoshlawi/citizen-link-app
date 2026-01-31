@@ -14,8 +14,8 @@ type LandingScreenLayoutProps = {
 };
 const LandingScreenLayout: FC<LandingScreenLayoutProps> = ({ children }) => {
   return (
-    <SafeAreaScreen>
-      <VStack className="flex-1 h-full w-full">
+    <SafeAreaScreen mode="padded">
+      <VStack className="flex-1 h-full w-full ">
         {/* APP bar */}
         <HStack className="justify-between items-center p-4 b">
           <Text className="text-2xl font-bold ">LOGO</Text>

@@ -1,0 +1,266 @@
+import {
+  apiFetch,
+  APIFetchResponse,
+  APIListResponse,
+  constructUrl,
+  mutate,
+  useApi,
+} from "@/lib/api";
+import {
+  CaseDocumentFormData,
+  DocumentCase,
+  DocumentImage,
+  FoundDocumentCaseFormData,
+  LostDocumentCaseFormData,
+} from "@/types/cases";
+import dayjs from "dayjs";
+import { useMergePaginationInfo } from "./usePagination";
+
+export const useDocumentCases = (params: Record<string, any> = {}) => {
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo({
+      ...params,
+      v: "custom:include(lostDocumentCase,foundDocumentCase,document:include(type),address:include(locale))",
+    });
+  const url = constructUrl(`/documents/cases`, mergedSearchParams);
+  const { data, error, mutate, isLoading } =
+    useApi<APIFetchResponse<APIListResponse<DocumentCase>>>(url);
+
+  const { results: cases = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<DocumentCase>);
+  return {
+    ...rest,
+    cases,
+    isLoading,
+    error,
+    mutate,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
+  };
+};
+export const useDocumentCase = (caseId?: string) => {
+  const url = constructUrl(`/documents/cases/${caseId}`, {
+    v: "custom:include(foundDocumentCase,lostDocumentCase,document:include(type, images),document:include(additionalFields),address:include(locale))",
+  });
+  const { data, error, mutate, isLoading } = useApi<
+    APIFetchResponse<DocumentCase>
+  >(caseId ? url : null);
+  return {
+    report: data?.data,
+    isLoading,
+    error,
+    mutate,
+  };
+};
+
+export const createFoundDocumentCase = async (
+  payload: FoundDocumentCaseFormData
+) => {
+  const foundDocumentCase = await apiFetch<DocumentCase>(
+    "/documents/cases/found",
+    {
+      method: "POST",
+      data: {
+        ...payload,
+        eventDate: dayjs(payload?.eventDate).format("YYYY-MM-DD"),
+      },
+    }
+  );
+  mutate("/documents/cases");
+  return foundDocumentCase.data;
+};
+
+export const updateFoundDocumentCase = async (
+  caseId: string,
+  payload: FoundDocumentCaseFormData
+) => {
+  const foundDocumentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}`,
+    {
+      method: "PATCH",
+      data: {
+        ...payload,
+        eventDate: dayjs(payload?.eventDate).format("YYYY-MM-DD"),
+      },
+    }
+  );
+  mutate("/documents/cases");
+  return foundDocumentCase.data;
+};
+
+export const createLostDocumentCase = async (
+  payload: LostDocumentCaseFormData
+) => {
+  const lostDocumentCase = await apiFetch<DocumentCase>(
+    "/documents/cases/lost",
+    {
+      method: "POST",
+      data: {
+        ...payload,
+        eventDate: payload?.eventDate
+          ? dayjs(payload?.eventDate).format("YYYY-MM-DD")
+          : undefined,
+        dateOfBirth: payload?.dateOfBirth
+          ? dayjs(payload?.dateOfBirth).format("YYYY-MM-DD")
+          : undefined,
+        issuanceDate: payload?.issuanceDate
+          ? dayjs(payload?.issuanceDate).format("YYYY-MM-DD")
+          : undefined,
+        expiryDate: payload?.expiryDate
+          ? dayjs(payload?.expiryDate).format("YYYY-MM-DD")
+          : undefined,
+      },
+    }
+  );
+  mutate("/documents/cases");
+  return lostDocumentCase.data;
+};
+
+export const updateLostDocumentCase = async (
+  caseId: string,
+  payload: LostDocumentCaseFormData
+) => {
+  const lostDocumentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}`,
+    {
+      method: "PATCH",
+      data: {
+        ...payload,
+        eventDate: dayjs(payload?.eventDate).format("YYYY-MM-DD"),
+      },
+    }
+  );
+  mutate("/documents/cases");
+  return lostDocumentCase.data;
+};
+
+export const deleteDocumentCase = async (
+  caseId: string,
+  purge: boolean = false
+) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}`,
+    {
+      method: "DELETE",
+      params: { purge },
+    }
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+
+export const restoreDocumentCase = async (caseId: string) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}/restore`,
+    {
+      method: "POST",
+    }
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+
+export const updateCaseDocument = async (
+  caseId: string,
+  documentId: string,
+  payload: CaseDocumentFormData
+) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}/documents/${documentId}`,
+    {
+      method: "PATCH",
+      data: {
+        ...payload,
+        dateOfBirth: payload?.dateOfBirth
+          ? dayjs(payload?.dateOfBirth).format("YYYY-MM-DD")
+          : undefined,
+        issuanceDate: payload?.issuanceDate
+          ? dayjs(payload?.issuanceDate).format("YYYY-MM-DD")
+          : undefined,
+        expiryDate: payload?.expiryDate
+          ? dayjs(payload?.expiryDate).format("YYYY-MM-DD")
+          : undefined,
+      },
+    }
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+
+const uploadDocumentImage = async (
+  caseId: string,
+  documentId: string,
+  data: { images: string[] }
+) => {
+  const images = await apiFetch<{ images: DocumentImage[] }>(
+    `/documents/cases/${caseId}/documents/${documentId}/images`,
+    { method: "POST", data }
+  );
+  mutate(`/documents/cases`);
+  return images.data.images ?? [];
+};
+
+const updateDocumentCase = async (
+  caseId: string,
+  payload: Partial<FoundDocumentCaseFormData>
+) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}`,
+    {
+      method: "PATCH",
+      data: payload,
+    }
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+
+const submitDocumentCase = async (caseId: string) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}/submit`,
+    {
+      method: "POST",
+    }
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+
+const verifyDocumentCase = async (caseId: string) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}/verify`,
+    {
+      method: "POST",
+    }
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+
+const rejectDocumentCase = async (caseId: string) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/${caseId}/reject`,
+    {
+      method: "POST",
+    }
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+
+export const useDocumentCaseApi = () => {
+  return {
+    createFoundDocumentCase,
+    updateFoundDocumentCase,
+    createLostDocumentCase,
+    updateLostDocumentCase,
+    deleteDocumentCase,
+    restoreDocumentCase,
+    uploadDocumentImage,
+    updateCaseDocument,
+    updateDocumentCase,
+    submitDocumentCase,
+    verifyDocumentCase,
+    rejectDocumentCase,
+  };
+};

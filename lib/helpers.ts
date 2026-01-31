@@ -1,3 +1,4 @@
+import { Address } from "@/types/address";
 import { FollowUp, OutreachAction } from "@/types/follow-up";
 import {
   CompleteReferralFormData,
@@ -200,3 +201,48 @@ export const getReferralResultDisplay = (
       return "Negative";
   }
 };
+
+export const getAddressDisplay = (
+  address?: Address,
+  defaultValue: string = "N/A"
+) => {
+  if (!address) return defaultValue;
+  const template = address.locale?.formatSpec?.displayTemplate ?? defaultValue;
+
+  return parseMessage(
+    {
+      address1: address.address1,
+      level4: address.level4,
+      level3: address.level3,
+      level2: address.level2,
+      level1: address.level1,
+      country: address.country,
+    },
+    template
+  );
+};
+
+export function parseMessage(
+  object: Record<string, any>,
+  template: string
+): string {
+  // regular expression to match placeholders like {{field}}
+  const placeholderRegex = /{{(.*?)}}/g;
+
+  // Use a replace function to replace placeholders with corresponding values
+  const parsedMessage = template.replace(
+    placeholderRegex,
+    (match: string, fieldName: string) => {
+      // The fieldName variable contains the field name inside the placeholder
+      // Check if the field exists in the event object
+      if (Object.prototype.hasOwnProperty.call(object, fieldName)) {
+        return String(object[fieldName]); // Replace with the field's value
+      } else {
+        // Placeholder not found in event, leave it unchanged
+        return match;
+      }
+    }
+  );
+
+  return parsedMessage;
+}
