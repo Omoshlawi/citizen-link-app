@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "We capture your current location to attach accurate coordinates to screening records."
-      }
+      },
+      "bundleIdentifier": "app.citizenlink"
     },
     "android": {
       "adaptiveIcon": {
@@ -49,7 +50,13 @@
           }
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      [
+        "react-native-document-scanner-plugin",
+        {
+          "cameraPermission": "Grant camera access to scan documents."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,8 +1,8 @@
 import Constants from 'expo-constants';
 
 
-// export const BASE_URL = "http://192.168.1.119:2000";
-export const BASE_URL = "http://localhost:2000";
+export const BASE_URL = "http://192.168.1.125:2000";
+// export const BASE_URL = "http://localhost:2000";
 
 export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
 
