@@ -65,6 +65,7 @@ const FormDatePicker = <T extends FieldValues>({
                   value={formattedDate}
                   onPress={onPress}
                 />
+                <InputSlot className="absolute inset-0" onPress={onPress} />
                 <InputSlot className="px-3" onPress={onPress}>
                   <InputIcon as={Calendar} />
                 </InputSlot>
