@@ -1,8 +1,8 @@
 import { useLocalAuth } from "@/hooks/use-local-auth";
 import { useEffect, useState } from "react";
 import { Modal } from "react-native";
-import BottomSheet from "./bottom-sheet/BottomSheet";
-import BottomSheetBackdrop from "./bottom-sheet/BottomSheetBackdrop";
+import BottomSheet from "../bottom-sheet/BottomSheet";
+import BottomSheetBackdrop from "../bottom-sheet/BottomSheetBackdrop";
 import PinEntry from "./PinEntry";
 
 interface LocalAuthModalProps {

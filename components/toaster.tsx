@@ -24,7 +24,7 @@ const Toaster: FC<ToasterProps> = ({
       nativeID={uniqueToastId}
       action={action}
       variant={variant}
-      className={`bg-slate-700 ${className}`}
+      className={`${className}`}
     >
       {title && <ToastTitle>{title}</ToastTitle>}
       {description && <ToastDescription>{description}</ToastDescription>}

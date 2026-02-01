@@ -10,9 +10,12 @@ import {
 } from "@/components/form-inputs";
 import { ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
+import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useAddresses } from "@/hooks/use-addresses";
+import { useDocumentExtraction } from "@/hooks/useDocumentExtraction";
+import { uploadFile } from "@/lib/api";
 import { foundDocumentCaseSchema } from "@/lib/schemas";
 import { FoundDocumentCaseFormData } from "@/types/cases";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,13 +28,17 @@ const AddFoundDocumentCase = () => {
   const [scanned, setScanned] = useState<
     ScannedDocumentChangeProps | undefined
   >();
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+
   const toast = useToast();
   const form = useForm({
     defaultValues: {},
     resolver: zodResolver(foundDocumentCaseSchema),
   });
   const { addresses } = useAddresses();
-  const onSubmit: SubmitHandler<FoundDocumentCaseFormData> = (data) => {
+  const { startExtraction } = useDocumentExtraction();
+
+  const onSubmit: SubmitHandler<FoundDocumentCaseFormData> = async (data) => {
     try {
       if (!scanned) {
         toast.show({
@@ -51,7 +58,42 @@ const AddFoundDocumentCase = () => {
         });
         return;
       }
+      setUploadingFiles(true);
+      const thumbnailKey = await uploadFile(scanned.thumbnail);
+      const documentKey = await uploadFile(scanned.document);
+      setUploadingFiles(false);
+
+      // Submit form with uploaded image URLs
+      const submitData = {
+        ...data,
+        thumbnailKey,
+        documentKey,
+      };
+
+      const extraction = await startExtraction();
+      if (!extraction) {
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="Extraction failed"
+                description={"Failed to start document extraction"}
+                action="error"
+              />
+            );
+          },
+        });
+        return;
+      }
+     
     } catch (error: any) {
+      setUploadingFiles(false);
+      console.log(error);
+
       toast.show({
         placement: "top",
         render: ({ id }) => {
@@ -100,6 +142,12 @@ const AddFoundDocumentCase = () => {
             suffixIcon={ArrowRight}
             onPress={form.handleSubmit(onSubmit)}
           />
+          <Text>
+            {JSON.stringify({
+              data: form.watch(),
+              error: form.formState.errors,
+            })}
+          </Text>
         </VStack>
       </ScrollView>
     </ScreenLayout>

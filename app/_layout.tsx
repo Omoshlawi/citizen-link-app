@@ -24,13 +24,19 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const theme = useColorScheme();
-
   const { data, isPending, error } = authClient.useSession();
   const isLoggedIn = !!data?.user?.id;
   const toast = useToast();
   const [showLocalAuth, setShowLocalAuth] = useState(false);
   const appState = useRef(AppState.currentState);
+  // Ref to avoid stale closures in the AppState listener
+  const isLoggedInRef = useRef(isLoggedIn);
   const hasGoneToBackground = useRef(false);
+
+  // Sync the ref whenever isLoggedIn changes
+  useEffect(() => {
+    isLoggedInRef.current = isLoggedIn;
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isPending) {
@@ -56,60 +62,34 @@ export default function RootLayout() {
 
   // Handle app state changes for local authentication
   useEffect(() => {
-    if (!isLoggedIn) {
-      // Reset when logged out
-      hasGoneToBackground.current = false;
-      setShowLocalAuth(false);
-      return;
-    }
+    const handleStateChange = async (nextAppState: AppStateStatus) => {
+      // 1. If not logged in, we don't care about local auth
+      if (!isLoggedInRef.current) return;
 
-    const subscription = AppState.addEventListener(
-      "change",
-      async (nextAppState: AppStateStatus) => {
-        console.log("App state changed:", {
-          previous: appState.current,
-          next: nextAppState,
-          hasGoneToBackground: hasGoneToBackground.current,
-        });
+      // 2. Logic for coming back to foreground
+      // We check if previous state was 'background' or 'inactive' and new is 'active'
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        console.log("App returned to foreground");
 
-        // Track when app goes to background
-        if (
-          appState.current === "active" &&
-          nextAppState.match(/inactive|background/)
-        ) {
-          hasGoneToBackground.current = true;
-          console.log("App went to background");
+        const enabled = await isLocalAuthEnabled();
+        if (enabled) {
+          // Trigger modal
+          setShowLocalAuth(true);
         }
-
-        // Show local auth when app comes back to foreground after being in background
-        if (
-          hasGoneToBackground.current &&
-          appState.current.match(/inactive|background/) &&
-          nextAppState === "active"
-        ) {
-          console.log("App came to foreground, checking local auth");
-          // Small delay to ensure app is fully active
-          setTimeout(async () => {
-            const enabled = await isLocalAuthEnabled();
-            console.log("Local auth enabled:", enabled);
-            if (enabled) {
-              console.log("Showing local auth modal");
-              setShowLocalAuth(true);
-            }
-          }, 100);
-          // Reset the flag after checking
-          hasGoneToBackground.current = false;
-        }
-
-        appState.current = nextAppState;
       }
-    );
+
+      appState.current = nextAppState;
+    };
+
+    const subscription = AppState.addEventListener("change", handleStateChange);
 
     return () => {
       subscription.remove();
     };
-  }, [isLoggedIn]);
-
+  }, []); // Empty dependency array: listener is established once
   return (
     <ApiConfigProvider>
       <GluestackUIProvider mode={theme}>
@@ -150,10 +130,13 @@ export default function RootLayout() {
           />
         </Stack>
         <StatusBar style={"auto"} backgroundColor="green" />
+        {/* Render Modal outside the Stack so it overlays everything */}
         {isLoggedIn && (
           <LocalAuthModal
             visible={showLocalAuth}
             onSuccess={() => setShowLocalAuth(false)}
+            // Ensure you have an onCancel or similar to handle
+            // what happens if they fail/cancel the biometric
           />
         )}
       </GluestackUIProvider>

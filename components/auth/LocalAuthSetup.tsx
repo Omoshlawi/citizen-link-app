@@ -8,7 +8,7 @@ import {
 } from "@/lib/local-auth";
 import { useEffect, useState } from "react";
 import { Keyboard } from "react-native";
-import BottomSheet from "./bottom-sheet/BottomSheet";
+import BottomSheet from "../bottom-sheet/BottomSheet";
 import BiometricPrompt from "./setup/BiometricPrompt";
 import PinConfirmStep from "./setup/PinConfirmStep";
 import PinSetupStep from "./setup/PinSetupStep";

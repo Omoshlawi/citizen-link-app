@@ -5,3 +5,4 @@ export {
   default as DocumentScannerInput,
   ScannedDocumentChangeProps,
 } from "./DocumentScannerInput";
+export {default as ExtractionModal} from "./ExtractionModal"
