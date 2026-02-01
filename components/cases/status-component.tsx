@@ -11,27 +11,27 @@ export const StatusIcon: FC<{ status: Status }> = ({ status }) => {
   if (status === "completed") {
     return (
       <Box className="rounded-full p-2 bg-green-500">
-        <Icon as={Check} size={20 as any} />
+        <Icon as={Check} size={20 as any} className="text-white" />
       </Box>
     );
   }
   if (status === "loading") {
     return (
       <Box className="rounded-full p-2 bg-blue-500">
-        <Spinner size={20 as any} />
+        <Spinner size={20 as any} className="text-white" />
       </Box>
     );
   }
   if (status === "error") {
     return (
       <Box className="rounded-full p-2 bg-red-500">
-        <Icon as={AlertCircle} size={20 as any} />
+        <Icon as={AlertCircle} size={20 as any} className="text-white" />
       </Box>
     );
   }
   return (
     <Box className="rounded-full p-2 bg-gray-500">
-      <Icon as={Clock} size={20 as any} />
+      <Icon as={Clock} size={20 as any} className="text-white" />
     </Box>
   );
 };
@@ -39,29 +39,28 @@ export const StatusIcon: FC<{ status: Status }> = ({ status }) => {
 export const StatusBadge: FC<{ status: Status }> = ({ status }) => {
   if (status === "completed") {
     return (
-      <Badge variant="solid" className="bg-green-500">
-        <BadgeText>Completed</BadgeText>
+      <Badge variant="solid" className="bg-green-500 rounded-full">
+        <BadgeText className="text-white">Completed</BadgeText>
       </Badge>
     );
   }
   if (status === "loading") {
     return (
-      <Badge variant="solid" className="bg-blue-500">
-        <BadgeIcon as={Loader} />
-        <BadgeText>Processing</BadgeText>
+      <Badge variant="solid" className="bg-blue-500 rounded-full">
+        <BadgeText className="text-white">Processing</BadgeText>
       </Badge>
     );
   }
   if (status === "error") {
     return (
-      <Badge variant="solid" className="bg-red-500">
-        <BadgeText>Error</BadgeText>
+      <Badge variant="solid" className="bg-red-500 rounded-full">
+        <BadgeText className="text-white">Error</BadgeText>
       </Badge>
     );
   }
   return (
-    <Badge variant="solid" className="bg-gray-500">
-      <BadgeText>Pending</BadgeText>
+    <Badge variant="solid" className="bg-gray-500 rounded-full">
+      <BadgeText className="text-white">Pending</BadgeText>
     </Badge>
   );
 };

@@ -7,6 +7,7 @@ const DocumentCaseLayout = () => {
       <Stack.Screen name="index" />
       <Stack.Screen name="add-found" />
       <Stack.Screen name="add-lost" />
+      <Stack.Screen name="[caseId]" />
     </Stack>
   );
 };

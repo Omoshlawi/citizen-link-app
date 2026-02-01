@@ -185,6 +185,8 @@ export const foundDocumentCaseSchema = z.object({
   eventDate: z.coerce.date(),
   tags: z.string().min(1).array().optional(),
   description: z.string().optional(),
+  thumbnailKey: z.string().optional(),
+  documentKey: z.string().optional(),
 });
 
 export const lostDocumentCaseSchema = foundDocumentCaseSchema

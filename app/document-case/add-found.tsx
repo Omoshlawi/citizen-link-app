@@ -1,6 +1,7 @@
 import { Button } from "@/components/button";
 import {
   DocumentScannerInput,
+  ExtractionModal,
   ScannedDocumentChangeProps,
 } from "@/components/cases";
 import {
@@ -10,17 +11,21 @@ import {
 } from "@/components/form-inputs";
 import { ScreenLayout } from "@/components/layout";
 import Toaster from "@/components/toaster";
-import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useAddresses } from "@/hooks/use-addresses";
 import { useDocumentExtraction } from "@/hooks/useDocumentExtraction";
 import { uploadFile } from "@/lib/api";
 import { foundDocumentCaseSchema } from "@/lib/schemas";
-import { FoundDocumentCaseFormData } from "@/types/cases";
+import {
+  DocumentCase,
+  Extraction,
+  FoundDocumentCaseFormData,
+} from "@/types/cases";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 
@@ -29,6 +34,8 @@ const AddFoundDocumentCase = () => {
     ScannedDocumentChangeProps | undefined
   >();
   const [uploadingFiles, setUploadingFiles] = useState(false);
+  const extractionRef = useRef<Extraction | undefined>(undefined);
+  const [extractionModalVisible, setExtractionModalVisible] = useState(false);
 
   const toast = useToast();
   const form = useForm({
@@ -64,11 +71,13 @@ const AddFoundDocumentCase = () => {
       setUploadingFiles(false);
 
       // Submit form with uploaded image URLs
-      const submitData = {
-        ...data,
-        thumbnailKey,
-        documentKey,
-      };
+      // const submitData = {
+      //   ...data,
+      //   thumbnailKey,
+      //   documentKey,
+      // };
+      form.setValue("thumbnailKey", thumbnailKey);
+      form.setValue("documentKey", documentKey);
 
       const extraction = await startExtraction();
       if (!extraction) {
@@ -89,7 +98,8 @@ const AddFoundDocumentCase = () => {
         });
         return;
       }
-     
+      extractionRef.current = extraction;
+      setExtractionModalVisible(true);
     } catch (error: any) {
       setUploadingFiles(false);
       console.log(error);
@@ -110,6 +120,14 @@ const AddFoundDocumentCase = () => {
         },
       });
     }
+  };
+
+  const onExtractionComplete = (docCase: DocumentCase) => {
+    setExtractionModalVisible(false);
+    router.push({
+      pathname: "/document-case/[caseId]",
+      params: { caseId: docCase.id },
+    });
   };
   return (
     <ScreenLayout title="Report Found Document">
@@ -142,14 +160,15 @@ const AddFoundDocumentCase = () => {
             suffixIcon={ArrowRight}
             onPress={form.handleSubmit(onSubmit)}
           />
-          <Text>
-            {JSON.stringify({
-              data: form.watch(),
-              error: form.formState.errors,
-            })}
-          </Text>
         </VStack>
       </ScrollView>
+      {extractionModalVisible && !!extractionRef.current && (
+        <ExtractionModal
+          extraction={extractionRef.current}
+          onExtractionComplete={onExtractionComplete}
+          data={form.getValues() as FoundDocumentCaseFormData}
+        />
+      )}
     </ScreenLayout>
   );
 };

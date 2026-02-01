@@ -246,3 +246,10 @@ export function parseMessage(
 
   return parsedMessage;
 }
+
+export function cleanAiResponseText(responseText: string) {
+  return responseText
+    .trim()
+    .replace(/^```json\s*/, "")
+    .replace(/\s*```$/, "");
+}
