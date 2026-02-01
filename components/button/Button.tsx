@@ -3,6 +3,7 @@ import React, { FC } from "react";
 import { Box } from "../ui/box";
 import {
   ButtonIcon,
+  ButtonSpinner,
   ButtonText,
   Button as GlueStackButton,
 } from "../ui/button";
@@ -14,6 +15,7 @@ type ButtonProps = {
   suffixIcon?: LucideIcon;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   disabled?: boolean;
+  loading?: boolean;
 };
 const Button: FC<ButtonProps> = ({
   text,
@@ -22,15 +24,19 @@ const Button: FC<ButtonProps> = ({
   suffixIcon,
   size,
   disabled = false,
+  loading = false,
 }) => {
   return (
     <GlueStackButton
       className={`w-full rounded-full bg-background-btn justify-start`}
       size={size}
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || loading}
     >
-      {!!prefixIcon && <ButtonIcon as={prefixIcon} className="text-white" />}
+      {loading && <ButtonSpinner className="text-white" />}
+      {!loading && !!prefixIcon && (
+        <ButtonIcon as={prefixIcon} className="text-white" />
+      )}
       <ButtonText className="text-white">{text}</ButtonText>
       {!!suffixIcon && <Box className="flex-1 text-white" />}
       {!!suffixIcon && <ButtonIcon as={suffixIcon} className="text-white" />}
