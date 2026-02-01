@@ -39,27 +39,27 @@ export const StatusIcon: FC<{ status: Status }> = ({ status }) => {
 export const StatusBadge: FC<{ status: Status }> = ({ status }) => {
   if (status === "completed") {
     return (
-      <Badge variant="solid" className="bg-green-500 rounded-full">
+      <Badge variant="solid" className="bg-green-500 rounded-full absolute top-0 right-0">
         <BadgeText className="text-white">Completed</BadgeText>
       </Badge>
     );
   }
   if (status === "loading") {
     return (
-      <Badge variant="solid" className="bg-blue-500 rounded-full">
+      <Badge variant="solid" className="bg-blue-500 rounded-full absolute top-0 right-0">
         <BadgeText className="text-white">Processing</BadgeText>
       </Badge>
     );
   }
   if (status === "error") {
     return (
-      <Badge variant="solid" className="bg-red-500 rounded-full">
+      <Badge variant="solid" className="bg-red-500 rounded-full absolute top-0 right-0">
         <BadgeText className="text-white">Error</BadgeText>
       </Badge>
     );
   }
   return (
-    <Badge variant="solid" className="bg-gray-500 rounded-full">
+    <Badge variant="solid" className="bg-gray-500 rounded-full absolute top-0 right-0">
       <BadgeText className="text-white">Pending</BadgeText>
     </Badge>
   );

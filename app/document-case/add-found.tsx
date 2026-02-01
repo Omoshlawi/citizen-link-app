@@ -1,9 +1,5 @@
 import { Button } from "@/components/button";
-import {
-  DocumentScannerInput,
-  ExtractionModal,
-  ScannedDocumentChangeProps,
-} from "@/components/cases";
+import { DocumentScannerInput, ExtractionModal } from "@/components/cases";
 import {
   FormDatePicker,
   FormSelectInput,
@@ -30,9 +26,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 
 const AddFoundDocumentCase = () => {
-  const [scanned, setScanned] = useState<
-    ScannedDocumentChangeProps | undefined
-  >();
+  const [scanned, setScanned] = useState<string[]>([]);
   const [uploadingFiles, setUploadingFiles] = useState(false);
   const extractionRef = useRef<Extraction | undefined>(undefined);
   const [extractionModalVisible, setExtractionModalVisible] = useState(false);
@@ -66,18 +60,38 @@ const AddFoundDocumentCase = () => {
         return;
       }
       setUploadingFiles(true);
-      const thumbnailKey = await uploadFile(scanned.thumbnail);
-      const documentKey = await uploadFile(scanned.document);
+      const uploads = await Promise.allSettled(
+        scanned.map((uri) => uploadFile(uri))
+      );
       setUploadingFiles(false);
-
-      // Submit form with uploaded image URLs
-      // const submitData = {
-      //   ...data,
-      //   thumbnailKey,
-      //   documentKey,
-      // };
-      form.setValue("thumbnailKey", thumbnailKey);
-      form.setValue("documentKey", documentKey);
+      const uploadSuccesfull = uploads.every((k) => k.status === "fulfilled");
+      if (!uploadSuccesfull) {
+        const errors = uploads
+          .filter((u) => u.status === "rejected")
+          .map((u) => u.reason?.message)
+          .join(", ");
+        toast.show({
+          placement: "top",
+          render: ({ id }) => {
+            const uniqueToastId = "toast-" + id;
+            return (
+              <Toaster
+                uniqueToastId={uniqueToastId}
+                variant="outline"
+                title="File upload failed"
+                description={errors}
+                action="error"
+              />
+            );
+          },
+        });
+        return;
+      }
+      // Add Images to form data
+      form.setValue(
+        "images",
+        uploads.filter((u) => u.status === "fulfilled").map((u) => u.value)
+      );
 
       const extraction = await startExtraction();
       if (!extraction) {
@@ -102,8 +116,6 @@ const AddFoundDocumentCase = () => {
       setExtractionModalVisible(true);
     } catch (error: any) {
       setUploadingFiles(false);
-      console.log(error);
-
       toast.show({
         placement: "top",
         render: ({ id }) => {
@@ -133,7 +145,10 @@ const AddFoundDocumentCase = () => {
     <ScreenLayout title="Report Found Document">
       <ScrollView showsVerticalScrollIndicator={false}>
         <VStack className="w-full items-center" space="sm">
-          <DocumentScannerInput onScannedDocumentsChange={setScanned} />
+          <DocumentScannerInput
+            onScannedDocumentsChange={setScanned}
+            maxNumDocuments={2}
+          />
           <FormSelectInput
             controll={form.control}
             name="addressId"
