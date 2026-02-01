@@ -159,6 +159,7 @@ const AddFoundDocumentCase = () => {
             text="Submit"
             suffixIcon={ArrowRight}
             onPress={form.handleSubmit(onSubmit)}
+            loading={uploadingFiles}
           />
         </VStack>
       </ScrollView>
