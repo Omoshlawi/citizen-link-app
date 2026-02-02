@@ -1,11 +1,11 @@
 import { CaseDocumentImages } from "@/components/cases";
 import { ScreenLayout } from "@/components/layout";
+import { DisplayTile, DisplayTile3 } from "@/components/list-tile";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
@@ -18,34 +18,11 @@ import {
   FoundDocumentCaseStatus,
   LostDocumentCaseStatus,
 } from "@/types/cases";
+import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import { Building, Calendar, MapPin } from "lucide-react-native";
+import { Building, Calendar, Info, MapPin } from "lucide-react-native";
 import React from "react";
 import { ScrollView } from "react-native";
-
-const DetailRow = ({
-  icon: IconComponent,
-  label,
-  value,
-}: {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
-  label: string;
-  value: string;
-}) => (
-  <HStack space="sm" className="items-center py-2.5">
-    <Box className="w-9 h-9 rounded-lg bg-primary-50 items-center justify-center">
-      <Icon as={IconComponent} size="sm" className="text-primary-600" />
-    </Box>
-    <VStack className="flex-1 min-w-0">
-      <Text className="text-xs text-typography-500 uppercase tracking-wide">
-        {label}
-      </Text>
-      <Text className="text-typography-900 font-medium" numberOfLines={2}>
-        {value}
-      </Text>
-    </VStack>
-  </HStack>
-);
 
 const DocumentCaseDetailScreen = () => {
   const { caseId } = useLocalSearchParams<{ caseId: string }>();
@@ -62,33 +39,22 @@ const DocumentCaseDetailScreen = () => {
           const document: Partial<DocumentType> = docCase.document ?? {};
           const ownerName = document.ownerName ?? "—";
           const documentNumber = document.documentNumber ?? "—";
-          const issuer = document.issuer ?? "—";
-          const dateOfBirth = document.dateOfBirth;
           const documentType = document.type?.name ?? "Document";
           const images = document.images ?? [];
           const address: Address | undefined = docCase.address;
           const { eventDate, id: caseIdFromData } = docCase;
+          const additionalFields = document.additionalFields ?? [];
           const status =
             docCase.foundDocumentCase?.status ??
             docCase.lostDocumentCase?.status ??
             FoundDocumentCaseStatus.DRAFT;
-
-          const idFrontUri = images[0]?.url ?? null;
-
-          const formatDate = (iso?: string) =>
-            iso
-              ? new Date(iso).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })
-              : "—";
 
           const isSuccessStatus =
             status === FoundDocumentCaseStatus.COMPLETED ||
             status === FoundDocumentCaseStatus.VERIFIED ||
             status === LostDocumentCaseStatus.COMPLETED;
           const isDraft = status === FoundDocumentCaseStatus.DRAFT;
+          const dateFomart = "DD MMMM YYYY";
 
           return (
             <ScrollView
@@ -142,67 +108,60 @@ const DocumentCaseDetailScreen = () => {
                 </Text>
                 <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
                   <VStack className="px-4" space="xs">
-                    <DetailRow
+                    <DisplayTile
                       icon={Building}
                       label="Institution"
-                      value={issuer}
+                      value={document.issuer}
+                      withBottomOutline
                     />
-                    <Box className="h-px bg-outline-100" />
-                    <DetailRow
+                    <DisplayTile
                       icon={Calendar}
                       label="Date of birth"
-                      value={formatDate(dateOfBirth)}
+                      value={
+                        dayjs(document.dateOfBirth).isValid()
+                          ? dayjs(document.dateOfBirth).format(dateFomart)
+                          : undefined
+                      }
+                      hideIfNoValue
+                      withBottomOutline
                     />
-                    <Box className="h-px bg-outline-100" />
-                    <DetailRow
+                    <DisplayTile
                       icon={Calendar}
-                      label="Found / reported"
-                      value={formatDate(eventDate)}
+                      label={docCase.lostDocumentCase ? "Lost" : "Found"}
+                      value={dayjs(eventDate).format(dateFomart)}
                     />
+                    {additionalFields.map((f, i) => (
+                      <DisplayTile
+                        withTopOutline
+                        key={i}
+                        icon={Info}
+                        label={f.fieldName}
+                        value={f.fieldValue}
+                      />
+                    ))}
                   </VStack>
                 </Box>
 
                 {/* Address */}
                 {address?.address1 && (
-                  <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
-                    <HStack
-                      space="sm"
-                      className="px-4 py-3 border-b border-outline-100 items-center"
-                    >
-                      <Box className="w-9 h-9 rounded-lg bg-primary-50 items-center justify-center">
-                        <Icon
-                          as={MapPin}
-                          size="sm"
-                          className="text-primary-600"
-                        />
-                      </Box>
-                      <Text className="text-sm font-semibold text-typography-800">
-                        Location
-                      </Text>
-                    </HStack>
-                    <VStack space="xs" className="px-4 py-3">
-                      <Text className="text-typography-900">
-                        {address.address1}
-                        {address.address2 ? `, ${address.address2}` : ""}
-                      </Text>
-                      {address.landmark && (
-                        <Text className="text-typography-600 text-sm">
-                          {address.landmark}
-                        </Text>
-                      )}
-                      <Text className="text-typography-600 text-sm">
-                        {[
-                          address.level4,
-                          address.level3,
-                          address.level2,
-                          address.level1,
-                        ]
-                          .filter(Boolean)
-                          .join(", ")}
-                        {address.country ? ` · ${address.country}` : ""}
-                      </Text>
-                    </VStack>
-                  </Box>
+                  <DisplayTile3
+                    icon={MapPin}
+                    label={address.label as string}
+                    value1="Location"
+                    value2={`${address.address1} ${
+                      address.address2 ? ", " + address.address2 : ""
+                    }`}
+                    value3={`${address.landmark}\n${[
+                      address.level4,
+                      address.level3,
+                      address.level2,
+                      address.level1,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")} ${
+                      address.country ? ` · ${address.country}` : ""
+                    }`}
+                  />
                 )}
 
                 {/* Actions */}
@@ -231,7 +190,7 @@ const DocumentCaseDetailScreen = () => {
                 </VStack>
 
                 <Text className="text-center text-typography-400 text-xs pt-4">
-                  Created {formatDate(docCase?.createdAt)}
+                  Created {dayjs(docCase!.createdAt).format(dateFomart)}
                 </Text>
               </VStack>
             </ScrollView>

@@ -2,7 +2,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import ListTile from "../list-tile";
+import {ListTile} from "../list-tile";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Divider } from "../ui/divider";

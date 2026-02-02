@@ -19,7 +19,7 @@ import {
 } from "react-native";
 import { LocalAuthSetup } from "../auth";
 import TwoFactorSetup from "../auth/TwoFactorSetup";
-import ListTile from "../list-tile";
+import {ListTile} from "../list-tile";
 import Toaster from "../toaster";
 import { AlertDialog } from "../ui/alert-dialog";
 import { Box } from "../ui/box";

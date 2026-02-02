@@ -3,7 +3,7 @@ import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import ListTile from "../list-tile";
+import { ListTile } from "../list-tile";
 import {
   Avatar,
   AvatarBadge,

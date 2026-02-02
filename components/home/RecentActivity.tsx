@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Clipboard, Dot } from "lucide-react-native";
 import React from "react";
-import ListTile from "../list-tile";
+import {ListTile} from "../list-tile";
 import { ErrorState, When } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Button, ButtonText } from "../ui/button";

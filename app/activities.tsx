@@ -1,5 +1,5 @@
 import { ScreenLayout } from "@/components/layout";
-import ListTile from "@/components/list-tile";
+import { ListTile } from "@/components/list-tile";
 import { EmptyState, ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Icon } from "@/components/ui/icon";
