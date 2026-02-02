@@ -4,7 +4,7 @@ import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import ActionSheetWrapper from "../actions-sheet-wrapper";
-import {ListTile} from "../list-tile";
+import { ListTile } from "../list-tile";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Divider } from "../ui/divider";
@@ -21,7 +21,7 @@ const AppPreferencesSection = () => {
     <Card
       size="lg"
       variant="filled"
-      className="rounded-3xl bg-background-0 p-4"
+      className="rounded-3xl p-4 dark:bg-background-btn"
     >
       <VStack space="lg">
         <Box>

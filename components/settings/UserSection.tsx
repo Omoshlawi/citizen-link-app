@@ -22,7 +22,11 @@ const UserSection = () => {
   const colorScheme = useColorScheme();
 
   return (
-    <Card size="lg" variant="filled" className="rounded-3xl p-4">
+    <Card
+      size="lg"
+      variant="filled"
+      className="rounded-3xl p-4 dark:bg-background-btn"
+    >
       <VStack space="lg">
         <HStack space="lg">
           <Avatar size="md">

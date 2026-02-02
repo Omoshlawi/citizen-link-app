@@ -19,7 +19,7 @@ import {
 } from "react-native";
 import { LocalAuthSetup } from "../auth";
 import TwoFactorSetup from "../auth/TwoFactorSetup";
-import {ListTile} from "../list-tile";
+import { ListTile } from "../list-tile";
 import Toaster from "../toaster";
 import { AlertDialog } from "../ui/alert-dialog";
 import { Box } from "../ui/box";
@@ -114,7 +114,11 @@ const SecurityAndPrivacySection = () => {
 
   return (
     <>
-      <Card size="lg" variant="filled" className="rounded-3xl p-4">
+      <Card
+        size="lg"
+        variant="filled"
+        className="rounded-3xl p-4 dark:bg-background-btn"
+      >
         <VStack space="lg">
           <Box>
             <Heading size="md" className="mb-1">

@@ -2,7 +2,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import {ListTile} from "../list-tile";
+import { ListTile } from "../list-tile";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Divider } from "../ui/divider";
@@ -16,7 +16,7 @@ const SupportSection = () => {
     <Card
       size="lg"
       variant="filled"
-      className="rounded-3xl bg-background-0 p-4"
+      className="rounded-3xl dark:bg-background-btn p-4"
     >
       <VStack space="lg">
         <Box>
