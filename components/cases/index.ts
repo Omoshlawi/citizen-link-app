@@ -1,7 +1,9 @@
+export { default as CaseActions } from "./CaseActions";
+export { default as CaseDocumentImages } from "./CaseDocumentImages";
 export { default as CasesFilters } from "./CasesFilters";
 export { default as CasesGridView } from "./CasesGridView";
 export { default as CasesListView } from "./CasesListView";
+export { default as DocumentDetails } from "./DocumentDetails";
 export { default as DocumentScannerInput } from "./DocumentScannerInput";
 export { default as ExtractionModal } from "./ExtractionModal";
-export { default as CaseDocumentImages } from "./CaseDocumentImages";
-export { default as DocumentDetails } from "./DocumentDetails";
+export { default as EditDocumentCaseForm } from "./EditDocumentCaseForm";

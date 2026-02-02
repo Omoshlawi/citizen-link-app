@@ -27,7 +27,7 @@ const CaseDocumentImages: FC<CaseDocumentImagesProps> = ({
   return (
     <VStack>
       <Box className="rounded-2xl overflow-hidden bg-background-0 dark:bg-background-btn shadow-sm border border-outline-100">
-        <Box className="w-full aspect-[4/3] bg-background-50 items-center justify-center">
+        <Box className="w-full aspect-[4/3] items-center justify-center">
           {selectedImage ? (
             <Image
               source={{
