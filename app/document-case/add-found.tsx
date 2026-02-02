@@ -141,6 +141,10 @@ const AddFoundDocumentCase = () => {
       params: { caseId: docCase.id },
     });
   };
+
+  const onClose = ()=>{
+    setExtractionModalVisible(false)
+  }
   return (
     <ScreenLayout title="Report Found Document">
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -183,6 +187,7 @@ const AddFoundDocumentCase = () => {
           extraction={extractionRef.current}
           onExtractionComplete={onExtractionComplete}
           data={form.getValues() as FoundDocumentCaseFormData}
+          onClose={onClose}
         />
       )}
     </ScreenLayout>

@@ -1,4 +1,7 @@
-import { useDocumentExtraction } from "@/hooks/useDocumentExtraction";
+import {
+  useDocumentExtraction,
+  useProcessExtractionProgress,
+} from "@/hooks/useDocumentExtraction";
 import {
   ConfidenceScore,
   Document,
@@ -37,14 +40,17 @@ interface ExtractionModalProps {
   extraction: Extraction;
   onExtractionComplete: (documentCase: DocumentCase) => void;
   data: FoundDocumentCaseFormData;
+  onClose: () => void;
 }
 
 const ExtractionModal: FC<ExtractionModalProps> = ({
   data,
   extraction,
   onExtractionComplete,
+  onClose,
 }) => {
   const [progressEvents, setProgressEvents] = useState<ProgressEvent[]>([]);
+  const { percentage, error } = useProcessExtractionProgress(progressEvents);
   const { extract, socketRef, addEventListener } = useDocumentExtraction();
   const hasExtractedRef = useRef(false);
   const [docCase, setDoccase] = useState<DocumentCase>();
@@ -146,10 +152,10 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
                     Overall Progress
                   </Text>
                   <Text className="text-sm font-medium">
-                    {Math.round(40)}%{/* TODO: CALCULATE PERCENTAGE */}
+                    {Math.round(percentage)}%
                   </Text>
                 </HStack>
-                <Progress value={46} className="w-full" size="sm">
+                <Progress value={percentage} className="w-full" size="sm">
                   <ProgressFilledTrack className="bg-teal-500" />
                 </Progress>
               </Box>
@@ -303,6 +309,13 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
                   text="Continue"
                   suffixIcon={ArrowRight}
                   onPress={() => onExtractionComplete(docCase)}
+                />
+              )}
+              {!!error && (
+                <Button
+                  text="Retry"
+                  suffixIcon={ArrowRight}
+                  onPress={() => onClose()}
                 />
               )}
             </>

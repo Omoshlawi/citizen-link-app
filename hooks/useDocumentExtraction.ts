@@ -3,8 +3,9 @@ import {
   DocumentCase,
   Extraction,
   FoundDocumentCaseFormData,
+  ProgressEvent,
 } from "@/types/cases";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 export const useDocumentExtraction = () => {
   const { publishEventWithAck, socketRef, addEventListener } = useSocket({
@@ -43,4 +44,12 @@ export const useDocumentExtraction = () => {
     socketRef,
     addEventListener,
   };
+};
+const TOTAL_EVENTS = 10;
+export const useProcessExtractionProgress = (events: ProgressEvent[]) => {
+  const percentage = useMemo(() => {
+    return (events.length / TOTAL_EVENTS) * 100;
+  }, [events]);
+  const error = useMemo(() => events.find((e) => e.state.error), [events]);
+  return { percentage, error };
 };
