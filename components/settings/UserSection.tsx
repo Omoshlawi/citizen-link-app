@@ -2,6 +2,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React from "react";
 import { ListTile } from "../list-tile";
 import {
@@ -68,6 +69,7 @@ const UserSection = () => {
               color={colorScheme === "dark" ? "white" : "black"}
             />
           }
+          onPress={() => router.push("/settings/addresses")}
         />
       </VStack>
     </Card>

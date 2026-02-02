@@ -9,6 +9,7 @@ const SettingsLayout = () => {
       }}
     >
       <Stack.Screen name="index" />
+      <Stack.Screen name="addresses" />
       <Stack.Screen name="change-password" />
     </Stack>
   );

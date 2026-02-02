@@ -6,10 +6,11 @@ import {
   UserSection,
 } from "@/components/settings";
 import { AlertDialog } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonIcon } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { authClient } from "@/lib/auth-client";
+import { ArrowRight, LogOut } from "lucide-react-native";
 import React, { useState } from "react";
 import { ScrollView } from "react-native";
 const SettingsScreen = () => {
@@ -32,8 +33,14 @@ const SettingsScreen = () => {
           <SecurityAndPrivacySection />
           <AppPreferencesSection />
           <SupportSection />
-          <Button action="negative" onPress={handleLogout}>
-            <Text className="font-bold">Logout</Text>
+          <Button
+            action="negative"
+            onPress={handleLogout}
+            className="rounded-full justify-between"
+          >
+            <ButtonIcon as={LogOut} className="text-white" />
+            <Text className="font-bold text-white">Logout</Text>
+            <ButtonIcon as={ArrowRight} className="text-white" />
           </Button>
         </VStack>
       </ScrollView>

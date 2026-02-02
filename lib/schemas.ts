@@ -102,22 +102,11 @@ export const addressSchema = z.object({
     .nullable()
     .optional(),
   plusCode: optionalNullableString,
-  startDate: z.iso.date(),
-  endDate: z.iso.date().optional(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().optional(),
   preferred: z.boolean().default(false),
   formatted: optionalNullableString,
-  localeFormat: z
-    .object(
-      levelKeys.reduce(
-        (shape, key) => ({
-          ...shape,
-          [key]: optionalNullableString,
-        }),
-        {} as Record<(typeof levelKeys)[number], typeof optionalNullableString>
-      )
-    )
-    .partial()
-    .optional(),
+  localeId: z.uuid(),
 });
 
 export const documentImageItemSchema = z.object({

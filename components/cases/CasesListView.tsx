@@ -34,7 +34,7 @@ const CasesListView = () => {
       <FlatList
         data={cases}
         keyExtractor={(item) => item.id}
-        ListEmptyComponent={<EmptyState message="No facilities found" />}
+        ListEmptyComponent={<EmptyState message="No Cases found" />}
         ItemSeparatorComponent={() => <Box className="h-2" />}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => {
