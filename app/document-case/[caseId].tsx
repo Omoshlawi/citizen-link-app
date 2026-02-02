@@ -1,3 +1,4 @@
+import { CaseDocumentImages } from "@/components/cases";
 import { ScreenLayout } from "@/components/layout";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
@@ -5,13 +6,11 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
-import { Image } from "@/components/ui/image";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useDocumentCase } from "@/hooks/use-document-cases";
 import { authClient } from "@/lib/auth-client";
-import { BASE_URL } from "@/lib/constants";
 import { Address } from "@/types/address";
 import {
   DocumentCase,
@@ -20,7 +19,7 @@ import {
   LostDocumentCaseStatus,
 } from "@/types/cases";
 import { useLocalSearchParams } from "expo-router";
-import { Building, Calendar, MapPin, School } from "lucide-react-native";
+import { Building, Calendar, MapPin } from "lucide-react-native";
 import React from "react";
 import { ScrollView } from "react-native";
 
@@ -125,39 +124,7 @@ const DocumentCaseDetailScreen = () => {
                 </Box>
               </HStack>
 
-              <Box className="rounded-2xl overflow-hidden bg-background-0 dark:bg-background-btn shadow-sm border border-outline-100">
-                <Box className="w-full aspect-[4/3] bg-background-50 items-center justify-center">
-                  {idFrontUri ? (
-                    <Image
-                      source={{
-                        uri: `${BASE_URL}/api/files/stream?fileName=${idFrontUri}`,
-                        headers: {
-                          Authorization: `Bearer ${userSession?.session.token}`,
-                        },
-                      }}
-                      alt={`${documentType} front`}
-                      className="w-full h-full"
-                      resizeMode="contain"
-                    />
-                  ) : (
-                    <VStack className="items-center justify-center flex-1 px-6">
-                      <Icon
-                        as={School}
-                        size="lg"
-                        className="text-typography-300 mb-2"
-                      />
-                      <Text className="text-typography-400 text-sm text-center">
-                        No preview
-                      </Text>
-                    </VStack>
-                  )}
-                </Box>
-                <Box className="px-4 py-3 border-t border-outline-100">
-                  <Text className="text-xs text-typography-500 uppercase tracking-wide">
-                    {documentType}
-                  </Text>
-                </Box>
-              </Box>
+              <CaseDocumentImages images={images} documentType={documentType} />
 
               <VStack space="xs" className="items-center pt-5">
                 <Heading size="xl" className="text-typography-900">
