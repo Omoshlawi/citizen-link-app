@@ -26,7 +26,7 @@ export function FloatingTabButton(props: BottomTabBarButtonProps) {
   const handleClose = () => setShowActionsheet(false);
   const handleReportLostDocument = () => {
     handleClose();
-    router.push("/document-case/add-found");
+    router.push("/document-case/add-lost");
   };
 
   const handleReportFoundDocument = () => {
@@ -87,13 +87,13 @@ export function FloatingTabButton(props: BottomTabBarButtonProps) {
           <HStack space="lg" className="w-full items-center">
             <TouchableOpacity
               onPress={handleReportLostDocument}
-              className="flex-1 items-center p-4 rounded-lg"
+              className="flex-1 items-center p-4 rounded-lg h-32"
               activeOpacity={0.5}
               style={{
                 backgroundColor: Color("#ef4444").alpha(0.1).toString(),
               }}
             >
-              <VStack space="sm" className="items-center">
+              <VStack space="sm" className="h-full items-center justify-center">
                 <Icon as={FileXIcon} size="xl" className="text-red-500" />
                 <Heading size="md" className="text-red-500">
                   Lost Case
@@ -105,13 +105,13 @@ export function FloatingTabButton(props: BottomTabBarButtonProps) {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={handleReportFoundDocument}
-              className="flex-1 items-center p-4 rounded-lg"
+              className="flex-1 items-center p-4 rounded-lg h-32"
               activeOpacity={0.5}
               style={{
                 backgroundColor: Color("#14b8a6").alpha(0.1).toString(),
               }}
             >
-              <VStack space="sm" className="items-center">
+              <VStack space="sm" className="h-full items-center justify-center">
                 <Icon as={ImageUp} size="xl" className="text-teal-500" />
                 <Heading size="md" className="text-teal-500">
                   Found Case

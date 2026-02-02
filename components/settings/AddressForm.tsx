@@ -153,12 +153,14 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
             controll={form.control}
             name="address1"
             placeholder="Address 1"
+            helperText="Normally apartment name e.g Qwetu homes"
           />
           <FormTextInput
             label="Address 2"
             controll={form.control}
             name="address2"
             placeholder="Address 2"
+            helperText="Normally House number e.g QTU-011"
           />
           <FormTextInput
             label="Landmark"
