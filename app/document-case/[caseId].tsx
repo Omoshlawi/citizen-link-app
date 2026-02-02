@@ -1,7 +1,8 @@
-import { CaseDocumentImages } from "@/components/cases";
+import { CaseDocumentImages, DocumentDetails } from "@/components/cases";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile, DisplayTile3 } from "@/components/list-tile";
 import { ErrorState, When } from "@/components/state-full-widgets";
+import { Badge, BadgeText } from "@/components/ui/badge";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
@@ -10,7 +11,6 @@ import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { useDocumentCase } from "@/hooks/use-document-cases";
-import { authClient } from "@/lib/auth-client";
 import { Address } from "@/types/address";
 import {
   DocumentCase,
@@ -20,14 +20,13 @@ import {
 } from "@/types/cases";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import { Building, Calendar, Info, MapPin } from "lucide-react-native";
+import { Briefcase, Calendar, MapPin } from "lucide-react-native";
 import React from "react";
 import { ScrollView } from "react-native";
 
 const DocumentCaseDetailScreen = () => {
   const { caseId } = useLocalSearchParams<{ caseId: string }>();
   const { report, error, isLoading } = useDocumentCase(caseId as string);
-  const { data: userSession } = authClient.useSession();
   return (
     <ScreenLayout title="Case Details">
       <When
@@ -43,7 +42,6 @@ const DocumentCaseDetailScreen = () => {
           const images = document.images ?? [];
           const address: Address | undefined = docCase.address;
           const { eventDate, id: caseIdFromData } = docCase;
-          const additionalFields = document.additionalFields ?? [];
           const status =
             docCase.foundDocumentCase?.status ??
             docCase.lostDocumentCase?.status ??
@@ -63,31 +61,38 @@ const DocumentCaseDetailScreen = () => {
               showsVerticalScrollIndicator={false}
             >
               {/* Hero: document image + owner */}
-              <HStack className="items-center justify-between">
+              <HStack className="items-center justify-between mb-4">
                 <Text className="text-typography-500 text-sm">
                   Case #{caseIdFromData?.slice(-6) || caseId}
                 </Text>
-                <Box
-                  className={`px-2.5 py-1 rounded-md ${
-                    isDraft
-                      ? "bg-amber-100"
-                      : isSuccessStatus
-                      ? "bg-emerald-100"
-                      : "bg-outline-100"
-                  }`}
-                >
-                  <Text
-                    className={`text-xs font-semibold uppercase tracking-wide ${
-                      isDraft
-                        ? "text-amber-800"
-                        : isSuccessStatus
-                        ? "text-emerald-800"
-                        : "text-typography-600"
-                    }`}
+                <HStack space="sm">
+                  <Badge
+                    size="sm"
+                    className={
+                      docCase?.foundDocumentCase
+                        ? "bg-green-500 rounded-full"
+                        : "bg-red-500 rounded-full"
+                    }
                   >
-                    {status}
-                  </Text>
-                </Box>
+                    <BadgeText className="text-white">
+                      {docCase?.foundDocumentCase
+                        ? "Found Document"
+                        : "Lost Document"}
+                    </BadgeText>
+                  </Badge>
+                  <Badge
+                    size="sm"
+                    className={
+                      isDraft
+                        ? "bg-amber-500 rounded-full"
+                        : isSuccessStatus
+                        ? "bg-emerald-500 rounded-full"
+                        : "bg-outline-500 rounded-full"
+                    }
+                  >
+                    <BadgeText className={"text-white"}>{status}</BadgeText>
+                  </Badge>
+                </HStack>
               </HStack>
 
               <CaseDocumentImages images={images} documentType={documentType} />
@@ -102,48 +107,46 @@ const DocumentCaseDetailScreen = () => {
               </VStack>
 
               {/* Details section */}
-              <VStack className=" pt-6" space="md">
+              <VStack className="pt-6" space="md">
                 <Text className="text-sm font-semibold text-typography-800">
-                  Details
+                  Case Details
                 </Text>
                 <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
                   <VStack className="px-4" space="xs">
                     <DisplayTile
-                      icon={Building}
-                      label="Institution"
-                      value={document.issuer}
-                      withBottomOutline
-                    />
-                    <DisplayTile
-                      icon={Calendar}
-                      label="Date of birth"
+                      icon={Briefcase}
+                      label={"Case Type"}
                       value={
-                        dayjs(document.dateOfBirth).isValid()
-                          ? dayjs(document.dateOfBirth).format(dateFomart)
-                          : undefined
+                        docCase.lostDocumentCase ? "Lost case" : "Found Case"
                       }
-                      hideIfNoValue
-                      withBottomOutline
                     />
                     <DisplayTile
                       icon={Calendar}
                       label={docCase.lostDocumentCase ? "Lost" : "Found"}
                       value={dayjs(eventDate).format(dateFomart)}
+                      withTopOutline
                     />
-                    {additionalFields.map((f, i) => (
-                      <DisplayTile
-                        withTopOutline
-                        key={i}
-                        icon={Info}
-                        label={f.fieldName}
-                        value={f.fieldValue}
-                      />
-                    ))}
+                    <DisplayTile
+                      icon={Calendar}
+                      label={"Tags"}
+                      value={
+                        docCase.tags.length > 0
+                          ? docCase.tags.join(", ")
+                          : undefined
+                      }
+                      hideIfNoValue
+                      withTopOutline
+                    />
                   </VStack>
                 </Box>
+              </VStack>
 
-                {/* Address */}
-                {address?.address1 && (
+              {/* Document details Field Section */}
+              <DocumentDetails document={document as any} />
+
+              {/* Address section */}
+              {address?.address1 && (
+                <Box className="pt-6">
                   <DisplayTile3
                     icon={MapPin}
                     label={address.label as string}
@@ -162,33 +165,32 @@ const DocumentCaseDetailScreen = () => {
                       address.country ? ` · ${address.country}` : ""
                     }`}
                   />
-                )}
+                </Box>
+              )}
 
-                {/* Actions */}
-                <VStack space="sm" className="pt-2">
-                  <Button
-                    size="lg"
-                    action="primary"
-                    className="rounded-full bg-background-btn"
-                    onPress={() => {}}
-                  >
-                    <ButtonText className="font-semibold">
-                      Claim this document
-                    </ButtonText>
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="solid"
-                    action="secondary"
-                    className="rounded-full bg-white "
-                    onPress={() => {}}
-                  >
-                    <ButtonText className="text-typography-link">
-                      Contact support
-                    </ButtonText>
-                  </Button>
-                </VStack>
-
+              {/* Actions */}
+              <VStack space="sm" className="pt-2">
+                <Button
+                  size="lg"
+                  action="primary"
+                  className="rounded-full bg-background-btn"
+                  onPress={() => {}}
+                >
+                  <ButtonText className="font-semibold">
+                    Claim this document
+                  </ButtonText>
+                </Button>
+                <Button
+                  size="lg"
+                  variant="solid"
+                  action="secondary"
+                  className="rounded-full bg-white "
+                  onPress={() => {}}
+                >
+                  <ButtonText className="text-typography-link">
+                    Contact support
+                  </ButtonText>
+                </Button>
                 <Text className="text-center text-typography-400 text-xs pt-4">
                   Created {dayjs(docCase!.createdAt).format(dateFomart)}
                 </Text>
