@@ -14,23 +14,25 @@ import { Textarea, TextareaInput } from "../ui/textarea";
 import { VStack } from "../ui/vstack";
 import ChatBubble from "./ChatBubble";
 
-
-
 const ChatBotTabPanel = () => {
-  const { chat, conversations, isLoading, clearConversation } = useChatbot()
-  const [message, setMessage] = useState("")
+  const { chat, conversations, isLoading, clearConversation } = useChatbot();
+  const [message, setMessage] = useState("");
   const defaultMessages = [
-    "Screening procedure",
-    "Training requirements",
-    "Client canceling",
-    "Equipment needed",
+    "Supported documents",
+    "Verification requirements",
+    "Claiming process",
+    "Dispute resolution process",
   ];
 
   return (
     <VStack space="md" className="flex-1">
       <HStack className="justify-between items-center">
         <Heading>Your AI Assistant</Heading>
-        <Button onPress={clearConversation} size="xs" className="rounded-full bg-background-400">
+        <Button
+          onPress={clearConversation}
+          size="xs"
+          className="rounded-full bg-background-400"
+        >
           <ButtonIcon as={Recycle} />
         </Button>
       </HStack>
@@ -62,29 +64,34 @@ const ChatBotTabPanel = () => {
                 >
                   Hello, I&apos;m your AI assistant. How can I help you today?
                 </Text>
-                {conversations.length === 0 && <Box className="flex-row gap-2 flex-wrap w-full">
-                  {defaultMessages.map((message, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      activeOpacity={0.7}
-                      onPress={() => chat(message)
-                      }
-                    >
-                      <Text
-                        className="bg-teal-50 px-2 py-1 text-nowrap rounded-xs text-teal-500"
-                        size="xs"
+                {conversations.length === 0 && (
+                  <Box className="flex-row gap-2 flex-wrap w-full">
+                    {defaultMessages.map((message, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        activeOpacity={0.7}
+                        onPress={() => chat(message)}
                       >
-                        {message}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </Box>}
+                        <Text
+                          className="bg-teal-50 px-2 py-1 text-nowrap rounded-xs text-teal-500"
+                          size="xs"
+                        >
+                          {message}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </Box>
+                )}
               </VStack>
             </HStack>
-            {conversations.map((c, i) => <ChatBubble message={c.message} user={c.user} key={i} />)}
-            {isLoading && <Box className="p-2 bg-background-100 rounded-full w-12" >
-              <Spinner size="small" color="grey" />
-            </Box>}
+            {conversations.map((c, i) => (
+              <ChatBubble message={c.message} user={c.user} key={i} />
+            ))}
+            {isLoading && (
+              <Box className="p-2 bg-background-100 rounded-full w-12">
+                <Spinner size="small" color="grey" />
+              </Box>
+            )}
             <HStack space="md" className="w-full items-end mb-6">
               <Textarea
                 size="sm"
@@ -92,16 +99,19 @@ const ChatBotTabPanel = () => {
                 isInvalid={false}
                 isDisabled={false}
                 className="flex-1"
-
               >
-                <TextareaInput placeholder="Type your question here here..." value={message} onChangeText={setMessage} />
+                <TextareaInput
+                  placeholder="Type your question here here..."
+                  value={message}
+                  onChangeText={setMessage}
+                />
               </Textarea>
               <Button
                 size="sm"
                 className="bg-teal-500 text-white rounded-full w-12 h-12"
                 onPress={() => {
-                  chat(message)
-                  setMessage("")
+                  chat(message);
+                  setMessage("");
                 }}
               >
                 <ButtonIcon as={Send} color="white" />

@@ -1,6 +1,6 @@
 import { useAddresses } from "@/hooks/use-addresses";
 import { useDocumentExtraction } from "@/hooks/useDocumentExtraction";
-import { uploadFile } from "@/lib/api";
+import { mutate, uploadFile } from "@/lib/api";
 import { documentCaseExtractionSchema } from "@/lib/schemas";
 import {
   DocumentCase,
@@ -139,6 +139,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
   };
 
   const onExtractionComplete = (docCase: DocumentCase) => {
+    mutate("/documents/cases");
     setExtractionModalVisible(false);
     router.push({
       pathname: "/document-case/[caseId]",
