@@ -1,9 +1,10 @@
 import {
   MannuallyAddLostDocumentForm,
-  ScanLostDocumentForm,
+  ScanDocumentCaseForm,
 } from "@/components/cases";
 import { ScreenLayout } from "@/components/layout";
 import SegmentedControl from "@/components/SegmentedControl";
+import { Box } from "@/components/ui/box";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";
 
@@ -29,10 +30,11 @@ const AddLostDocumentCaseScreen = () => {
           router.setParams({ mode: m });
         }}
       />
+      <Box className="my-2" />
       {mode === "mannual" ? (
         <MannuallyAddLostDocumentForm />
       ) : (
-        <ScanLostDocumentForm />
+        <ScanDocumentCaseForm caseType="LOST" />
       )}
     </ScreenLayout>
   );

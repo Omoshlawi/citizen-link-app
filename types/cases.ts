@@ -1,7 +1,7 @@
-import { ApiListQuery } from "@/lib/api";
 import {
   caseDocumentSchema,
   caseFilterSchema,
+  documentCaseExtractionSchema,
   foundDocumentCaseSchema,
   lostDocumentCaseSchema,
 } from "@/lib/schemas";
@@ -43,15 +43,20 @@ export interface SecurityQuestion {
 }
 
 export interface ImageAnalysisResult {
-  index: number;
-  imageType: string;
-  quality: number;
-  readability: number;
-  focus: number;
-  lighting: number;
-  tamperingDetected: boolean;
-  warnings: string[];
-  usableForExtraction: boolean;
+  isSupportedDocument: boolean;
+  detectedDocumentType: string;
+  documentTypeConfidence: number; // 0-100
+  images: {
+    index: number;
+    imageType?: string;
+    quality: number; // 0-100
+    readability: number; // 0-100
+    focus?: number; // 0-100
+    lighting?: number; // 0-100
+    tamperingDetected: boolean;
+    warnings: string[];
+    usableForExtraction?: boolean;
+  }[];
 }
 
 export interface ConfidenceScore {
@@ -213,14 +218,14 @@ export interface AdditionalField {
 export interface DocumentType {
   id: string;
   category:
-    | 'IDENTITY'
-    | 'ACADEMIC'
-    | 'PROFESSIONAL'
-    | 'VEHICLE'
-    | 'FINANCIAL'
-    | 'MEDICAL'
-    | 'LEGAL'
-    | 'OTHER'; // A
+    | "IDENTITY"
+    | "ACADEMIC"
+    | "PROFESSIONAL"
+    | "VEHICLE"
+    | "FINANCIAL"
+    | "MEDICAL"
+    | "LEGAL"
+    | "OTHER"; // A
   name: string;
   loyaltyPoints: number;
   description: string;
@@ -229,14 +234,14 @@ export interface DocumentType {
   updatedAt: string;
   replacementInstructions: string;
   averageReplacementCost: number;
-  requiredVerification: 'LOW' | 'STANDARD' | 'HIGH' | 'INSTITUTIONAL';
+  requiredVerification: "LOW" | "STANDARD" | "HIGH" | "INSTITUTIONAL";
   voided: boolean;
 }
-
 
 export type CaseType = "LOST" | "FOUND";
 
 export type FoundDocumentCaseFormData = z.infer<typeof foundDocumentCaseSchema>;
+export type DocumentCaseExtractionFormData = z.infer<typeof documentCaseExtractionSchema>;
 
 export type LostDocumentCaseFormData = z.infer<typeof lostDocumentCaseSchema>;
 export type CaseDocumentFormData = z.infer<typeof caseDocumentSchema>;

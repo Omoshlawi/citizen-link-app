@@ -177,6 +177,11 @@ export const foundDocumentCaseSchema = z.object({
   images: z.string().nonempty().array().nonempty().max(2).optional(),
 });
 
+export const documentCaseExtractionSchema = foundDocumentCaseSchema.extend({
+  caseType: z.enum(["FOUND", "LOST"]),
+  // extractionId: z.uuid(),
+});
+
 export const lostDocumentCaseSchema = foundDocumentCaseSchema
   .merge(caseDocumentSchema)
   .omit({

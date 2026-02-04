@@ -1,8 +1,8 @@
 import { useSocket } from "@/hooks/useSocket";
 import {
   DocumentCase,
+  DocumentCaseExtractionFormData,
   Extraction,
-  FoundDocumentCaseFormData,
   ProgressEvent,
 } from "@/types/cases";
 import { useCallback, useMemo } from "react";
@@ -22,7 +22,10 @@ export const useDocumentExtraction = () => {
   }, [publishEventWithAck, socketRef]);
 
   const extract = useCallback(
-    async (extractionId: string, payload: FoundDocumentCaseFormData) => {
+    async (
+      extractionId: string,
+      payload: Omit<DocumentCaseExtractionFormData, "extractionId">
+    ) => {
       if (socketRef.current?.connected) {
         const documentCase = await publishEventWithAck<DocumentCase>(
           "extract",
@@ -45,11 +48,14 @@ export const useDocumentExtraction = () => {
     addEventListener,
   };
 };
-const TOTAL_EVENTS = 10;
-export const useProcessExtractionProgress = (events: ProgressEvent[]) => {
+export const useProcessExtractionProgress = (
+  events: ProgressEvent[],
+  caseType: DocumentCaseExtractionFormData["caseType"]
+) => {
+  const TOTAL_EVENTS = caseType === "FOUND" ? 10 : 8;
   const percentage = useMemo(() => {
     return (events.length / TOTAL_EVENTS) * 100;
-  }, [events]);
+  }, [TOTAL_EVENTS, events.length]);
   const error = useMemo(() => events.find((e) => e.state.error), [events]);
   return { percentage, error };
 };

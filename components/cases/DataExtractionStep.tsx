@@ -74,13 +74,13 @@ export const DataExtractionConfidenceScore: FC<
 };
 
 type ImageAnalysisProps = {
-  analysis: ImageAnalysisResult[];
+  analysis: ImageAnalysisResult;
 };
 
 export const ImageAnalysis: FC<ImageAnalysisProps> = ({ analysis }) => {
   const tabs = useMemo(
     () =>
-      analysis.map((a) => ({
+      analysis.images.map((a) => ({
         label: `Image ${a.index}`,
         value: `image-${a.index}`,
       })),
@@ -90,26 +90,29 @@ export const ImageAnalysis: FC<ImageAnalysisProps> = ({ analysis }) => {
   return (
     <Card>
       <SegmentedControl data={tabs} value={activeTab} onChange={setActiveTab} />
-      {analysis.map((a, i) => (
-        <Card key={i}>
-          <VStack>
-            <FieldValue label="Focus" value={a?.focus} />
-            <FieldValue label="Image type" value={a?.imageType} />
-            <FieldValue label="Lighting" value={a?.lighting} />
-            <FieldValue label="Lighting" value={a?.lighting} />
-            <FieldValue label="Readability" value={a?.readability} />
-            <FieldValue
-              label="Has tampering"
-              value={a?.tamperingDetected ? "Yes" : "No"}
-            />
-            <FieldValue
-              label="Usable for extraction"
-              value={a?.usableForExtraction ? "Yes" : "No"}
-            />
-            <FieldValue label="Warnings" value={a?.warnings.join(", ")} />
-          </VStack>
-        </Card>
-      ))}
+      {analysis.images.map((a, i) => {
+        if (activeTab !== `image-${a.index}`) return null;
+        return (
+          <Card key={i}>
+            <VStack>
+              <FieldValue label="Focus" value={a?.focus} />
+              <FieldValue label="Image type" value={a?.imageType} />
+              <FieldValue label="Lighting" value={a?.lighting} />
+              <FieldValue label="Lighting" value={a?.lighting} />
+              <FieldValue label="Readability" value={a?.readability} />
+              <FieldValue
+                label="Has tampering"
+                value={a?.tamperingDetected ? "Yes" : "No"}
+              />
+              <FieldValue
+                label="Usable for extraction"
+                value={a?.usableForExtraction ? "Yes" : "No"}
+              />
+              <FieldValue label="Warnings" value={a?.warnings.join(", ")} />
+            </VStack>
+          </Card>
+        );
+      })}
     </Card>
   );
 };

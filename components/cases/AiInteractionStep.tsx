@@ -26,7 +26,7 @@ const AiInteractionStep = <T extends object>({
         visible: typeof renderParsedResponse === "function",
       },
       { label: "JSON", value: "json", visible: true },
-      { label: "AI Interaction Details", value: "ai", visible: true },
+      { label: "AI", value: "ai", visible: true },
     ],
     [renderParsedResponse]
   );
@@ -68,8 +68,8 @@ const AiInteractionStep = <T extends object>({
           <HStack space="xs">
             <Text
               size="sm"
-              className="bg-typography-500"
               style={{ minWidth: 140 }}
+              className="text-typography-500"
             >
               Model:
             </Text>

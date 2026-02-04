@@ -8,4 +8,4 @@ export { default as DocumentScannerInput } from "./DocumentScannerInput";
 export { default as EditDocumentCaseForm } from "./EditDocumentCaseForm";
 export { default as ExtractionModal } from "./ExtractionModal";
 export { default as MannuallyAddLostDocumentForm } from "./MannuallyAddLostDocumentForm";
-export { default as ScanLostDocumentForm } from "./ScanLostDocumentForm";
+export { default as ScanDocumentCaseForm } from "./ScanDocumentCaseForm";

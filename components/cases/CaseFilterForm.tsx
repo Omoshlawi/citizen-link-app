@@ -18,7 +18,7 @@ const CaseFilterForm: FC<CaseFilterFormProps> = ({
   onFiltersChange,
 }) => {
   const form = useForm({
-    resolver: zodResolver(caseFilterSchema),
+    resolver: zodResolver(caseFilterSchema) as any,
     defaultValues: filters,
   });
   const onSubmit: SubmitHandler<CaseFilterFormData> = (data) => {

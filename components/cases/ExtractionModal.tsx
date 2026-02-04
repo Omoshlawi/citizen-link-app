@@ -6,8 +6,8 @@ import {
   ConfidenceScore,
   Document,
   DocumentCase,
+  DocumentCaseExtractionFormData,
   Extraction,
-  FoundDocumentCaseFormData,
   ImageAnalysisResult,
   ProgressEvent,
   SecurityQuestion,
@@ -39,7 +39,7 @@ import ProgressEventStep from "./ProgressEventStep";
 interface ExtractionModalProps {
   extraction: Extraction;
   onExtractionComplete: (documentCase: DocumentCase) => void;
-  data: FoundDocumentCaseFormData;
+  data: Omit<DocumentCaseExtractionFormData, "extractionId">;
   onClose: () => void;
 }
 
@@ -50,7 +50,10 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
   onClose,
 }) => {
   const [progressEvents, setProgressEvents] = useState<ProgressEvent[]>([]);
-  const { percentage, error } = useProcessExtractionProgress(progressEvents);
+  const { percentage, error } = useProcessExtractionProgress(
+    progressEvents,
+    data.caseType
+  );
   const { extract, socketRef, addEventListener } = useDocumentExtraction();
   const hasExtractedRef = useRef(false);
   const [docCase, setDoccase] = useState<DocumentCase>();
@@ -194,6 +197,32 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
               />
               <ProgressEventStep
                 events={progressEvents}
+                step="IMAGE_ANALYSIS"
+                title="Image Analysis"
+                renderDescription={(status) =>
+                  status === "completed"
+                    ? "Image analysis Complete"
+                    : status === "error"
+                    ? "Error analysing image"
+                    : status === "loading"
+                    ? "Analysing image"
+                    : "Pending Validation"
+                }
+                renderData={(data) => {
+                  if (data) {
+                    return (
+                      <AiInteractionStep<ImageAnalysisResult>
+                        aiInteraction={data}
+                        renderParsedResponse={(analysis) => (
+                          <ImageAnalysis analysis={analysis} />
+                        )}
+                      />
+                    );
+                  }
+                }}
+              />
+              <ProgressEventStep
+                events={progressEvents}
                 step="DATA_EXTRACTION"
                 title="Data Extraction"
                 renderDescription={(status) =>
@@ -218,38 +247,40 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
                   }
                 }}
               />
-              <ProgressEventStep
-                events={progressEvents}
-                step="SECURITY_QUESTIONS"
-                title="Security Question Generation"
-                renderDescription={(status) =>
-                  status === "completed"
-                    ? "Security Questions generation Complete"
-                    : status === "error"
-                    ? "Error generating Security Question"
-                    : status === "loading"
-                    ? "Generating sequrity questions"
-                    : "Pending security question generation"
-                }
-                renderData={(data) => {
-                  if (data) {
-                    return (
-                      <AiInteractionStep<{ questions: SecurityQuestion[] }>
-                        aiInteraction={data}
-                        renderParsedResponse={({ questions }) => (
-                          <Card className="p-2 mt-2">
-                            {questions.map((q, i) => (
-                              <Text key={i}>
-                                {i + 1}.{q.question}({q.answer})
-                              </Text>
-                            ))}
-                          </Card>
-                        )}
-                      />
-                    );
+              {data.caseType === "FOUND" && (
+                <ProgressEventStep
+                  events={progressEvents}
+                  step="SECURITY_QUESTIONS"
+                  title="Security Question Generation"
+                  renderDescription={(status) =>
+                    status === "completed"
+                      ? "Security Questions generation Complete"
+                      : status === "error"
+                      ? "Error generating Security Question"
+                      : status === "loading"
+                      ? "Generating sequrity questions"
+                      : "Pending security question generation"
                   }
-                }}
-              />
+                  renderData={(data) => {
+                    if (data) {
+                      return (
+                        <AiInteractionStep<{ questions: SecurityQuestion[] }>
+                          aiInteraction={data}
+                          renderParsedResponse={({ questions }) => (
+                            <Card className="p-2 mt-2">
+                              {questions.map((q, i) => (
+                                <Text key={i}>
+                                  {i + 1}.{q.question}({q.answer})
+                                </Text>
+                              ))}
+                            </Card>
+                          )}
+                        />
+                      );
+                    }
+                  }}
+                />
+              )}
               <ProgressEventStep
                 events={progressEvents}
                 step="CONFIDENCE_SCORE"
@@ -278,32 +309,7 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
                   }
                 }}
               />
-              <ProgressEventStep
-                events={progressEvents}
-                step="IMAGE_ANALYSIS"
-                title="Image Analysis"
-                renderDescription={(status) =>
-                  status === "completed"
-                    ? "Image analysis Complete"
-                    : status === "error"
-                    ? "Error analysing image"
-                    : status === "loading"
-                    ? "Analysing image"
-                    : "Pending Validation"
-                }
-                renderData={(data) => {
-                  if (data) {
-                    return (
-                      <AiInteractionStep<ImageAnalysisResult[]>
-                        aiInteraction={data}
-                        renderParsedResponse={(analysis) => (
-                          <ImageAnalysis analysis={analysis} />
-                        )}
-                      />
-                    );
-                  }
-                }}
-              />
+
               {!!docCase && (
                 <Button
                   text="Continue"
