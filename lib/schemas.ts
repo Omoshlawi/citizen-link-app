@@ -129,7 +129,7 @@ export const caseDocumentSchema = z.object({
   documentNumber: z.string().optional(), // Generic document number (ID number, passport number, etc.)
   batchNumber: z.string().optional(), // Batch number if available
   issuer: z.string().optional(),
-  ownerName: z.string().min(1, "Owner name required"),
+  ownerName: z.string().min(1, "Owner name required").optional(),
   dateOfBirth: z.coerce.date().optional(), // Owner's date of birth
   placeOfBirth: z.string().optional(), // Owner's place of birth
   placeOfIssue: z.string().optional(),

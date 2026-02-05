@@ -1,4 +1,4 @@
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { useTwoFactorAuth } from "@/hooks/use-two-factor-auth";
 import {
   clearPin,
@@ -35,7 +35,7 @@ import { useToast } from "../ui/toast";
 import { VStack } from "../ui/vstack";
 
 const SecurityAndPrivacySection = () => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
 
   const toast = useToast();
   const [localAuthEnabled, setLocalAuthEnabledState] = useState(false);

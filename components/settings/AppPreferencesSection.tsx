@@ -1,4 +1,4 @@
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { Theme, useThemeStore } from "@/store/theme";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
@@ -14,7 +14,7 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 const AppPreferencesSection = () => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
   const setTheme = useThemeStore((state) => state.setTheme);
 
   return (

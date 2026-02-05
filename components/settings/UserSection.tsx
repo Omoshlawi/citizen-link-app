@@ -1,4 +1,4 @@
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { authClient } from "@/lib/auth-client";
 import { getInitials } from "@/lib/helpers";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -20,7 +20,7 @@ import { VStack } from "../ui/vstack";
 
 const UserSection = () => {
   const { data: userSession } = authClient.useSession();
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
 
   return (
     <Card

@@ -1,4 +1,4 @@
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useComputedColorScheme } from "@/hooks/use-color-scheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
@@ -10,7 +10,7 @@ import { Heading } from "../ui/heading";
 import { VStack } from "../ui/vstack";
 
 const SupportSection = () => {
-  const colorScheme = useColorScheme();
+  const colorScheme = useComputedColorScheme();
 
   return (
     <Card

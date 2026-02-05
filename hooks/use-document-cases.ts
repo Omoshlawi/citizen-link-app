@@ -42,9 +42,13 @@ export const useDocumentCases = (params: CaseFilterFormData = {}) => {
     showPagination: showPagination(rest.totalCount),
   };
 };
-export const useDocumentCase = (caseId?: string) => {
+export const useDocumentCase = (
+  caseId?: string,
+  params?: Record<string, any>
+) => {
   const url = constructUrl(`/documents/cases/${caseId}`, {
     v: "custom:include(foundDocumentCase,lostDocumentCase,document:include(type, images),document:include(additionalFields),address:include(locale))",
+    ...params,
   });
   const { data, error, mutate, isLoading } = useApi<
     APIFetchResponse<DocumentCase>

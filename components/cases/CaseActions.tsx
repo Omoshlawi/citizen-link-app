@@ -158,6 +158,24 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
           </>
         )}
 
+      {((casetype === "FOUND" &&
+        docCase.foundDocumentCase?.status ===
+          FoundDocumentCaseStatus.VERIFIED) ||
+        casetype === "LOST") && (
+        <Button
+          className="rounded-full"
+          onPress={() =>
+            router.push({
+              pathname: "/document-case/[caseId]/matches",
+              params: { caseId: docCase.id },
+            })
+          }
+        >
+          <ButtonText>View document matches</ButtonText>
+          <ButtonIcon as={ArrowRight} />
+        </Button>
+      )}
+
       <Text className="text-center text-typography-400 text-xs pt-4">
         Created {dayjs(docCase!.createdAt).format(dateFomart)}
       </Text>

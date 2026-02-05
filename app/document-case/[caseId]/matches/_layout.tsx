@@ -1,14 +1,13 @@
 import { Stack } from "expo-router";
 import React from "react";
 
-const CaseLayout = () => {
+const MatchLayout = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
-      <Stack.Screen name="edit" />
-      <Stack.Screen name="matches" options={{ headerShown: false }} />
+      <Stack.Screen name="[matchId]" />
     </Stack>
   );
 };
 
-export default CaseLayout;
+export default MatchLayout;

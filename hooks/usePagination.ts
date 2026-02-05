@@ -24,7 +24,7 @@ export const usePagination = (options?: UsePaginationOptions) => {
   const showPagination = useCallback(
     (totalCount: number = 0) => {
       const _limit = Number(limit);
-      return totalCount >= _limit;
+      return totalCount > _limit;
     },
     [limit]
   );
