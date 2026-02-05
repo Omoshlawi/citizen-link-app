@@ -1,11 +1,9 @@
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 
-
-export const BASE_URL = "http://192.168.1.125:2000";
+export const BASE_URL = "http://192.168.1.105:2000";
 // export const BASE_URL = "http://localhost:2000";
 
 export const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
-
 
 export const SCREENING_FORM_STEPS = [
   "Client Search",
@@ -31,7 +29,6 @@ export const SMOKING_OPTIONS = [
   { label: "No, Never", value: "NEVER" },
   { label: "Yes, in the Past", value: "PAST" },
 ];
-
 
 export const PHONE_NUMBER_REGEX = /^(\+?254|0)((7|1)\d{8})$/;
 export const DEFAULT_DATE_FORMAT = "DD/MM/YYYY";

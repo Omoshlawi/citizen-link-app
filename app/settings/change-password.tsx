@@ -70,7 +70,7 @@ const ChangePasswordScreen = () => {
               },
             });
           },
-        }
+        },
       );
       router.back();
     } catch (error: any) {

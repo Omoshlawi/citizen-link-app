@@ -80,7 +80,7 @@ const MannuallyAddLostDocumentForm = () => {
         Object.entries(e).forEach(([key, val]) =>
           form.setError(key as keyof LostDocumentCaseFormData, {
             message: val as string,
-          })
+          }),
         );
       }
     }

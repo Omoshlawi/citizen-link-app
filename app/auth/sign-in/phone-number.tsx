@@ -69,7 +69,7 @@ const PhoneNumberSignInScreen = () => {
               },
             });
           },
-        }
+        },
       );
     } catch (error: any) {
       console.error(error);
@@ -121,7 +121,7 @@ const PhoneNumberSignInScreen = () => {
           </Box>
           <Button
             onPress={form.handleSubmit(onSubmit)}
-            disabled={form.formState.isSubmitting}
+            loading={form.formState.isSubmitting}
             text="Login"
             suffixIcon={ArrowRightIcon}
           />

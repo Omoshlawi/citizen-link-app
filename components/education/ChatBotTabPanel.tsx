@@ -1,5 +1,5 @@
 import { useChatbot } from "@/hooks/useChatbot";
-import { Bot, Recycle, Send } from "lucide-react-native";
+import { Recycle, Send } from "lucide-react-native";
 import React, { useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { Box } from "../ui/box";
@@ -7,7 +7,6 @@ import { Button, ButtonIcon } from "../ui/button";
 import { Card } from "../ui/card";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
-import { Icon } from "../ui/icon";
 import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { Textarea, TextareaInput } from "../ui/textarea";
@@ -25,8 +24,8 @@ const ChatBotTabPanel = () => {
   ];
 
   return (
-    <VStack space="md" className="flex-1">
-      <HStack className="justify-between items-center">
+    <VStack space="md" className="flex-1 w-full">
+      <HStack className="justify-between items-center w-full">
         <Heading>Your AI Assistant</Heading>
         <Button
           onPress={clearConversation}
@@ -40,30 +39,15 @@ const ChatBotTabPanel = () => {
         Ask me anything about CHP Training, Screening Procidures, or cervical
         cancer
       </Text>
-      <Card>
+      <Card className="w-full flex flex-1">
         <ScrollView showsVerticalScrollIndicator={false}>
           <VStack space="md">
             <HStack space="md">
-              <Box
-                className="p-2 rounded-full bg-teal-500"
-                style={{
-                  width: 40,
-                  height: 40,
-                  minWidth: 40,
-                  minHeight: 40,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon as={Bot} size="xl" color="white" />
-              </Box>
               <VStack space="sm" className="flex-1">
-                <Text
-                  className="text-typography-700 bg-background-50 p-2 flex-1"
-                  size="sm"
-                >
-                  Hello, I&apos;m your AI assistant. How can I help you today?
-                </Text>
+                <ChatBubble
+                  message="Hello, I'm your AI assistant. How can I help you today?"
+                  user="bot"
+                />
                 {conversations.length === 0 && (
                   <Box className="flex-row gap-2 flex-wrap w-full">
                     {defaultMessages.map((message, index) => (
@@ -92,7 +76,7 @@ const ChatBotTabPanel = () => {
                 <Spinner size="small" color="grey" />
               </Box>
             )}
-            <HStack space="md" className="w-full items-end mb-6">
+            <HStack space="md" className="w-full items-end">
               <Textarea
                 size="sm"
                 isReadOnly={false}

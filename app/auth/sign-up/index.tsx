@@ -67,7 +67,7 @@ const SignUpScreen = () => {
               },
             });
           },
-        }
+        },
       );
     } catch (error: any) {
       console.error(error);
@@ -145,6 +145,7 @@ const SignUpScreen = () => {
             <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={form.formState.isSubmitting}
+              loading={form.formState.isSubmitting}
               text="Register"
               suffixIcon={ArrowRightIcon}
             />

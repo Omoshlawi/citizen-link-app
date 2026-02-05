@@ -70,7 +70,7 @@ const EmailSignInScreen = () => {
               },
             });
           },
-        }
+        },
       );
     } catch (error: any) {
       console.error(error);
@@ -124,6 +124,7 @@ const EmailSignInScreen = () => {
           <Button
             onPress={form.handleSubmit(onSubmit)}
             disabled={form.formState.isSubmitting}
+            loading={form.formState.isSubmitting}
             text="Login"
             suffixIcon={ArrowRightIcon}
           />
