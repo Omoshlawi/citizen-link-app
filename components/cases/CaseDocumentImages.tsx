@@ -52,7 +52,7 @@ const CaseDocumentImages: FC<CaseDocumentImagesProps> = ({
                 className="text-typography-300 mb-2"
               />
               <Text className="text-typography-400 text-sm text-center">
-                No preview
+                {blured ? "No blured Preview" : "No preview"}
               </Text>
             </VStack>
           )}
@@ -62,19 +62,17 @@ const CaseDocumentImages: FC<CaseDocumentImagesProps> = ({
             <Text className="text-xl font-bold text-typography-500 uppercase tracking-wide ">
               {documentType}
             </Text>
-            {selectedImage && (
-              <Button
-                className="bg-teal-300 dark:bg-teal-700"
-                onPress={() => setBlured((bl) => !bl)}
+            <Button
+              className="bg-teal-300 dark:bg-teal-700"
+              onPress={() => setBlured((bl) => !bl)}
+              size="xs"
+            >
+              <ButtonIcon
+                as={blured ? Eye : EyeOff}
                 size="xs"
-              >
-                <ButtonIcon
-                  as={blured ? Eye : EyeOff}
-                  size="xs"
-                  className="text-white"
-                />
-              </Button>
-            )}
+                className="text-white"
+              />
+            </Button>
           </HStack>
         </Box>
       </Box>
