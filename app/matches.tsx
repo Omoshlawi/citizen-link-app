@@ -1,11 +1,11 @@
 import { ScreenLayout } from "@/components/layout";
+import { ListMatches } from "@/components/matches";
 import React from "react";
-import { Text } from "react-native";
 
 const MatchesScreen = () => {
   return (
     <ScreenLayout title="Matches">
-      <Text>MatchesScreen</Text>
+      <ListMatches />
     </ScreenLayout>
   );
 };

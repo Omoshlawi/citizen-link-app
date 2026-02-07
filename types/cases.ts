@@ -142,6 +142,7 @@ export interface Document {
 export interface DocumentImage {
   id: string;
   url: string;
+  blurredUrl?: string;
   documentId: string;
 }
 
@@ -241,7 +242,9 @@ export interface DocumentType {
 export type CaseType = "LOST" | "FOUND";
 
 export type FoundDocumentCaseFormData = z.infer<typeof foundDocumentCaseSchema>;
-export type DocumentCaseExtractionFormData = z.infer<typeof documentCaseExtractionSchema>;
+export type DocumentCaseExtractionFormData = z.infer<
+  typeof documentCaseExtractionSchema
+>;
 
 export type LostDocumentCaseFormData = z.infer<typeof lostDocumentCaseSchema>;
 export type CaseDocumentFormData = z.infer<typeof caseDocumentSchema>;

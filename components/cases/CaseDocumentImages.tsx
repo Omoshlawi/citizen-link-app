@@ -1,10 +1,12 @@
 import { authClient } from "@/lib/auth-client";
 import { BASE_URL } from "@/lib/constants";
 import { DocumentImage } from "@/types/cases";
-import { FileType } from "lucide-react-native";
+import { Eye, EyeOff, FileType } from "lucide-react-native";
 import React, { FC, useMemo, useState } from "react";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { Box } from "../ui/box";
+import { Button, ButtonIcon } from "../ui/button";
+import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
 import { Image } from "../ui/image";
 import { Text } from "../ui/text";
@@ -20,10 +22,12 @@ const CaseDocumentImages: FC<CaseDocumentImagesProps> = ({
 }) => {
   const { data: userSession } = authClient.useSession();
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const selectedImage = useMemo(
-    () => images[selectedIndex]?.url,
-    [selectedIndex, images]
-  );
+  const [blured, setBlured] = useState(true);
+  const selectedImage = useMemo(() => {
+    const img = images[selectedIndex];
+    if (blured) return img.blurredUrl;
+    return img.url;
+  }, [selectedIndex, images, blured]);
   return (
     <VStack>
       <Box className="rounded-2xl overflow-hidden bg-background-0 dark:bg-background-btn shadow-sm border border-outline-100">
@@ -54,9 +58,24 @@ const CaseDocumentImages: FC<CaseDocumentImagesProps> = ({
           )}
         </Box>
         <Box className="px-4 py-3 border-t border-outline-100">
-          <Text className="text-xs text-typography-500 uppercase tracking-wide">
-            {documentType}
-          </Text>
+          <HStack className="justify-between items-center">
+            <Text className="text-xl font-bold text-typography-500 uppercase tracking-wide ">
+              {documentType}
+            </Text>
+            {selectedImage && (
+              <Button
+                className="bg-teal-300 dark:bg-teal-700"
+                onPress={() => setBlured((bl) => !bl)}
+                size="xs"
+              >
+                <ButtonIcon
+                  as={blured ? Eye : EyeOff}
+                  size="xs"
+                  className="text-white"
+                />
+              </Button>
+            )}
+          </HStack>
         </Box>
       </Box>
       {/* Horizontal Thumbnail List */}

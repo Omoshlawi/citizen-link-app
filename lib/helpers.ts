@@ -1,5 +1,6 @@
 import { Address } from "@/types/address";
 import { FollowUp, OutreachAction } from "@/types/follow-up";
+import { MatchConfidence, MatchStatus } from "@/types/matches";
 import {
   CompleteReferralFormData,
   ReferralStatus,
@@ -74,7 +75,7 @@ export const getOutreachOutcomeColor = (outcome: OutreachAction["outcome"]) => {
   }
 };
 export const getOutreachOutcomeDisplay = (
-  outcome: OutreachAction["outcome"]
+  outcome: OutreachAction["outcome"],
 ) => {
   switch (outcome) {
     case "PATIENT_UNAVAILABLE":
@@ -93,7 +94,7 @@ export const getOutreachOutcomeDisplay = (
 };
 
 export const getOutreachActionTypeDisplay = (
-  action: OutreachAction["actionType"]
+  action: OutreachAction["actionType"],
 ) => {
   switch (action) {
     case "PHONE_CALL":
@@ -135,7 +136,7 @@ export const getReferralStatusColor = (status?: ReferralStatus) => {
 
 export const getStatusFromDates = (
   completionDate?: string,
-  cancelationDate?: string
+  cancelationDate?: string,
 ) => {
   if (completionDate) return ReferralStatus.COMPLETED;
   if (cancelationDate) return ReferralStatus.CANCELLED;
@@ -173,7 +174,7 @@ export const invalidateCache = () => {
 };
 
 export const getFollowUpCanceletionReasonDisplay = (
-  reason: FollowUp["cancelReason"]
+  reason: FollowUp["cancelReason"],
 ) => {
   switch (reason) {
     case "DECEASED":
@@ -192,7 +193,7 @@ export const getFollowUpCanceletionReasonDisplay = (
 };
 
 export const getReferralResultDisplay = (
-  result: CompleteReferralFormData["testResult"]
+  result: CompleteReferralFormData["testResult"],
 ) => {
   switch (result) {
     case "POSITIVE":
@@ -204,7 +205,7 @@ export const getReferralResultDisplay = (
 
 export const getAddressDisplay = (
   address?: Address,
-  defaultValue: string = "N/A"
+  defaultValue: string = "N/A",
 ) => {
   if (!address) return defaultValue;
   const template = address.locale?.formatSpec?.displayTemplate ?? defaultValue;
@@ -218,13 +219,13 @@ export const getAddressDisplay = (
       level1: address.level1,
       country: address.country,
     },
-    template
+    template,
   );
 };
 
 export function parseMessage(
   object: Record<string, any>,
-  template: string
+  template: string,
 ): string {
   // regular expression to match placeholders like {{field}}
   const placeholderRegex = /{{(.*?)}}/g;
@@ -241,7 +242,7 @@ export function parseMessage(
         // Placeholder not found in event, leave it unchanged
         return match;
       }
-    }
+    },
   );
 
   return parsedMessage;
@@ -252,4 +253,43 @@ export function cleanAiResponseText(responseText: string) {
     .trim()
     .replace(/^```json\s*/, "")
     .replace(/\s*```$/, "");
+}
+
+export function getMatchStatusDisplay(status: MatchStatus) {
+  switch (status) {
+    case MatchStatus.PENDING:
+      return "Pending";
+    case MatchStatus.REJECTED:
+      return "Rejected";
+    case MatchStatus.CLAIMED:
+      return "Claimed";
+    case MatchStatus.EXPIRED:
+      return "Expired";
+  }
+}
+
+export function getMatchStatusColor(status: MatchStatus) {
+  switch (status) {
+    case MatchStatus.PENDING:
+      return "orange";
+    case MatchStatus.REJECTED:
+      return "red";
+    case MatchStatus.CLAIMED:
+      return "green";
+    case MatchStatus.EXPIRED:
+      return "gray";
+  }
+}
+
+export function getMatchConfidenceDisplay(confidence: MatchConfidence) {
+  switch (confidence) {
+    case MatchConfidence.HIGH:
+      return "High";
+    case MatchConfidence.MEDIUM:
+      return "Medium";
+    case MatchConfidence.LOW:
+      return "Low";
+    case MatchConfidence.NO_MATCH:
+      return "no Match";
+  }
 }
