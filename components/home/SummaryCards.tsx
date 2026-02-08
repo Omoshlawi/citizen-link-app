@@ -1,8 +1,9 @@
 import { cn } from "@gluestack-ui/utils/nativewind-utils";
+import { Link, router } from "expo-router";
 import { AlertCircle, File, LucideIcon, Users } from "lucide-react-native";
 import React, { useMemo } from "react";
+import { TouchableOpacity } from "react-native";
 import { Box } from "../ui/box";
-import { Card } from "../ui/card";
 import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
 const SummaryCards = () => {
@@ -12,6 +13,7 @@ const SummaryCards = () => {
       value: number;
       icon: LucideIcon;
       iconClassName: string;
+      navigateTo?: React.ComponentProps<typeof Link>["href"];
     }[]
   >(() => {
     return [
@@ -20,18 +22,21 @@ const SummaryCards = () => {
         value: 0,
         icon: File,
         iconClassName: "text-red-500 dark:text-red-800",
+        navigateTo: { pathname: "/cases", params: { caseType: "LOST" } },
       },
       {
         title: "My Found Cases",
         value: 0,
         icon: File,
         iconClassName: "text-green-500 dark:text-green-800",
+        navigateTo: { pathname: "/cases", params: { caseType: "FOUND" } },
       },
       {
-        title: "Pending Matches",
+        title: "Document Matches",
         value: 0,
         icon: AlertCircle,
         iconClassName: "text-yellow-500 dark:text-yellow-800",
+        navigateTo: { pathname: "/matches", params: {} },
       },
       {
         title: "My Points",
@@ -44,10 +49,11 @@ const SummaryCards = () => {
   return (
     <Box className="w-full flex flex-row flex-wrap gap-2 mt-4">
       {cards.map((card, index) => (
-        <Card
+        <TouchableOpacity
           key={index}
-          size="lg"
           className="flex-1 min-w-[48%] rounded-3xl bg-background-btn w-[48%] p-3 gap-3"
+          disabled={!card.navigateTo}
+          onPress={() => router.push(card.navigateTo!)}
         >
           <Box className="flex-row items-center gap-2 justify-between">
             <Text className={cn("font-bold text-2xl", card.iconClassName)}>
@@ -59,8 +65,10 @@ const SummaryCards = () => {
               className={cn(card.iconClassName, "font-bold")}
             />
           </Box>
-          <Text className="text-white">{card.title}</Text>
-        </Card>
+          <Text className="text-white" size="sm">
+            {card.title}
+          </Text>
+        </TouchableOpacity>
       ))}
     </Box>
   );

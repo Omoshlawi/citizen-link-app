@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Clipboard, Dot } from "lucide-react-native";
 import React from "react";
-import {ListTile} from "../list-tile";
+import { ListTile } from "../list-tile";
 import { ErrorState, When } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Button, ButtonText } from "../ui/button";
@@ -30,7 +30,7 @@ const RecentActivity = () => {
   });
 
   return (
-    <Box className="mt-4">
+    <Box className="mt-4 flex-1">
       <HStack className="justify-between items-center">
         <Heading size="xs">Recent Activity</Heading>
         <Button
@@ -72,9 +72,9 @@ const RecentActivity = () => {
                             RiskInterpretation.LOW_RISK
                             ? "text-teal-600"
                             : activity.metadata?.riskInterpretation ===
-                              RiskInterpretation.MEDIUM_RISK
-                            ? "text-yellow-600"
-                            : "text-red-600"
+                                RiskInterpretation.MEDIUM_RISK
+                              ? "text-yellow-600"
+                              : "text-red-600"
                           : "text-primary-600"
                       }
                       size="xl"
@@ -86,17 +86,17 @@ const RecentActivity = () => {
                       ? `Score: ${
                           activity.metadata?.riskScore ?? "N/A"
                         } | ${getRiskInterpretation(
-                          activity.metadata?.riskInterpretation
+                          activity.metadata?.riskInterpretation,
                         )}`
                       : activity.resource === "referral"
-                      ? `Referral to ${activity.metadata?.healthFacilityName}`
-                      : activity.resource === "client"
-                      ? `Client: ${activity.metadata?.clientName}`
-                      : activity.resource === "followUp"
-                      ? `${getFollowUpCategoryDisply(
-                          activity.metadata?.category
-                        )}(${getPriorityDisplay(activity.metadata?.priority)})`
-                      : ""
+                        ? `Referral to ${activity.metadata?.healthFacilityName}`
+                        : activity.resource === "client"
+                          ? `Client: ${activity.metadata?.clientName}`
+                          : activity.resource === "followUp"
+                            ? `${getFollowUpCategoryDisply(
+                                activity.metadata?.category,
+                              )}(${getPriorityDisplay(activity.metadata?.priority)})`
+                            : ""
                   }
                   trailing={
                     <Text size="xs" className="text-typography-500">

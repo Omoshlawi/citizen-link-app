@@ -15,8 +15,6 @@ import {
   Actionsheet,
   ActionsheetBackdrop,
   ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
 } from "../ui/actionsheet";
 import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
 import { Heading } from "../ui/heading";
@@ -127,7 +125,6 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
           >
             <ActionsheetBackdrop />
             <ActionsheetContent>
-            
               <VStack className="w-full" space="lg">
                 <Heading className="text-center">Confirm</Heading>
                 <Text className="text-start text-typography-400 px-2 pb-2">

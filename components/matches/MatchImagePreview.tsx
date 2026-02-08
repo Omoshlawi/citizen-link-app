@@ -12,16 +12,16 @@ import {
 } from "@/lib/helpers";
 import { Match } from "@/types/matches";
 
+import { router } from "expo-router";
 import { Box } from "../ui/box";
 import { Icon } from "../ui/icon";
 import { Image } from "../ui/image";
 
 type MatchImagePreviewProps = {
   match: Match;
-  onPress?: (match: Match) => void;
 };
 
-const MatchImagePreview: FC<MatchImagePreviewProps> = ({ match, onPress }) => {
+const MatchImagePreview: FC<MatchImagePreviewProps> = ({ match }) => {
   const { data: userSession } = authClient.useSession();
   const [index, setIndex] = useState(0);
 
@@ -45,7 +45,12 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({ match, onPress }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.9}
-      onPress={() => onPress?.(match)}
+      onPress={() =>
+        router.push({
+          pathname: "/matches/[matchId]",
+          params: { matchId: match.id },
+        })
+      }
       className=""
     >
       <Box className="w-full">
