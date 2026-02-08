@@ -1,9 +1,15 @@
 import { authClient } from "@/lib/auth-client";
 import { BASE_URL } from "@/lib/constants";
 import { DocumentImage } from "@/types/cases";
-import { Eye, EyeOff, FileType } from "lucide-react-native";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  FileType,
+} from "lucide-react-native";
 import React, { FC, useMemo, useState } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Box } from "../ui/box";
 import { Button, ButtonIcon } from "../ui/button";
 import { HStack } from "../ui/hstack";
@@ -25,92 +31,78 @@ const CaseDocumentImages: FC<CaseDocumentImagesProps> = ({
   const [blured, setBlured] = useState(true);
   const selectedImage = useMemo(() => {
     const img = images[selectedIndex];
-    if (blured) return img.blurredUrl;
+    if (blured) return img?.blurredUrl;
     return img.url;
   }, [selectedIndex, images, blured]);
+  const navigate = (direction: number) => {
+    setSelectedIndex(
+      (prev) => (prev + direction + images.length) % images.length,
+    );
+  };
   return (
-    <VStack>
-      <Box className="rounded-2xl overflow-hidden bg-background-0 dark:bg-background-btn shadow-sm border border-outline-100">
-        <Box className="w-full aspect-[4/3] items-center justify-center">
-          {selectedImage ? (
-            <Image
-              source={{
-                uri: `${BASE_URL}/api/files/stream?fileName=${selectedImage}`,
-                headers: {
-                  Authorization: `Bearer ${userSession?.session.token}`,
-                },
-              }}
-              alt={`${documentType} front`}
-              className="w-full h-full"
-              resizeMode="contain"
+    <Box className="rounded-2xl overflow-hidden bg-background-0 dark:bg-background-btn shadow-sm border border-outline-100">
+      <Box className="w-full aspect-[4/3] items-center justify-center">
+        {selectedImage ? (
+          <Image
+            source={{
+              uri: `${BASE_URL}/api/files/stream?fileName=${selectedImage}`,
+              headers: {
+                Authorization: `Bearer ${userSession?.session.token}`,
+              },
+            }}
+            alt={`${documentType} front`}
+            className="w-full h-full"
+            resizeMode="contain"
+          />
+        ) : (
+          <VStack className="items-center justify-center flex-1 px-6">
+            <Icon
+              as={FileType}
+              size="lg"
+              className="text-typography-300 mb-2"
             />
-          ) : (
-            <VStack className="items-center justify-center flex-1 px-6">
-              <Icon
-                as={FileType}
-                size="lg"
-                className="text-typography-300 mb-2"
-              />
-              <Text className="text-typography-400 text-sm text-center">
-                {blured ? "No blured Preview" : "No preview"}
-              </Text>
-            </VStack>
-          )}
-        </Box>
-        <Box className="px-4 py-3 border-t border-outline-100">
-          <HStack className="justify-between items-center">
-            <Text className="text-xl font-bold text-typography-500 uppercase tracking-wide ">
-              {documentType}
+            <Text className="text-typography-400 text-sm text-center">
+              {blured ? "No blured Preview" : "No preview"}
             </Text>
-            <Button
-              className="bg-teal-300 dark:bg-teal-700"
-              onPress={() => setBlured((bl) => !bl)}
-              size="xs"
+          </VStack>
+        )}
+        {/* Minimalist Navigation Arrows */}
+        {images.length > 1 && (
+          <View className="absolute inset-x-0 flex-row justify-between px-2">
+            <TouchableOpacity
+              onPress={() => navigate(-1)}
+              className="p-2 bg-black/20 rounded-full"
             >
-              <ButtonIcon
-                as={blured ? Eye : EyeOff}
-                size="xs"
-                className="text-white"
-              />
-            </Button>
-          </HStack>
-        </Box>
+              <Icon as={ChevronLeft} className="text-white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigate(1)}
+              className="p-2 bg-black/20 rounded-full"
+            >
+              <Icon as={ChevronRight} className="text-white" />
+            </TouchableOpacity>
+          </View>
+        )}
       </Box>
-      {/* Horizontal Thumbnail List */}
-      {images.length > 0 && (
-        <Box className="h-24">
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ gap: 12, paddingVertical: 4 }}
+      <Box className="px-4 py-3 border-t border-outline-100">
+        <HStack className="justify-between items-center">
+          <Text className="text-xl font-bold text-typography-500 uppercase tracking-wide ">
+            {documentType}
+          </Text>
+          <Button
+            className="bg-teal-300 dark:bg-teal-700"
+            onPress={() => setBlured((bl) => !bl)}
+            size="xs"
           >
-            {images.map(({ url: uri }, i) => (
-              <TouchableOpacity
-                onPress={() => setSelectedIndex(i)}
-                key={i}
-                className="relative rounded-lg overflow-hidden border border-outline-200"
-              >
-                <Image
-                  source={{
-                    uri: `${BASE_URL}/api/files/stream?fileName=${uri}`,
-                    headers: {
-                      Authorization: `Bearer ${userSession?.session.token}`,
-                    },
-                  }}
-                  className="w-16 h-20"
-                  alt={`Page ${i + 1}`}
-                />
-                <Box className="absolute bottom-0 right-0 left-0 bg-background-900/60 items-center">
-                  <Text className="text-[10px] text-white font-bold">
-                    {i + 1}
-                  </Text>
-                </Box>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </Box>
-      )}
-    </VStack>
+            <ButtonIcon
+              as={blured ? Eye : EyeOff}
+              size="xs"
+              className="text-white"
+            />
+          </Button>
+        </HStack>
+      </Box>
+    </Box>
   );
 };
 

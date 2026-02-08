@@ -42,7 +42,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
   const { startExtraction } = useDocumentExtraction();
 
   const onSubmit: SubmitHandler<DocumentCaseExtractionFormData> = async (
-    data
+    data,
   ) => {
     try {
       if (!scanned) {
@@ -65,7 +65,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
       }
       setUploadingFiles(true);
       const uploads = await Promise.allSettled(
-        scanned.map((uri) => uploadFile(uri))
+        scanned.map((uri) => uploadFile(uri)),
       );
       setUploadingFiles(false);
       const uploadSuccesfull = uploads.every((k) => k.status === "fulfilled");
@@ -94,7 +94,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
       // Add Images to form data
       form.setValue(
         "images",
-        uploads.filter((u) => u.status === "fulfilled").map((u) => u.value)
+        uploads.filter((u) => u.status === "fulfilled").map((u) => u.value),
       );
 
       const extraction = await startExtraction();
@@ -141,7 +141,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
   const onExtractionComplete = (docCase: DocumentCase) => {
     mutate("/documents/cases");
     setExtractionModalVisible(false);
-    router.push({
+    router.replace({
       pathname: "/document-case/[caseId]",
       params: { caseId: docCase.id },
     });

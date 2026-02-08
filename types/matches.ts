@@ -1,9 +1,13 @@
+import { FoundDocumentCase, LostDocumentCase } from "./cases";
+
 export interface Match {
   id: string;
   matchNumber: number;
   aiInteractionId: string;
   lostDocumentCaseId: string;
+  lostDocumentCase: LostDocumentCase;
   foundDocumentCaseId: string;
+  foundDocumentCase: FoundDocumentCase;
   matchScore: number;
   aiAnalysis: AiAnalysis;
   status: MatchStatus;
@@ -17,7 +21,7 @@ export interface Match {
 export interface AiAnalysis {
   overallScore: number;
   confidence: MatchConfidence;
-  recommendation: string;
+  recommendation: MatchRecommendation;
   reasoning: string;
   fieldAnalysis: FieldAnalysi[];
   matchingFields: string[];
@@ -50,4 +54,11 @@ export enum MatchConfidence {
   MEDIUM = "MEDIUM",
   LOW = "LOW",
   NO_MATCH = "NO_MATCH",
+}
+
+export enum MatchRecommendation {
+  SAME_PERSON = "SAME_PERSON",
+  LIKELY_SAME = "LIKELY_SAME",
+  POSSIBLY_SAME = "POSSIBLY_SAME",
+  DIFFERENT_PERSON = "DIFFERENT_PERSON",
 }

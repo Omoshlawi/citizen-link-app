@@ -57,7 +57,7 @@ const MannuallyAddLostDocumentForm = () => {
           />
         ),
       });
-      router.push({
+      router.replace({
         pathname: "/document-case/[caseId]",
         params: { caseId: doc.id },
       });

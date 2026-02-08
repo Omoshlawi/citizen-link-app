@@ -1,28 +1,49 @@
+import { useMatches } from "@/hooks/use-matches";
 import { DocumentCase } from "@/types/cases";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
+import { FlatList } from "react-native";
 import { Search } from "../common";
-import { LayoutViewTabs, LayoutViewTabsProps } from "../layout";
+import Pagination from "../Pagination";
+import { EmptyState, ErrorState } from "../state-full-widgets";
+import { Box } from "../ui/box";
+import { Spinner } from "../ui/spinner";
 import { VStack } from "../ui/vstack";
-import MatchesGridView from "./MatchesGridView";
-import MatchesListView from "./MatchesListView";
+import MatchImagePreview from "./MatchImagePreview";
 
 type ListMatchesProps = {
   documentCase?: DocumentCase;
 };
 
 const ListMatches: FC<ListMatchesProps> = ({ documentCase }) => {
-  const [activeView, setActiveView] =
-    useState<LayoutViewTabsProps["activeView"]>("list");
   const params = useLocalSearchParams<Record<string, any>>();
+  const { matches, error, isLoading, ...pagination } = useMatches({
+    documentCaseId: documentCase?.id,
+  });
+  if (isLoading) return <Spinner />;
+  if (error) return <ErrorState error={error} />;
   return (
     <VStack space="sm" className="flex-1  w-full h-full ">
-      <LayoutViewTabs activeView={activeView} onViewChange={setActiveView} />
       <Search
-        // onSearchChange={(search) => router.setParams({ ...params, search })}
+        defaultsearch={params.search}
+        onSearchChange={(search) => router.setParams({ search })}
+        count={pagination.totalCount}
       />
-      {activeView === "list" && <MatchesListView documentCase={documentCase} />}
-      {activeView === "grid" && <MatchesGridView documentCase={documentCase} />}
+      <VStack space="md" className="flex-1">
+        <FlatList
+          data={matches}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={<EmptyState message="No matches found" />}
+          ItemSeparatorComponent={() => (
+            <Box className="h-4 bg-background-btn" />
+          )}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => {
+            return <MatchImagePreview match={item} />;
+          }}
+        />
+        <Pagination {...pagination} />
+      </VStack>
     </VStack>
   );
 };

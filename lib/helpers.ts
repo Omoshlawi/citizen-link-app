@@ -1,6 +1,10 @@
 import { Address } from "@/types/address";
 import { FollowUp, OutreachAction } from "@/types/follow-up";
-import { MatchConfidence, MatchStatus } from "@/types/matches";
+import {
+  MatchConfidence,
+  MatchRecommendation,
+  MatchStatus,
+} from "@/types/matches";
 import {
   CompleteReferralFormData,
   ReferralStatus,
@@ -291,5 +295,20 @@ export function getMatchConfidenceDisplay(confidence: MatchConfidence) {
       return "Low";
     case MatchConfidence.NO_MATCH:
       return "no Match";
+  }
+}
+
+export function getMatchRecommendationDisplay(
+  recommendation: MatchRecommendation,
+) {
+  switch (recommendation) {
+    case MatchRecommendation.SAME_PERSON:
+      return "Same person";
+    case MatchRecommendation.LIKELY_SAME:
+      return "Likely same person";
+    case MatchRecommendation.POSSIBLY_SAME:
+      return "Possibly same person";
+    case MatchRecommendation.DIFFERENT_PERSON:
+      return "Different person";
   }
 }
