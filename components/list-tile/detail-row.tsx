@@ -14,6 +14,7 @@ export type DisplayTileProps = {
   fallBackValue?: string;
   withTopOutline?: boolean;
   withBottomOutline?: boolean;
+  trailing?: React.ReactNode;
 };
 
 const DisplayTile: FC<DisplayTileProps> = ({
@@ -24,6 +25,7 @@ const DisplayTile: FC<DisplayTileProps> = ({
   fallBackValue = "-",
   withBottomOutline = false,
   withTopOutline = false,
+  trailing,
 }) => {
   if ((value === undefined || value == null) && hideIfNoValue) return null;
   return (
@@ -41,6 +43,7 @@ const DisplayTile: FC<DisplayTileProps> = ({
             {value ?? fallBackValue}
           </Text>
         </VStack>
+        {trailing}
       </HStack>
       {withBottomOutline && <Divider />}
     </>

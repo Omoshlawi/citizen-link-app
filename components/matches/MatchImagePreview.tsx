@@ -19,9 +19,13 @@ import { Image } from "../ui/image";
 
 type MatchImagePreviewProps = {
   match: Match;
+  useCase?: "list" | "detail";
 };
 
-const MatchImagePreview: FC<MatchImagePreviewProps> = ({ match }) => {
+const MatchImagePreview: FC<MatchImagePreviewProps> = ({
+  match,
+  useCase = "list",
+}) => {
   const { data: userSession } = authClient.useSession();
   const [index, setIndex] = useState(0);
 
@@ -64,7 +68,7 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({ match }) => {
               resizeMode="contain"
             />
           ) : (
-            <Icon as={FileType} size="xl" className="opacity-20" />
+            <Icon as={FileType} size={80 as any} className="opacity-70" />
           )}
 
           {/* Minimalist Navigation Arrows */}
@@ -87,38 +91,40 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({ match }) => {
         </Box>
 
         {/* Content Area */}
-        <Box className="mt-2">
-          <View className="flex-row justify-between items-start mb-2">
-            <View>
-              <Text className="text-xs text-typography-400 font-bold uppercase">
-                Match #{match.matchNumber}
-              </Text>
-              <Text className="text-lg font-bold text-typography-900">
-                {match.matchScore}% Match
-              </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: Color(statusColor).alpha(0.1).toString(),
-              }}
-              className="px-3 py-1 rounded-full"
-            >
-              <Text
-                style={{ color: statusColor }}
-                className="text-[10px] font-bold uppercase"
+        {useCase === "list" && (
+          <Box className="mt-2">
+            <View className="flex-row justify-between items-start mb-2">
+              <View>
+                <Text className="text-xs text-typography-400 font-bold uppercase">
+                  Match #{match.matchNumber}
+                </Text>
+                <Text className="text-lg font-bold text-typography-900">
+                  {match.matchScore}% Match
+                </Text>
+              </View>
+              <View
+                style={{
+                  backgroundColor: Color(statusColor).alpha(0.1).toString(),
+                }}
+                className="px-3 py-1 rounded-full"
               >
-                {getMatchStatusDisplay(match.status)}
-              </Text>
+                <Text
+                  style={{ color: statusColor }}
+                  className="text-[10px] font-bold uppercase"
+                >
+                  {getMatchStatusDisplay(match.status)}
+                </Text>
+              </View>
             </View>
-          </View>
 
-          <Text
-            className="text-sm text-typography-500 italic"
-            numberOfLines={2}
-          >
-            {getMatchRecommendationDisplay(match.aiAnalysis.recommendation)}
-          </Text>
-        </Box>
+            <Text
+              className="text-sm text-typography-500 italic"
+              numberOfLines={2}
+            >
+              {getMatchRecommendationDisplay(match.aiAnalysis.recommendation)}
+            </Text>
+          </Box>
+        )}
       </Box>
     </TouchableOpacity>
   );

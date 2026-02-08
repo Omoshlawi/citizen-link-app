@@ -88,7 +88,7 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
             size="lg"
             variant="solid"
             action="secondary"
-            className="rounded-full bg-background-btn"
+            className="rounded-full bg-background-btn justify-between"
             onPress={() => {
               router.push({
                 pathname: "/document-case/[caseId]/edit",
@@ -104,7 +104,7 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
           <Button
             size="lg"
             action="primary"
-            className="rounded-full bg-teal-500"
+            className="rounded-full bg-teal-500 justify-between"
             onPress={() => setShowActionsheet(true)}
             disabled={submitting}
           >
@@ -147,7 +147,7 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
                 </Text>
                 <Button
                   onPress={handleAcceptAndContinue}
-                  className="bg-background-btn rounded-full"
+                  className="bg-background-btn rounded-full justify-between"
                   disabled={submitting}
                 >
                   {submitting && <ButtonSpinner className="text-white" />}
@@ -164,7 +164,7 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
 
       {canViewMatches && (
         <Button
-          className="rounded-full"
+          className="rounded-full justify-between"
           onPress={() =>
             router.push({
               pathname: "/document-case/[caseId]/matches",

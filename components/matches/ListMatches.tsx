@@ -6,7 +6,7 @@ import { FlatList } from "react-native";
 import { Search } from "../common";
 import Pagination from "../Pagination";
 import { EmptyState, ErrorState } from "../state-full-widgets";
-import { Box } from "../ui/box";
+import { Divider } from "../ui/divider";
 import { Spinner } from "../ui/spinner";
 import { VStack } from "../ui/vstack";
 import MatchImagePreview from "./MatchImagePreview";
@@ -35,7 +35,8 @@ const ListMatches: FC<ListMatchesProps> = ({ documentCase }) => {
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<EmptyState message="No matches found" />}
           ItemSeparatorComponent={() => (
-            <Box className="h-4 bg-background-btn" />
+            // <Box className="h-4 bg-background-0 dark:bg-background-btn " />
+            <Divider className="mt-4" />
           )}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {

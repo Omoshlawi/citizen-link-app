@@ -30,3 +30,11 @@ export const useMatches = (params: Record<string, any> = {}) => {
     showPagination: showPagination(rest.totalCount),
   };
 };
+
+export const useMatch = (matchId?: string) => {
+  const url = constructUrl(`/matching/${matchId}`);
+  const { data, error, isLoading } = useSWR<APIFetchResponse<Match>>(
+    matchId ? url : null,
+  );
+  return { match: data?.data, isLoading, error };
+};
