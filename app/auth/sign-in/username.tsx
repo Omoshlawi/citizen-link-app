@@ -9,6 +9,7 @@ import { ArrowRightIcon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
+import { mutate } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { usernameSignInSchema } from "@/lib/schemas";
 import { UsernameSignInFormData } from "@/types/auth";
@@ -53,6 +54,7 @@ const UsernameSignInScreen = () => {
             });
           },
           onSuccess(context) {
+            mutate("/");
             toast.show({
               placement: "top",
               render: ({ id }) => {
@@ -69,7 +71,7 @@ const UsernameSignInScreen = () => {
               },
             });
           },
-        }
+        },
       );
     } catch (error: any) {
       console.error(error);

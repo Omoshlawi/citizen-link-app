@@ -217,3 +217,13 @@ export const caseFilterSchema = apiListQuerySchema.extend({
     })
     .optional(),
 });
+
+export const claimFormSchema = z.object({
+  securityQuestions: z
+    .object({
+      question: z.string(),
+      response: z.string().nonempty(),
+    })
+    .array()
+    .min(4),
+});

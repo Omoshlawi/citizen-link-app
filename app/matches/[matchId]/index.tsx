@@ -31,7 +31,7 @@ const MatchDetailScreen = () => {
   return (
     <ScreenLayout title="Match Detail">
       <When
-        asyncState={{ isLoading, error, data: match }}
+        asyncState={{ isLoading: isLoading, error, data: match }}
         loading={() => <Spinner />}
         error={(e) => <ErrorState error={e} />}
         success={(data) => {

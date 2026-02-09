@@ -55,9 +55,11 @@ const FormDatePicker = <T extends FieldValues>({
               className="w-full"
               {...formControlProps}
             >
-              <FormControlLabel>
-                <FormControlLabelText>{label}</FormControlLabelText>
-              </FormControlLabel>
+              {!!label && (
+                <FormControlLabel>
+                  <FormControlLabelText>{label}</FormControlLabelText>
+                </FormControlLabel>
+              )}
               <Input className="my-1" size="md" {...inputWrapperProps}>
                 <InputField
                   placeholder="Select date"

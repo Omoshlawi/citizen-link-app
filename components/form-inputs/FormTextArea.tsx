@@ -44,9 +44,11 @@ const FormTextArea = <T extends FieldValues>({
           className="w-full"
           {...formControlProps}
         >
-          <FormControlLabel>
-            <FormControlLabelText>{label}</FormControlLabelText>
-          </FormControlLabel>
+          {!!label && (
+            <FormControlLabel>
+              <FormControlLabelText>{label}</FormControlLabelText>
+            </FormControlLabel>
+          )}
           <Textarea
             size="md"
             isReadOnly={false}

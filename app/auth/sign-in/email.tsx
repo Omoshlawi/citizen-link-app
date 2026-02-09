@@ -9,6 +9,7 @@ import { ArrowRightIcon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
+import { mutate } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { emailSignInSchema } from "@/lib/schemas";
 import { EmailSignInFormData } from "@/types/auth";
@@ -54,6 +55,7 @@ const EmailSignInScreen = () => {
             });
           },
           onSuccess(context) {
+            mutate("/");
             toast.show({
               placement: "top",
               render: ({ id }) => {

@@ -60,9 +60,11 @@ const FormSelectInput = <T extends FieldValues>({
             className="w-full"
             {...formControlProps}
           >
-            <FormControlLabel>
-              <FormControlLabelText>{label}</FormControlLabelText>
-            </FormControlLabel>
+            {!!label && (
+              <FormControlLabel>
+                <FormControlLabelText>{label}</FormControlLabelText>
+              </FormControlLabel>
+            )}
             <Select
               className="w-full"
               selectedValue={field.value}
@@ -103,10 +105,10 @@ const FormSelectInput = <T extends FieldValues>({
               </FormControlError>
             )}
             {helperText && !error && (
-            <FormControlHelper>
-              <FormControlHelperText>{helperText}</FormControlHelperText>
-            </FormControlHelper>
-          )}
+              <FormControlHelper>
+                <FormControlHelperText>{helperText}</FormControlHelperText>
+              </FormControlHelper>
+            )}
           </FormControl>
         );
       }}

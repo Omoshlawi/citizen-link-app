@@ -50,9 +50,11 @@ const FormTextInput = <T extends FieldValues>({
           className="w-full"
           {...formControlProps}
         >
-          <FormControlLabel>
-            <FormControlLabelText>{label}</FormControlLabelText>
-          </FormControlLabel>
+          {!!label && (
+            <FormControlLabel>
+              <FormControlLabelText>{label}</FormControlLabelText>
+            </FormControlLabel>
+          )}
           <Input
             variant="outline"
             {...inputWrapperProps}

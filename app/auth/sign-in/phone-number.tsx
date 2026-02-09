@@ -9,6 +9,7 @@ import { ArrowRightIcon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
+import { mutate } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { phoneNumberSignInSchema } from "@/lib/schemas";
 import { PhoneNumberSignInFormData } from "@/types/auth";
@@ -53,6 +54,7 @@ const PhoneNumberSignInScreen = () => {
             });
           },
           onSuccess(context) {
+            mutate("/");
             toast.show({
               placement: "top",
               render: ({ id }) => {
