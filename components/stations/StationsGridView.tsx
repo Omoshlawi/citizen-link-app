@@ -1,4 +1,5 @@
-import { useHealthFacilities } from "@/hooks/useHealthFacilities";
+import { usePickupStations } from "@/hooks/use-addresses";
+import { useLocalSearchParams } from "expo-router";
 import { Hospital, Info, MapPin, User } from "lucide-react-native";
 import React from "react";
 import { Dimensions, FlatList } from "react-native";
@@ -9,7 +10,6 @@ import { Card } from "../ui/card";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
-import { Image } from "../ui/image";
 import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
@@ -20,17 +20,15 @@ const GAP = 8; // Gap between cards
 const NUM_COLUMNS = 2;
 const CARD_WIDTH = (SCREEN_WIDTH - CARD_PADDING * 2 - GAP) / NUM_COLUMNS;
 
-type FacilityGridViewProps = {
+type StationsGridViewProps = {
   search?: string;
   typeId?: string;
 };
 
-const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
-  const { healthFacilities, error, isLoading, ...pagination } =
-    useHealthFacilities({
-      search: search || "",
-      typeId: typeId || "",
-    });
+const StationsGridView = ({ search, typeId }: StationsGridViewProps) => {
+  const params = useLocalSearchParams();
+  const { stations, error, isLoading, ...pagination } =
+    usePickupStations(params);
 
   if (isLoading) {
     return <Spinner />;
@@ -42,7 +40,7 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
   return (
     <VStack space="md" className="flex-1">
       <FlatList
-        data={healthFacilities}
+        data={stations}
         keyExtractor={(item) => item.id}
         numColumns={NUM_COLUMNS}
         columnWrapperStyle={{
@@ -55,25 +53,16 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
           <Card size="md" variant="elevated" style={{ width: CARD_WIDTH }}>
             <VStack space="sm" className="flex-1">
               <Box className="w-full h-24 rounded-sm relative">
-                {item?.logo ? (
-                  <Image
-                    source={{
-                      uri: item.logo,
-                    }}
-                    alt="Logo"
-                    className="w-full h-full overflow-hidden"
-                  />
-                ) : (
-                  <Icon
-                    as={Hospital}
-                    className="w-full h-full overflow-hidden color-background-200"
-                  />
-                )}
+                <Icon
+                  as={Hospital}
+                  className="w-full h-full overflow-hidden color-background-200"
+                />
+
                 <Text
                   size="2xs"
                   className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute top-2 right-2"
                 >
-                  {item.type.name}
+                  {item.code}
                 </Text>
               </Box>
               <VStack space="xs" className="flex-1">
@@ -83,21 +72,21 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
                 <HStack className="items-center" space="xs">
                   <Icon as={MapPin} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {`${item.ward ? item.ward + ", " : ""} ${item.subcounty}, ${
-                      item.county
+                    {`${item.level3 ? item.level3 + ", " : ""} ${item.level2}, ${
+                      item.level1
                     }`}{" "}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="xs">
                   <Icon as={Info} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {`MFL: ${item.kmflCode}`}
+                    {`Code: ${item.code}`}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="xs">
                   <Icon as={User} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {`owner: ${item.owner}`}
+                    {`owner: ${item.email}`}
                   </Text>
                 </HStack>
               </VStack>
@@ -110,4 +99,4 @@ const FacilityGridView = ({ search, typeId }: FacilityGridViewProps) => {
   );
 };
 
-export default FacilityGridView;
+export default StationsGridView;

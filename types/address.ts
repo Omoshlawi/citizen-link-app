@@ -1,6 +1,6 @@
+import { addressSchema } from "@/lib/schemas";
 import { z } from "zod";
 import { DocumentCase } from "./cases";
-import { addressSchema } from "@/lib/schemas";
 
 export type AddressTypeValue =
   | "HOME"
@@ -128,4 +128,40 @@ export interface AddressLocalePayload {
   formatSpec: AddressLocaleFormatSpec;
   examples?: AddressLocaleExample[];
   tags?: string[];
+}
+
+export interface PickupStation {
+  id: string;
+  code: string;
+  name: string;
+  addressLocaleCode: string;
+  country: string;
+  postalCode: string;
+  address1: string;
+  address2?: string;
+  landmark: string;
+  level1: string;
+  level2: string;
+  level3: string;
+  level4: string;
+  level5?: string;
+  coordinates: Coordinates;
+  phoneNumber: string;
+  email: string;
+  formatted?: string;
+  voided: boolean;
+  createdAt: string;
+  updatedAt: string;
+  operatingHours: OperatingHours;
+}
+
+export interface Coordinates {
+  lat: number;
+  lng: number;
+}
+
+export interface OperatingHours {
+  sat: string;
+  sun: string;
+  "mon-fri": string;
 }

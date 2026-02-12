@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useSearchParamsExtended } from "./useSearchParams";
 
-type UsePaginationOptions = {
+export type UsePaginationOptions = {
   defaultLimit?: number;
   defaultPage?: number;
   context?: "router" | "state";

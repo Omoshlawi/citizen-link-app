@@ -1,54 +1,44 @@
-import {
-  FacilityFilter,
-  FacilityGridView,
-  FacilityListView,
-  FacilityMapView,
-} from "@/components/facilities";
-import FacilitiesViewTabs, {
-  FacilitiesViewTabsProps,
-} from "@/components/facilities/FacilitiesViewTabs";
+import { Search } from "@/components/common";
 import LandingScreenLayout from "@/components/layout/LandingScreenLayout";
+import {
+  StationsGridView,
+  StationsListView,
+  StationsMapView,
+  StationsViewTabs,
+  StationsViewTabsProps,
+} from "@/components/statio ns";
 import { VStack } from "@/components/ui/vstack";
-import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-import { useHealthFacilities } from "@/hooks/useHealthFacilities";
+import { usePickupStations } from "@/hooks/use-addresses";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
 export default function PickupStationsScreen() {
   const [activeView, setActiveView] =
-    useState<FacilitiesViewTabsProps["activeView"]>("list");
-  const [search, setSearch] = useState("");
-  const [facilityType, setFacilityType] = useState("all");
-  const [debouncedSearch] = useDebouncedValue(search, 500);
+    useState<StationsViewTabsProps["activeView"]>("list");
+  const { search } = useLocalSearchParams<{ search: string }>();
 
-  // Fetch facilities to get total count for the filter
-  const { totalCount } = useHealthFacilities({
-    search: debouncedSearch || "",
-    typeId: facilityType || "",
-  });
+  const { totalCount } = usePickupStations(
+    {
+      search,
+    },
+    "router",
+  );
 
   return (
     <LandingScreenLayout>
       <VStack space="md" className="flex-1 p-4">
-        <FacilitiesViewTabs
+        <StationsViewTabs
           activeView={activeView}
           onViewChange={setActiveView}
         />
-        <FacilityFilter
-          search={search}
-          onSearchChange={setSearch}
-          facilityType={facilityType}
-          onFacilityTypeChange={setFacilityType}
-          totalCount={totalCount}
+        <Search
+          count={totalCount}
+          defaultsearch={search}
+          onSearchChange={(search) => router.setParams({ search })}
         />
-        {activeView === "list" && (
-          <FacilityListView search={debouncedSearch} typeId={facilityType} />
-        )}
-        {activeView === "grid" && (
-          <FacilityGridView search={debouncedSearch} typeId={facilityType} />
-        )}
-        {activeView === "map" && (
-          <FacilityMapView search={debouncedSearch} typeId={facilityType} />
-        )}
+        {activeView === "list" && <StationsListView />}
+        {activeView === "grid" && <StationsGridView />}
+        {activeView === "map" && <StationsMapView />}
       </VStack>
     </LandingScreenLayout>
   );

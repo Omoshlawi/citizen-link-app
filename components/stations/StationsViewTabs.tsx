@@ -3,12 +3,12 @@ import React, { FC } from "react";
 import { Button, ButtonIcon } from "../ui/button";
 import { HStack } from "../ui/hstack";
 
-export type FacilitiesViewTabsProps = {
+export type StationsViewTabsProps = {
   activeView?: "list" | "grid" | "map";
   onViewChange?: (tab: "list" | "grid" | "map") => void;
 };
 
-const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
+const StationsViewTabs: FC<StationsViewTabsProps> = ({
   activeView = "list",
   onViewChange,
 }) => {
@@ -65,4 +65,4 @@ const FacilitiesViewTabs: FC<FacilitiesViewTabsProps> = ({
   );
 };
 
-export default FacilitiesViewTabs;
+export default StationsViewTabs;

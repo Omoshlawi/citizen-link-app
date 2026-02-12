@@ -5,10 +5,15 @@ import {
   constructUrl,
   mutate,
 } from "@/lib/api";
-import { Address, AddressFormData, AddressLocale } from "@/types/address";
+import {
+  Address,
+  AddressFormData,
+  AddressLocale,
+  PickupStation,
+} from "@/types/address";
 import { useState } from "react";
 import useSWR from "swr";
-import { useMergePaginationInfo } from "./usePagination";
+import { useMergePaginationInfo, UsePaginationOptions } from "./usePagination";
 
 type AddressFilters = Record<string, string | number | boolean | undefined>;
 
@@ -42,7 +47,7 @@ export const useAddresses = (defaultFilters: AddressFilters = {}) => {
 export const useAddress = (id?: string) => {
   const url = constructUrl(`/addresses/${id}`, { v: "custom:include(locale)" });
   const { data, error, isLoading, mutate } = useSWR<APIFetchResponse<Address>>(
-    id ? url : null
+    id ? url : null,
   );
   return {
     isLoading,
@@ -85,7 +90,7 @@ export const useAddressesApi = () => {
       `/addresses/${addressId}/restore`,
       {
         method: "POST",
-      }
+      },
     );
     mutate("/addresses");
     return response.data;
@@ -130,7 +135,7 @@ export const useAddressLocales = (filters: AddressLocaleFilters = {}) => {
 
 export const useAddressLocale = (
   id?: string,
-  filters: AddressLocaleFilters = {}
+  filters: AddressLocaleFilters = {},
 ) => {
   const url = id ? constructUrl(`/address-locales/${id}`, filters) : null;
   const {
@@ -145,5 +150,31 @@ export const useAddressLocale = (
     error,
     isLoading,
     mutate: swrMutate,
+  };
+};
+
+export const usePickupStations = (
+  filters: Record<string, any> = {},
+  context?: UsePaginationOptions["context"],
+) => {
+  const { onPageChange, mergedSearchParams, showPagination } =
+    useMergePaginationInfo(filters, { context });
+  const url = constructUrl("/pickup-stations", mergedSearchParams);
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: swrMutate,
+  } = useSWR<APIFetchResponse<APIListResponse<PickupStation>>>(url);
+  const { results: stations = [], ...rest } =
+    data?.data ?? ({} as APIListResponse<PickupStation>);
+  return {
+    ...rest,
+    stations,
+    error,
+    isLoading,
+    mutate: swrMutate,
+    onPageChange,
+    showPagination: showPagination(rest.totalCount),
   };
 };

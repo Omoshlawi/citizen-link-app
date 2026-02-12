@@ -1,5 +1,6 @@
-import { useHealthFacilities } from "@/hooks/useHealthFacilities";
+import { usePickupStations } from "@/hooks/use-addresses";
 import { useLocation } from "@/hooks/useLocation";
+import { useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { Platform, StyleSheet } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
@@ -8,22 +9,17 @@ import { AlertDialog } from "../ui/alert-dialog";
 import { Box } from "../ui/box";
 import { Spinner } from "../ui/spinner";
 
-type FacilityMapViewProps = {
+type StationsMapViewProps = {
   search?: string;
   typeId?: string;
 };
 
-const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
-  const { healthFacilities, error, isLoading } = useHealthFacilities({
-    search: search || "",
-    typeId: typeId || "",
-  });
-  const healthFacilitiesWithCordinates = useMemo(
-    () =>
-      healthFacilities.filter(
-        (h) => h.coordinates?.latitude && h.coordinates?.longitude
-      ),
-    [healthFacilities]
+const StationsMapView = ({ search, typeId }: StationsMapViewProps) => {
+  const params = useLocalSearchParams();
+  const { stations, error, isLoading } = usePickupStations(params, "router");
+  const stationsWithCordinates = useMemo(
+    () => stations.filter((h) => h.coordinates?.lat && h.coordinates?.lng),
+    [stations],
   );
   const { coordinates: userLocation, isLoading: isLocationLoading } =
     useLocation();
@@ -34,7 +30,7 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
 
   // Calculate initial region based on facilities or user location
   const initialRegion = useMemo<Region | undefined>(() => {
-    if (healthFacilitiesWithCordinates.length === 0) {
+    if (stationsWithCordinates.length === 0) {
       // Default to user location or a default location (e.g., Kenya)
       if (userLocation) {
         return {
@@ -54,12 +50,8 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
     }
 
     // Calculate region to fit all facilities
-    const latitudes = healthFacilitiesWithCordinates.map(
-      (f) => f.coordinates!.latitude
-    );
-    const longitudes = healthFacilitiesWithCordinates.map(
-      (f) => f.coordinates!.longitude
-    );
+    const latitudes = stationsWithCordinates.map((f) => f.coordinates!.lat);
+    const longitudes = stationsWithCordinates.map((f) => f.coordinates!.lng);
 
     const minLat = Math.min(...latitudes);
     const maxLat = Math.max(...latitudes);
@@ -75,7 +67,7 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
       latitudeDelta: Math.max(latDelta, 0.1),
       longitudeDelta: Math.max(lngDelta, 0.1),
     };
-  }, [healthFacilitiesWithCordinates, userLocation]);
+  }, [stationsWithCordinates, userLocation]);
 
   if (isLoading || isLocationLoading) {
     return <Spinner />;
@@ -85,15 +77,13 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
     return <ErrorState error={error} />;
   }
 
-  const handleMarkerPress = (
-    facility: (typeof healthFacilitiesWithCordinates)[0]
-  ) => {
+  const handleMarkerPress = (facility: (typeof stationsWithCordinates)[0]) => {
     setSelectedFacility({
       name: facility.name,
-      details: `\nMFL: ${facility.kmflCode}\nOwner:${
-        facility.owner
-      }\nAddress: ${facility.county}, ${facility.subcounty}, ${
-        facility.ward ?? ""
+      details: `\CODE: ${facility.code}\nContact:${
+        facility.email
+      }\nAddress: ${facility.level1}, ${facility.level2}, ${
+        facility.level3 ?? ""
       }`,
     });
   };
@@ -110,15 +100,15 @@ const FacilityMapView = ({ search, typeId }: FacilityMapViewProps) => {
           showsCompass={true}
           toolbarEnabled={false}
         >
-          {healthFacilitiesWithCordinates.map((facility) => (
+          {stationsWithCordinates.map((facility) => (
             <Marker
               key={facility.id}
               coordinate={{
-                latitude: facility.coordinates!.latitude,
-                longitude: facility.coordinates!.longitude,
+                latitude: facility.coordinates!.lat,
+                longitude: facility.coordinates!.lng,
               }}
               title={facility.name}
-              description={`${facility.county}, ${facility.subcounty}, `}
+              description={`${facility.level1}, ${facility.level2}, `}
               onPress={() => handleMarkerPress(facility)}
             />
           ))}
@@ -147,4 +137,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FacilityMapView;
+export default StationsMapView;
