@@ -11,12 +11,20 @@ export enum ClaimStatus {
   CANCELLED = "CANCELLED",
 }
 
+export interface ClaimAttachment {
+  id: string;
+  claimId: string;
+  storageKey: string;
+  uploadedById: string;
+}
+
 export interface Claim {
   id: string;
   claimNumber: string;
   userId: string;
   user?: User;
   foundDocumentCaseId: string;
+  attachments: ClaimAttachment[];
   matchId: string;
   status: ClaimStatus;
   pickupStationId?: string;

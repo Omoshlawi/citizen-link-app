@@ -110,7 +110,7 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
           >
             {submitting && <ButtonSpinner className="text-white" />}
             <ButtonText className="font-semibold text-white">
-              Submit for verification
+              {casetype === "LOST" ? "Submit" : "Submit for verification"}
             </ButtonText>
             <ButtonIcon as={ArrowRight} className="text-white" />
           </Button>

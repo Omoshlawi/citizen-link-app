@@ -8,6 +8,7 @@ import { Box } from "../ui/box";
 import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
+import ClaimAttachment from "./ClaimAttachment";
 
 type MatchClaimProps = {
   match: Match;
@@ -32,13 +33,20 @@ const MatchClaim: FC<MatchClaimProps> = ({ match }) => {
               icon={Hash}
               label={"Claim number"}
               value={claim.claimNumber}
+              withBottomOutline
             />
 
-            <DisplayTile icon={Info} label={"Status"} value={claim.status} />
+            <DisplayTile
+              icon={Info}
+              label={"Status"}
+              value={claim.status}
+              withBottomOutline
+            />
             <DisplayTile
               icon={Info}
               label={"date claimed"}
               value={dayjs(claim.createdAt).format("ddd DD MMM, YYYY")}
+              withBottomOutline
             />
             <DisplayTile
               icon={Info}
@@ -62,14 +70,25 @@ const MatchClaim: FC<MatchClaimProps> = ({ match }) => {
         </Text>
         <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
           <VStack className="px-4" space="xs">
-            {claim?.verification?.userResponses?.map((res) => (
+            {claim?.verification?.userResponses?.map((res, i) => (
               <DisplayTile
+                withTopOutline={i !== 0}
                 icon={Info}
                 label={res.question}
                 value={res.response}
-                key={res.question}
+                key={i}
               />
             ))}
+          </VStack>
+        </Box>
+      </VStack>
+      <VStack className=" pt-6" space="md">
+        <Text className="text-sm font-semibold text-typography-800">
+          Support documents(attachments)
+        </Text>
+        <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
+          <VStack className="px-4" space="xs">
+            <ClaimAttachment claim={claim} />
           </VStack>
         </Box>
       </VStack>
