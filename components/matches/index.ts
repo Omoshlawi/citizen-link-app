@@ -1,3 +1,3 @@
 export { default as ListMatches } from "./ListMatches";
-export { default as MatchActions } from "./MatchActions";
+export { default as MatchClaim } from "./MatchClaim";
 export { default as MatchImagePreview } from "./MatchImagePreview";

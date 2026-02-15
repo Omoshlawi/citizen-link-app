@@ -49,6 +49,7 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
   return (
     <TouchableOpacity
       activeOpacity={0.9}
+      disabled={useCase === "detail"}
       onPress={() =>
         router.push({
           pathname: "/matches/[matchId]",

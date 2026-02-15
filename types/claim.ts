@@ -3,10 +3,12 @@ import { User } from "better-auth";
 import { z } from "zod";
 import { PickupStation } from "./address";
 
-export enum ClaimVerificationStatus {
+export enum ClaimStatus {
   PENDING = "PENDING",
   VERIFIED = "VERIFIED",
-  FAILED = "FAILED",
+  REJECTED = "REJECTED",
+  DISPUTED = "DISPUTED",
+  CANCELLED = "CANCELLED",
 }
 
 export interface Claim {
@@ -16,10 +18,26 @@ export interface Claim {
   user?: User;
   foundDocumentCaseId: string;
   matchId: string;
-  verificationStatus: ClaimVerificationStatus;
+  status: ClaimStatus;
   pickupStationId?: string;
   pickupStation?: PickupStation;
   preferredHandoverDate?: string;
+  verification: ClaimVerification;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ClaimVerification {
+  id: string;
+  claimId: string;
+  userResponses: ClaimUserResponse[];
+  passed: boolean;
+  createdAt: string;
+}
+
+export interface ClaimUserResponse {
+  question: string;
+  response: string;
 }
 
 export type ClaimFormData = z.infer<typeof claimFormSchema>;

@@ -1,20 +1,24 @@
+import { Button } from "@/components/button";
 import { SegmentedControl } from "@/components/common";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile } from "@/components/list-tile";
-import { MatchActions, MatchImagePreview } from "@/components/matches";
+import { MatchClaim, MatchImagePreview } from "@/components/matches";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
+import { useClaims } from "@/hooks/use-claims";
 import { useMatch } from "@/hooks/use-matches";
+import { authClient } from "@/lib/auth-client";
 import {
   getMatchConfidenceDisplay,
   getMatchRecommendationDisplay,
 } from "@/lib/helpers";
 import dayjs from "dayjs";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
+  ArrowRight,
   BrainCircuit,
   Calendar,
   Fingerprint,
@@ -22,18 +26,39 @@ import {
   Info,
   Percent,
 } from "lucide-react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ScrollView } from "react-native";
 
 const MatchDetailScreen = () => {
   const { matchId } = useLocalSearchParams<{ matchId: string }>();
+  const {
+    data: userSession,
+    isPending,
+    error: authError,
+  } = authClient.useSession();
   const { error, isLoading, match } = useMatch(matchId);
+  const {
+    totalCount,
+    isLoading: isLoadingClaims,
+    error: claimserror,
+  } = useClaims({
+    matchId: matchId,
+  });
+
+  const isOwner = useMemo(
+    () => match?.foundDocumentCase.case?.userId !== userSession?.user.id,
+    [match?.foundDocumentCase.case?.userId, userSession?.user.id],
+  );
   const dateFomart = "ddd MMM DD, YYYY";
   const [active, setActive] = useState("details");
   return (
     <ScreenLayout title="Match Detail">
       <When
-        asyncState={{ isLoading: isLoading, error, data: match }}
+        asyncState={{
+          isLoading: isLoading || isPending || isLoadingClaims,
+          error: error ?? claimserror ?? authError,
+          data: match,
+        }}
         loading={() => <Spinner />}
         error={(e) => <ErrorState error={e} />}
         success={(data) => {
@@ -54,10 +79,14 @@ const MatchDetailScreen = () => {
                   <VStack className="pt-6" space="md">
                     <SegmentedControl
                       data={[
-                        { label: "Details", value: "details" },
-                        { label: "Field Analysis", value: "analysis" },
-                        { label: "Claim", value: "claim" },
-                      ]}
+                        { label: "Details", value: "details", show: true },
+                        { label: "AI Analysis", value: "analysis", show: true },
+                        {
+                          label: "Claim",
+                          value: "claim",
+                          show: isOwner && totalCount > 0,
+                        },
+                      ].filter((d) => d.show)}
                       value={active}
                       onChange={setActive}
                     />
@@ -139,8 +168,22 @@ const MatchDetailScreen = () => {
                       </Box>
                     </VStack>
                   )}
+                  {active === "claim" && <MatchClaim match={data} />}
                   {/* Actions sections */}
-                  <MatchActions match={data} />
+                  {isOwner && totalCount === 0 && (
+                    <Button
+                      text="Claim Document"
+                      size="lg"
+                      className="rounded-full bg-teal-500 justify-between"
+                      onPress={() => {
+                        router.push({
+                          pathname: "/matches/[matchId]/claim",
+                          params: { matchId: data.id },
+                        });
+                      }}
+                      suffixIcon={ArrowRight}
+                    />
+                  )}
                 </VStack>
               </VStack>
             </ScrollView>
