@@ -2,8 +2,8 @@ import {
   MannuallyAddLostDocumentForm,
   ScanDocumentCaseForm,
 } from "@/components/cases";
+import { SegmentedControl } from "@/components/common";
 import { ScreenLayout } from "@/components/layout";
-import SegmentedControl from "@/components/SegmentedControl";
 import { Box } from "@/components/ui/box";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useMemo } from "react";

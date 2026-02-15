@@ -3,7 +3,7 @@ import { Theme, useThemeStore } from "@/store/theme";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import ActionSheetWrapper from "../actions-sheet-wrapper";
+import { ActionSheetWrapper } from "../common";
 import { ListTile } from "../list-tile";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
@@ -129,8 +129,8 @@ const AppPreferencesSection = () => {
                         item.value === "light"
                           ? "weather-sunny"
                           : item.value === "dark"
-                          ? "weather-night"
-                          : "weather-sunny-alert"
+                            ? "weather-night"
+                            : "weather-sunny-alert"
                       }
                       size={20}
                       color={colorScheme === "dark" ? "white" : "black"}

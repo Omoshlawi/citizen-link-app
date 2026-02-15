@@ -6,7 +6,7 @@ import { router } from "expo-router";
 import { Briefcase, FileUser, IdCard, MapPin } from "lucide-react-native";
 import React from "react";
 import { FlatList, TouchableOpacity } from "react-native";
-import Pagination from "../Pagination";
+import { Pagination } from "../common";
 import { EmptyState, ErrorState } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";

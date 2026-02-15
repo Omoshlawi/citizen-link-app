@@ -1,7 +1,8 @@
-import { useMatchApi } from "@/hooks/use-matches";
+import { useClaimApi } from "@/hooks/use-claims";
 import { handleApiErrors, uploadFile } from "@/lib/api";
 import { claimFormSchema } from "@/lib/schemas";
-import { ClaimFormData, Match } from "@/types/matches";
+import { ClaimFormData } from "@/types/claim";
+import { Match } from "@/types/matches";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
@@ -46,7 +47,7 @@ const ClaimForm: FC<ClaimFormProps> = ({ match }) => {
     },
   });
   const toast = useToast();
-  const { claimMatch } = useMatchApi();
+  const { claimMatch } = useClaimApi();
   const [scanned, setScanned] = useState<string[]>([]);
   const [uploadingFiles, setUploadingFiles] = useState(false);
 

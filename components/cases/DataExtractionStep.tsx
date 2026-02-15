@@ -1,6 +1,6 @@
 import { ConfidenceScore, Document, ImageAnalysisResult } from "@/types/cases";
 import React, { FC, useMemo, useState } from "react";
-import SegmentedControl from "../SegmentedControl";
+import { SegmentedControl } from "../common";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { HStack } from "../ui/hstack";
@@ -84,7 +84,7 @@ export const ImageAnalysis: FC<ImageAnalysisProps> = ({ analysis }) => {
         label: `Image ${a.index}`,
         value: `image-${a.index}`,
       })),
-    [analysis]
+    [analysis],
   );
   const [activeTab, setActiveTab] = useState("image-0");
   return (

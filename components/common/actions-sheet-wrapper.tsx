@@ -10,9 +10,9 @@ import {
   ActionsheetFlatList,
   ActionsheetItem,
   ActionsheetItemText,
-} from "./ui/actionsheet";
-import { Input, InputField, InputIcon, InputSlot } from "./ui/input";
-import { Spinner } from "./ui/spinner";
+} from "../ui/actionsheet";
+import { Input, InputField, InputIcon, InputSlot } from "../ui/input";
+import { Spinner } from "../ui/spinner";
 
 interface RenderTriggerProps<T> {
   onPress: () => void;

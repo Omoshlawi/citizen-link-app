@@ -1,7 +1,3 @@
-import { claimFormSchema } from "@/lib/schemas";
-import { User } from "better-auth";
-import z from "zod";
-import { PickupStation } from "./address";
 import { FoundDocumentCase, LostDocumentCase } from "./cases";
 
 export interface Match {
@@ -66,24 +62,3 @@ export enum MatchRecommendation {
   POSSIBLY_SAME = "POSSIBLY_SAME",
   DIFFERENT_PERSON = "DIFFERENT_PERSON",
 }
-
-export enum ClaimVerificationStatus {
-  PENDING = "PENDING",
-  VERIFIED = "VERIFIED",
-  FAILED = "FAILED",
-}
-
-export interface Claim {
-  id: string;
-  claimNumber: string;
-  userId: string;
-  user?: User;
-  foundDocumentCaseId: string;
-  matchId: string;
-  verificationStatus: ClaimVerificationStatus;
-  pickupStationId?: string;
-  pickupStation?: PickupStation;
-  preferredHandoverDate?:string
-}
-
-export type ClaimFormData = z.infer<typeof claimFormSchema>;

@@ -1,7 +1,7 @@
 import { cleanAiResponseText } from "@/lib/helpers";
 import { AiInteraction } from "@/types/cases";
 import React, { useMemo, useState } from "react";
-import SegmentedControl from "../SegmentedControl";
+import { SegmentedControl } from "../common";
 import { Badge, BadgeText } from "../ui/badge";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
@@ -28,10 +28,10 @@ const AiInteractionStep = <T extends object>({
       { label: "JSON", value: "json", visible: true },
       { label: "AI", value: "ai", visible: true },
     ],
-    [renderParsedResponse]
+    [renderParsedResponse],
   );
   const [activeTab, setActiveTab] = useState(
-    typeof renderParsedResponse === "function" ? "data" : "json"
+    typeof renderParsedResponse === "function" ? "data" : "json",
   );
   return (
     <Box>
@@ -44,7 +44,7 @@ const AiInteractionStep = <T extends object>({
       {typeof renderParsedResponse === "function" && activeTab === "data" && (
         <>
           {renderParsedResponse(
-            JSON.parse(cleanAiResponseText(aiData.response))
+            JSON.parse(cleanAiResponseText(aiData.response)),
           )}
         </>
       )}
@@ -54,7 +54,7 @@ const AiInteractionStep = <T extends object>({
           {JSON.stringify(
             JSON.parse(cleanAiResponseText(aiData.response)),
             null,
-            2
+            2,
           )}
         </Text>
       )}

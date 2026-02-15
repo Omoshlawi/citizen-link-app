@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React, { FC } from "react";
-import { Button } from "./ui/button";
-import { Heading } from "./ui/heading";
-import { HStack } from "./ui/hstack";
-import { Icon } from "./ui/icon";
+import { Button } from "../ui/button";
+import { Heading } from "../ui/heading";
+import { HStack } from "../ui/hstack";
+import { Icon } from "../ui/icon";
 type AppBarProps = {
   title: string;
   leading?: React.ReactNode;

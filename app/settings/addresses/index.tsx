@@ -1,7 +1,6 @@
-import { Search } from "@/components/common";
+import { Pagination, Search } from "@/components/common";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile3 } from "@/components/list-tile";
-import Pagination from "@/components/Pagination";
 import { EmptyState, ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";

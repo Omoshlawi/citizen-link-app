@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, ButtonIcon, ButtonText } from "./ui/button";
-import { HStack } from "./ui/hstack";
-import { ChevronLeftIcon, ChevronRightIcon } from "./ui/icon";
-import { Text } from "./ui/text";
+import { Button, ButtonIcon, ButtonText } from "../ui/button";
+import { HStack } from "../ui/hstack";
+import { ChevronLeftIcon, ChevronRightIcon } from "../ui/icon";
+import { Text } from "../ui/text";
 
 interface PaginationProps {
   currentPage?: number;

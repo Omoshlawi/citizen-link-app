@@ -3,7 +3,7 @@ import { useLocalSearchParams } from "expo-router";
 import { Contact, Info, MapPin, Store } from "lucide-react-native";
 import React from "react";
 import { FlatList } from "react-native";
-import Pagination from "../Pagination";
+import { Pagination } from "../common";
 import { EmptyState, ErrorState } from "../state-full-widgets";
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";

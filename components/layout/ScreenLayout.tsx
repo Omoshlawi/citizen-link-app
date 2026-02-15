@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AppBar from "../app-bar";
+import { AppBar } from "../common";
 import { Box } from "../ui/box";
 type ScreenLayoutProps = {
   title: string;

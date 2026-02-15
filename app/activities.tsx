@@ -13,7 +13,7 @@ import { Dot } from "lucide-react-native";
 import React from "react";
 import { FlatList } from "react-native";
 
-import Pagination from "@/components/Pagination";
+import { Pagination } from "@/components/common";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
@@ -48,9 +48,9 @@ const ActivitiesScreen = () => {
                               RiskInterpretation.LOW_RISK
                               ? "text-teal-600"
                               : activity.metadata?.riskInterpretation ===
-                                RiskInterpretation.MEDIUM_RISK
-                              ? "text-yellow-600"
-                              : "text-red-600"
+                                  RiskInterpretation.MEDIUM_RISK
+                                ? "text-yellow-600"
+                                : "text-red-600"
                             : "text-primary-600"
                         }
                         size="xl"
@@ -62,13 +62,13 @@ const ActivitiesScreen = () => {
                         ? `Score: ${
                             activity.metadata?.riskScore ?? "N/A"
                           } | ${getRiskInterpretation(
-                            activity.metadata?.riskInterpretation
+                            activity.metadata?.riskInterpretation,
                           )}`
                         : activity.resource === "referral"
-                        ? `Referral to ${activity.metadata?.healthFacilityName}`
-                        : activity.resource === "client"
-                        ? `Client: ${activity.metadata?.clientName}`
-                        : ""
+                          ? `Referral to ${activity.metadata?.healthFacilityName}`
+                          : activity.resource === "client"
+                            ? `Client: ${activity.metadata?.clientName}`
+                            : ""
                     }
                     trailing={
                       <Text size="xs" className="text-typography-500">

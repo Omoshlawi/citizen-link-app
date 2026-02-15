@@ -1,7 +1,7 @@
 import { Calendar } from "lucide-react-native";
 import React, { ComponentProps } from "react";
 import { Controller, FieldValues } from "react-hook-form";
-import DateTimePickerInput from "../date-time-picker";
+import { DateTimePickerInput } from "../common";
 import {
   FormControl,
   FormControlError,
