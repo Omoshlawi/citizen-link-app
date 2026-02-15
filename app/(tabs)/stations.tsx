@@ -6,7 +6,7 @@ import {
   StationsMapView,
   StationsViewTabs,
   StationsViewTabsProps,
-} from "@/components/statio ns";
+} from "@/components/stations";
 import { VStack } from "@/components/ui/vstack";
 import { usePickupStations } from "@/hooks/use-addresses";
 import { router, useLocalSearchParams } from "expo-router";

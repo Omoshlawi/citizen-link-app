@@ -61,6 +61,7 @@ const FormDatePicker = <T extends FieldValues>({
                 </FormControlLabel>
               )}
               <Input className="my-1" size="md" {...inputWrapperProps}>
+                {leftSection}
                 <InputField
                   placeholder="Select date"
                   {...inputProps}

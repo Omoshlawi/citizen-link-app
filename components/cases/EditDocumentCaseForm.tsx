@@ -100,7 +100,7 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
               variant="outline"
               title="Failed updating document"
               description={e.detail}
-              action="success"
+              action="error"
             />
           ),
         });
@@ -108,7 +108,7 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
         Object.entries(e).forEach(([key, val]) =>
           form.setError(key as keyof CaseDocumentFormData, {
             message: val as string,
-          })
+          }),
         );
       }
     }

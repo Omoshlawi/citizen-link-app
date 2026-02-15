@@ -1,6 +1,6 @@
 import { usePickupStations } from "@/hooks/use-addresses";
 import { useLocalSearchParams } from "expo-router";
-import { Hospital, Info, MapPin } from "lucide-react-native";
+import { Contact, Info, MapPin, Store } from "lucide-react-native";
 import React from "react";
 import { FlatList } from "react-native";
 import Pagination from "../Pagination";
@@ -14,12 +14,9 @@ import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-type StationsListViewProps = {
-  search?: string;
-  typeId?: string;
-};
+type StationsListViewProps = {};
 
-const StationsListView = ({ search, typeId }: StationsListViewProps) => {
+const StationsListView = ({}: StationsListViewProps) => {
   const params = useLocalSearchParams();
   const { stations, error, isLoading, ...pagination } = usePickupStations(
     params,
@@ -44,7 +41,7 @@ const StationsListView = ({ search, typeId }: StationsListViewProps) => {
           <Card size="md" variant="elevated">
             <HStack className="items-center" space="sm">
               <Icon
-                as={Hospital}
+                as={Store}
                 className="aspect-1 rounded-sm color-background-200"
                 size={60 as any}
               />
@@ -55,22 +52,36 @@ const StationsListView = ({ search, typeId }: StationsListViewProps) => {
                     size="2xs"
                     className="bg-teal-100 px-2 py-1 rounded-full text-teal-500 absolute right-2 top-1"
                   >
-                    {item.addressLocaleCode}
+                    {"Open"}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="sm">
                   <Icon as={MapPin} size="sm" className="text-typography-500" />
+                  <Text size="xs" className="overflow-ellipsis">
+                    {[
+                      item.level1,
+                      item.level2,
+                      item.level3,
+                      item.level4,
+                      item.level5,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </Text>
+                </HStack>
+                <HStack className="items-center" space="sm">
+                  <Icon
+                    as={Contact}
+                    size="sm"
+                    className="text-typography-500"
+                  />
                   <Text size="xs">
-                    {`${item.level3 ? item.level3 + ", " : ""} ${item.level2}, ${
-                      item.level1
-                    }`}
+                    {[item.phoneNumber, item.email].filter(Boolean).join(" | ")}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="sm">
                   <Icon as={Info} size="sm" className="text-typography-500" />
-                  <Text size="xs">{`MFL: ${item.code} | Owner: ${
-                    item.email ?? "N/A"
-                  }`}</Text>
+                  <Text size="xs">{`CODE: ${item.code} `}</Text>
                 </HStack>
               </VStack>
             </HStack>

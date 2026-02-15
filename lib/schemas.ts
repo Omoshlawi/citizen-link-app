@@ -226,4 +226,6 @@ export const claimFormSchema = z.object({
     })
     .array()
     .min(4),
+  matchId: z.uuid(),
+  // attachments: z.string().nonempty().array().nonempty().max(2),
 });

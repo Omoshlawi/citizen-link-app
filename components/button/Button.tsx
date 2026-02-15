@@ -16,6 +16,7 @@ type ButtonProps = {
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   disabled?: boolean;
   loading?: boolean;
+  className?: string;
 };
 const Button: FC<ButtonProps> = ({
   text,
@@ -25,10 +26,11 @@ const Button: FC<ButtonProps> = ({
   size,
   disabled = false,
   loading = false,
+  className = "",
 }) => {
   return (
     <GlueStackButton
-      className={`w-full rounded-full bg-background-btn justify-start`}
+      className={`w-full rounded-full bg-background-btn justify-start ${className}`}
       size={size}
       onPress={onPress}
       disabled={disabled || loading}

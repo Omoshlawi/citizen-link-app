@@ -1,6 +1,6 @@
 import { usePickupStations } from "@/hooks/use-addresses";
 import { useLocalSearchParams } from "expo-router";
-import { Hospital, Info, MapPin, User } from "lucide-react-native";
+import { Info, Mail, MapPin, Phone, Store } from "lucide-react-native";
 import React from "react";
 import { Dimensions, FlatList } from "react-native";
 import Pagination from "../Pagination";
@@ -20,15 +20,14 @@ const GAP = 8; // Gap between cards
 const NUM_COLUMNS = 2;
 const CARD_WIDTH = (SCREEN_WIDTH - CARD_PADDING * 2 - GAP) / NUM_COLUMNS;
 
-type StationsGridViewProps = {
-  search?: string;
-  typeId?: string;
-};
+type StationsGridViewProps = {};
 
-const StationsGridView = ({ search, typeId }: StationsGridViewProps) => {
+const StationsGridView = ({}: StationsGridViewProps) => {
   const params = useLocalSearchParams();
-  const { stations, error, isLoading, ...pagination } =
-    usePickupStations(params);
+  const { stations, error, isLoading, ...pagination } = usePickupStations(
+    params,
+    "router",
+  );
 
   if (isLoading) {
     return <Spinner />;
@@ -54,7 +53,7 @@ const StationsGridView = ({ search, typeId }: StationsGridViewProps) => {
             <VStack space="sm" className="flex-1">
               <Box className="w-full h-24 rounded-sm relative">
                 <Icon
-                  as={Hospital}
+                  as={Store}
                   className="w-full h-full overflow-hidden color-background-200"
                 />
 
@@ -72,9 +71,15 @@ const StationsGridView = ({ search, typeId }: StationsGridViewProps) => {
                 <HStack className="items-center" space="xs">
                   <Icon as={MapPin} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {`${item.level3 ? item.level3 + ", " : ""} ${item.level2}, ${
-                      item.level1
-                    }`}{" "}
+                    {[
+                      item.level1,
+                      item.level2,
+                      item.level3,
+                      item.level4,
+                      item.level5,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="xs">
@@ -84,11 +89,19 @@ const StationsGridView = ({ search, typeId }: StationsGridViewProps) => {
                   </Text>
                 </HStack>
                 <HStack className="items-center" space="xs">
-                  <Icon as={User} size="xs" className="text-typography-500" />
+                  <Icon as={Phone} size="xs" className="text-typography-500" />
                   <Text size="2xs" numberOfLines={1} className="flex-1">
-                    {`owner: ${item.email}`}
+                    {`Phone: ${item.phoneNumber}`}
                   </Text>
                 </HStack>
+                {item.email && (
+                  <HStack className="items-center" space="xs">
+                    <Icon as={Mail} size="xs" className="text-typography-500" />
+                    <Text size="2xs" numberOfLines={1} className="flex-1">
+                      {`Phone: ${item.phoneNumber}`}
+                    </Text>
+                  </HStack>
+                )}
               </VStack>
             </VStack>
           </Card>

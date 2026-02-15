@@ -45,7 +45,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
     data,
   ) => {
     try {
-      if (!scanned) {
+      if (!scanned.length) {
         toast.show({
           placement: "top",
           render: ({ id }) => {
