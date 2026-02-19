@@ -5,17 +5,20 @@ import Toaster from "@/components/toaster";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useMatchApi } from "@/hooks/use-matches";
+import { useTransitionReasons } from "@/hooks/use-transition-reasons";
 import { handleApiErrors } from "@/lib/api";
-import { getMatchRejectReasons } from "@/lib/helpers";
 import { rejectMatchSchema } from "@/lib/schemas";
 import { RejectMatchFormData } from "@/types/matches";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
-import React, { useMemo } from "react";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 const RejectMatch = () => {
-  const { matchId } = useLocalSearchParams<{ matchId: string }>();
+  const { matchId, matchStatus } = useLocalSearchParams<{
+    matchId: string;
+    matchStatus?: string;
+  }>();
   const { rejectMatch } = useMatchApi();
   const toast = useToast();
   const form = useForm({
@@ -23,18 +26,12 @@ const RejectMatch = () => {
     defaultValues: { reason: "OWNERSHIP_DENIED" },
   });
 
-  const reasons = useMemo(() => {
-    const _reason: RejectMatchFormData["reason"][] = [
-      "DOCUMENT_SUPERSEDED",
-      "OWNERSHIP_DENIED",
-      "OTHER",
-    ];
-    return _reason.map((r) => ({
-      value: r,
-      label: getMatchRejectReasons(r) as string,
-    }));
-  }, []);
-
+  const { reasons } = useTransitionReasons({
+    entityType: "Match",
+    fromStatus: matchStatus,
+    toStatus: "REJECTED",
+    auto: "false",
+  });
   const onSubmit: SubmitHandler<RejectMatchFormData> = async (data) => {
     try {
       await rejectMatch(matchId, data);
@@ -78,7 +75,10 @@ const RejectMatch = () => {
     <ScreenLayout title="Reject Match">
       <VStack space="lg">
         <FormSelectInput
-          data={reasons}
+          data={reasons.map((r) => ({
+            value: r.id,
+            label: r.label,
+          }))}
           controll={form.control}
           name="reason"
           label="Reason"

@@ -65,9 +65,8 @@ const MatchDetailScreen = () => {
   const canRejectMatch = useMemo(() => {
     if (!isOwner) return false; // None owners cant view claims
     if (totalCount === 0) return true; // Mean no claim is raised yet
-    const latestClaimStatus = claims?.[0]?.status;
-    return latestClaimStatus === ClaimStatus.PENDING;
-  }, [claims, isOwner, totalCount]);
+    return match?.status === MatchStatus.PENDING;
+  }, [isOwner, match?.status, totalCount]);
   const dateFomart = "ddd MMM DD, YYYY";
   const [active, setActive] = useState("details");
   return (
@@ -235,7 +234,10 @@ const MatchDetailScreen = () => {
                       onPress={() => {
                         router.push({
                           pathname: "/matches/[matchId]/reject",
-                          params: { matchId: data.id },
+                          params: {
+                            matchId: data.id,
+                            matchStatus: data.status,
+                          },
                         });
                       }}
                       suffixIcon={ArrowRight}

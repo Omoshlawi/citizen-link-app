@@ -129,7 +129,10 @@ const DocumentClaimDetail = () => {
                       onPress={() => {
                         router.push({
                           pathname: "/claims/[claimId]/cancel",
-                          params: { claimId: data.id },
+                          params: {
+                            claimId: data.id,
+                            claimStatus: data.status,
+                          },
                         });
                       }}
                       suffixIcon={ArrowRight}
@@ -143,7 +146,10 @@ const DocumentClaimDetail = () => {
                       onPress={() => {
                         router.push({
                           pathname: "/claims/[claimId]/dispute",
-                          params: { claimId: data.id },
+                          params: {
+                            claimId: data.id,
+                            claimStatus: data.status,
+                          },
                         });
                       }}
                       suffixIcon={ArrowRight}

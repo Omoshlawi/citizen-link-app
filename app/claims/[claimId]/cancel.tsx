@@ -5,35 +5,32 @@ import Toaster from "@/components/toaster";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useClaimApi } from "@/hooks/use-claims";
+import { useTransitionReasons } from "@/hooks/use-transition-reasons";
 import { handleApiErrors } from "@/lib/api";
-import { getClaimCancelReasons } from "@/lib/helpers";
 import { cancelClaimSchema } from "@/lib/schemas";
 import { CancelClaimFormData } from "@/types/claim";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
-import React, { useMemo } from "react";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 const CancelDocumentClaim = () => {
-  const { claimId } = useLocalSearchParams<{ claimId: string }>();
+  const { claimId, claimStatus } = useLocalSearchParams<{
+    claimId: string;
+    claimStatus?: string;
+  }>();
   const toast = useToast();
   const { cancelClaim } = useClaimApi();
   const form = useForm({
     resolver: zodResolver(cancelClaimSchema),
     defaultValues: { reason: "INVALID_SUBMISSION" },
   });
-
-  const reasons = useMemo(() => {
-    const _reason: CancelClaimFormData["reason"][] = [
-      "INVALID_SUBMISSION",
-      "OTHER",
-    ];
-    return _reason.map((r) => ({
-      value: r,
-      label: getClaimCancelReasons(r) as string,
-    }));
-  }, []);
+  const { reasons } = useTransitionReasons({
+    entityType: "Claim",
+    fromStatus: claimStatus,
+    toStatus: "CANCELLED",
+  });
 
   const onSubmit: SubmitHandler<CancelClaimFormData> = async (data) => {
     try {
@@ -77,7 +74,10 @@ const CancelDocumentClaim = () => {
     <ScreenLayout title="Cancel Claim">
       <VStack space="lg">
         <FormSelectInput
-          data={reasons}
+          data={reasons.map((r) => ({
+            value: r.id,
+            label: r.label,
+          }))}
           controll={form.control}
           name="reason"
           label="Reason"

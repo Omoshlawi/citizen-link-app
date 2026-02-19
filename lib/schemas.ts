@@ -230,20 +230,13 @@ export const claimFormSchema = z.object({
   // attachments: z.string().nonempty().array().nonempty().max(2),
 });
 
-export const rejectMatchSchema = z.object({
-  reason: z.enum([
-    "OWNERSHIP_DENIED", // User indicates the document does not belong to them.
-    "DOCUMENT_SUPERSEDED",
-    "OTHER",
-  ]),
+export const statusTransitionReasonsSchema = z.object({
+  reason: z.uuid(),
   comment: z.string().optional(),
 });
 
-export const cancelClaimSchema = z.object({
-  comment: z.string().optional(),
-  reason: z.enum(["INVALID_SUBMISSION", "OTHER"]),
-});
-export const disputeClaimSchema = z.object({
-  comment: z.string().optional(),
-  reason: z.enum(["OTHER"]),
-});
+export const rejectMatchSchema = statusTransitionReasonsSchema;
+
+export const cancelClaimSchema = statusTransitionReasonsSchema;
+
+export const disputeClaimSchema = statusTransitionReasonsSchema;

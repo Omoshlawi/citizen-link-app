@@ -102,8 +102,6 @@ const SignUpScreen = () => {
               name="name"
               label={"Name"}
               placeholder={"e.g John Doe"}
-              autoCapitalize="none"
-              keyboardType={"email-address"}
             />
             <FormTextInput
               controll={form.control}
