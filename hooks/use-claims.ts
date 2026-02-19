@@ -3,9 +3,14 @@ import {
   APIFetchResponse,
   APIListResponse,
   constructUrl,
-  mutate,
 } from "@/lib/api";
-import { Claim, ClaimFormData } from "@/types/claim";
+import { invalidateCache } from "@/lib/helpers";
+import {
+  CancelClaimFormData,
+  Claim,
+  ClaimFormData,
+  DisputeClaimFormData,
+} from "@/types/claim";
 import useSWR from "swr";
 import { useMergePaginationInfo } from "./usePagination";
 
@@ -14,13 +19,28 @@ const claimMatch = async (data: ClaimFormData & { attachments: string[] }) => {
     method: "POST",
     data,
   });
-  mutate("/matching");
-  mutate("/claim");
+  invalidateCache();
+  return res.data;
+};
+const cancelClaim = async (claimId: string, data: CancelClaimFormData) => {
+  const res = await apiFetch<Claim>(`/claim/${claimId}/cancel`, {
+    method: "POST",
+    data,
+  });
+  invalidateCache();
+  return res.data;
+};
+const disputeClaim = async (claimId: string, data: DisputeClaimFormData) => {
+  const res = await apiFetch<Claim>(`/claim/${claimId}/dispute`, {
+    method: "POST",
+    data,
+  });
+  invalidateCache();
   return res.data;
 };
 
 export const useClaimApi = () => {
-  return { claimMatch };
+  return { claimMatch, cancelClaim, disputeClaim };
 };
 
 export const useClaim = (

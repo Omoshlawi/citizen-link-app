@@ -1,3 +1,5 @@
+import { rejectMatchSchema } from "@/lib/schemas";
+import z from "zod";
 import { FoundDocumentCase, LostDocumentCase } from "./cases";
 
 export interface Match {
@@ -61,3 +63,5 @@ export enum MatchRecommendation {
   POSSIBLY_SAME = "POSSIBLY_SAME",
   DIFFERENT_PERSON = "DIFFERENT_PERSON",
 }
+
+export type RejectMatchFormData = z.infer<typeof rejectMatchSchema>;

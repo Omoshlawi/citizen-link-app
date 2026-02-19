@@ -24,6 +24,10 @@ const DocumentClaimDetail = () => {
     ClaimStatus.PENDING,
     ClaimStatus.DISPUTED,
   ];
+  const disputableClaimStatus: ClaimStatus[] = [
+    ClaimStatus.PENDING,
+    ClaimStatus.DISPUTED,
+  ];
   return (
     <ScreenLayout title="Document Claim">
       <When
@@ -124,8 +128,22 @@ const DocumentClaimDetail = () => {
                       className="rounded-full bg-error-500 justify-between"
                       onPress={() => {
                         router.push({
-                          pathname: "/matches/[matchId]/claim",
-                          params: { matchId: data.id },
+                          pathname: "/claims/[claimId]/cancel",
+                          params: { claimId: data.id },
+                        });
+                      }}
+                      suffixIcon={ArrowRight}
+                    />
+                  )}
+                  {disputableClaimStatus.includes(data.status) && (
+                    <Button
+                      text="Dispute Claim"
+                      size="lg"
+                      className="rounded-full bg-blue-500 justify-between"
+                      onPress={() => {
+                        router.push({
+                          pathname: "/claims/[claimId]/dispute",
+                          params: { claimId: data.id },
                         });
                       }}
                       suffixIcon={ArrowRight}

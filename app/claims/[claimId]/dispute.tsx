@@ -6,38 +6,35 @@ import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useClaimApi } from "@/hooks/use-claims";
 import { handleApiErrors } from "@/lib/api";
-import { getClaimCancelReasons } from "@/lib/helpers";
-import { cancelClaimSchema } from "@/lib/schemas";
-import { CancelClaimFormData } from "@/types/claim";
+import { getClaimDisputeReasons } from "@/lib/helpers";
+import { disputeClaimSchema } from "@/lib/schemas";
+import { DisputeClaimFormData } from "@/types/claim";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-const CancelDocumentClaim = () => {
+const DisputeClaim = () => {
   const { claimId } = useLocalSearchParams<{ claimId: string }>();
   const toast = useToast();
-  const { cancelClaim } = useClaimApi();
+  const { disputeClaim } = useClaimApi();
   const form = useForm({
-    resolver: zodResolver(cancelClaimSchema),
-    defaultValues: { reason: "INVALID_SUBMISSION" },
+    resolver: zodResolver(disputeClaimSchema),
+    defaultValues: { reason: "OTHER" },
   });
 
   const reasons = useMemo(() => {
-    const _reason: CancelClaimFormData["reason"][] = [
-      "INVALID_SUBMISSION",
-      "OTHER",
-    ];
+    const _reason: DisputeClaimFormData["reason"][] = ["OTHER"];
     return _reason.map((r) => ({
       value: r,
-      label: getClaimCancelReasons(r) as string,
+      label: getClaimDisputeReasons(r) as string,
     }));
   }, []);
 
-  const onSubmit: SubmitHandler<CancelClaimFormData> = async (data) => {
+  const onSubmit: SubmitHandler<DisputeClaimFormData> = async (data) => {
     try {
-      await cancelClaim(claimId, data);
+      await disputeClaim(claimId, data);
       toast.show({
         placement: "top",
         render: ({ id }) => {
@@ -47,7 +44,7 @@ const CancelDocumentClaim = () => {
               uniqueToastId={uniqueToastId}
               variant="outline"
               title="Success"
-              description="Claim successfully canceled"
+              description="Claim successfully disputed"
               action="success"
             />
           );
@@ -74,14 +71,14 @@ const CancelDocumentClaim = () => {
     }
   };
   return (
-    <ScreenLayout title="Cancel Claim">
+    <ScreenLayout title="Dispute Claim">
       <VStack space="lg">
         <FormSelectInput
           data={reasons}
           controll={form.control}
           name="reason"
           label="Reason"
-          helperText="Reason for canceling claim"
+          helperText="Reason for disputing claim"
         />
         <FormTextArea
           controll={form.control}
@@ -90,15 +87,15 @@ const CancelDocumentClaim = () => {
           helperText="Additional comments"
         />
         <Button
-          text="Cancel Claim"
+          text="Dispute Claim"
           suffixIcon={ArrowRight}
           onPress={form.handleSubmit(onSubmit)}
           loading={form.formState.isSubmitting}
-          className="bg-error-500"
+          className="bg-blue-500"
         />
       </VStack>
     </ScreenLayout>
   );
 };
 
-export default CancelDocumentClaim;
+export default DisputeClaim;

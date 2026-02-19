@@ -1,5 +1,11 @@
-import { APIFetchResponse, APIListResponse, constructUrl } from "@/lib/api";
-import { Match } from "@/types/matches";
+import {
+  apiFetch,
+  APIFetchResponse,
+  APIListResponse,
+  constructUrl,
+} from "@/lib/api";
+import { invalidateCache } from "@/lib/helpers";
+import { Match, RejectMatchFormData } from "@/types/matches";
 import { useLocalSearchParams } from "expo-router";
 import useSWR from "swr";
 import { useMergePaginationInfo } from "./usePagination";
@@ -37,4 +43,19 @@ export const useMatch = (matchId?: string) => {
     matchId ? url : null,
   );
   return { match: data?.data, isLoading, error };
+};
+
+const rejectMatch = async (matchId: string, data: RejectMatchFormData) => {
+  const res = await apiFetch<Match>(`/matching/${matchId}/reject`, {
+    method: "POST",
+    data,
+  });
+  invalidateCache();
+  return res.data;
+};
+
+export const useMatchApi = () => {
+  return {
+    rejectMatch,
+  };
 };
