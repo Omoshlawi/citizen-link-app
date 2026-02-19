@@ -1,23 +1,26 @@
 import { useClaims } from "@/hooks/use-claims";
+import { getClaimStatusDisplay } from "@/lib/helpers";
+import { ClaimStatus } from "@/types/claim";
 import { Match } from "@/types/matches";
+import cn from "classnames";
 import dayjs from "dayjs";
-import { Hash, Info } from "lucide-react-native";
+import { router } from "expo-router";
+import { ChevronRight, Hash, Info } from "lucide-react-native";
 import React, { FC } from "react";
 import { DisplayTile } from "../list-tile";
 import { Box } from "../ui/box";
+import { Button, ButtonIcon, ButtonText } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
-import ClaimAttachment from "./ClaimAttachment";
 
 type MatchClaimProps = {
   match: Match;
 };
-const MatchClaim: FC<MatchClaimProps> = ({ match }) => {
+const MatchClaims: FC<MatchClaimProps> = ({ match }) => {
   const { isLoading, claims } = useClaims({
     matchId: match.id,
   });
-  const claim = claims?.[0];
 
   if (isLoading) return <Spinner />;
 
@@ -25,75 +28,69 @@ const MatchClaim: FC<MatchClaimProps> = ({ match }) => {
     <>
       <VStack className=" pt-6" space="md">
         <Text className="text-sm font-semibold text-typography-800">
-          Claim details
+          Raised Claims
         </Text>
-        <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
-          <VStack className="px-4" space="xs">
-            <DisplayTile
-              icon={Hash}
-              label={"Claim number"}
-              value={claim.claimNumber}
-              withBottomOutline
-            />
-
-            <DisplayTile
-              icon={Info}
-              label={"Status"}
-              value={claim.status}
-              withBottomOutline
-            />
-            <DisplayTile
-              icon={Info}
-              label={"date claimed"}
-              value={dayjs(claim.createdAt).format("ddd DD MMM, YYYY")}
-              withBottomOutline
-            />
-            <DisplayTile
-              icon={Info}
-              label={"Passed Security question?"}
-              value={claim.verification.passed ? "Yes" : "No"}
-              trailing={
-                <Text
-                  className={`px-2 py-1 ${claim.verification.passed ? "bg-teal-600" : "bg-red-600"} rounded-full text-white`}
-                  size="xs"
-                >
-                  {claim.verification.passed ? "Passed" : "Failed"}
-                </Text>
-              }
-            />
-          </VStack>
-        </Box>
-      </VStack>
-      <VStack className=" pt-6" space="md">
-        <Text className="text-sm font-semibold text-typography-800">
-          My response
-        </Text>
-        <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
-          <VStack className="px-4" space="xs">
-            {claim?.verification?.userResponses?.map((res, i) => (
+        {claims.map((claim) => (
+          <Box
+            className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden"
+            key={claim.id}
+          >
+            <VStack className="px-4" space="xs">
               <DisplayTile
-                withTopOutline={i !== 0}
-                icon={Info}
-                label={res.question}
-                value={res.response}
-                key={i}
+                icon={Hash}
+                label={"Claim number"}
+                value={claim.claimNumber}
+                withBottomOutline
+                trailing={
+                  <Button
+                    size="xs"
+                    className="rounded-full bg-teal-600"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/claims/[claimId]",
+                        params: { claimId: claim.id },
+                      })
+                    }
+                  >
+                    <ButtonText className="text-white">View Details</ButtonText>
+                    <ButtonIcon as={ChevronRight} className="text-white" />
+                  </Button>
+                }
               />
-            ))}
-          </VStack>
-        </Box>
-      </VStack>
-      <VStack className=" pt-6" space="md">
-        <Text className="text-sm font-semibold text-typography-800">
-          Support documents(attachments)
-        </Text>
-        <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
-          <VStack className="px-4" space="xs">
-            <ClaimAttachment claim={claim} />
-          </VStack>
-        </Box>
+
+              <DisplayTile
+                icon={Info}
+                label={"Status"}
+                value={getClaimStatusDisplay(claim.status)}
+                withBottomOutline
+                trailing={
+                  <Text
+                    className={cn(`px-2 py-1 rounded-full text-white`, {
+                      "bg-teal-600": claim.status === ClaimStatus.VERIFIED,
+                      "bg-red-600":
+                        claim.status === ClaimStatus.REJECTED ||
+                        claim.status === ClaimStatus.CANCELLED,
+                      "bg-blue-600": claim.status === ClaimStatus.PENDING,
+                      "bg-yellow-600": claim.status === ClaimStatus.DISPUTED,
+                    })}
+                    size="xs"
+                  >
+                    {getClaimStatusDisplay(claim.status)}
+                  </Text>
+                }
+              />
+              <DisplayTile
+                icon={Info}
+                label={"date claimed"}
+                value={dayjs(claim.createdAt).format("ddd DD MMM, YYYY")}
+                withBottomOutline
+              />
+            </VStack>
+          </Box>
+        ))}
       </VStack>
     </>
   );
 };
 
-export default MatchClaim;
+export default MatchClaims;

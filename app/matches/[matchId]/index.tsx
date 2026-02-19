@@ -2,7 +2,7 @@ import { Button } from "@/components/button";
 import { SegmentedControl } from "@/components/common";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile } from "@/components/list-tile";
-import { MatchClaim, MatchImagePreview } from "@/components/matches";
+import { MatchClaims, MatchImagePreview } from "@/components/matches";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Spinner } from "@/components/ui/spinner";
@@ -14,7 +14,11 @@ import { authClient } from "@/lib/auth-client";
 import {
   getMatchConfidenceDisplay,
   getMatchRecommendationDisplay,
+  getMatchStatusDisplay,
 } from "@/lib/helpers";
+import { ClaimStatus } from "@/types/claim";
+import { MatchStatus } from "@/types/matches";
+import cn from "classnames";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -41,14 +45,29 @@ const MatchDetailScreen = () => {
     totalCount,
     isLoading: isLoadingClaims,
     error: claimserror,
+    claims,
   } = useClaims({
     matchId: matchId,
+    limit: 1,
+    orderBy: "-createdAt",
   });
 
   const isOwner = useMemo(
     () => match?.foundDocumentCase.case?.userId !== userSession?.user.id,
     [match?.foundDocumentCase.case?.userId, userSession?.user.id],
   );
+  const canClaim = useMemo(() => {
+    if (!isOwner) return false; // None owners cant view claims
+    if (totalCount === 0) return true; // Mean no claim is raised yet
+    const latestClaimStatus = claims?.[0]?.status;
+    return latestClaimStatus === ClaimStatus.CANCELLED;
+  }, [claims, isOwner, totalCount]);
+  const canRejectMatch = useMemo(() => {
+    if (!isOwner) return false; // None owners cant view claims
+    if (totalCount === 0) return true; // Mean no claim is raised yet
+    const latestClaimStatus = claims?.[0]?.status;
+    return latestClaimStatus === ClaimStatus.PENDING;
+  }, [claims, isOwner, totalCount]);
   const dateFomart = "ddd MMM DD, YYYY";
   const [active, setActive] = useState("details");
   return (
@@ -82,7 +101,7 @@ const MatchDetailScreen = () => {
                         { label: "Details", value: "details", show: true },
                         { label: "AI Analysis", value: "analysis", show: true },
                         {
-                          label: "Claim",
+                          label: "Claims",
                           value: "claim",
                           show: isOwner && totalCount > 0,
                         },
@@ -132,6 +151,30 @@ const MatchDetailScreen = () => {
                             )}
                             withTopOutline
                           />
+                          <DisplayTile
+                            icon={Fingerprint}
+                            label={"Status"}
+                            value={getMatchStatusDisplay(data.status)}
+                            withTopOutline
+                            trailing={
+                              <Text
+                                className={cn(
+                                  `px-2 py-1 rounded-full text-white`,
+                                  {
+                                    "bg-teal-600":
+                                      data.status === MatchStatus.CLAIMED,
+                                    "bg-red-600":
+                                      data.status === MatchStatus.REJECTED,
+                                    "bg-yellow-600":
+                                      data.status === MatchStatus.PENDING,
+                                  },
+                                )}
+                                size="xs"
+                              >
+                                {getMatchStatusDisplay(data.status)}
+                              </Text>
+                            }
+                          />
                         </VStack>
                       </Box>
                     </VStack>
@@ -168,16 +211,30 @@ const MatchDetailScreen = () => {
                       </Box>
                     </VStack>
                   )}
-                  {active === "claim" && <MatchClaim match={data} />}
+                  {active === "claim" && <MatchClaims match={data} />}
                   {/* Actions sections */}
-                  {isOwner && totalCount === 0 && (
+                  {canClaim && (
                     <Button
                       text="Claim Document"
                       size="lg"
                       className="rounded-full bg-teal-500 justify-between"
                       onPress={() => {
                         router.push({
-                          pathname: "/matches/[matchId]/claim",
+                          pathname: "/claims/add",
+                          params: { matchId: data.id },
+                        });
+                      }}
+                      suffixIcon={ArrowRight}
+                    />
+                  )}
+                  {canRejectMatch && (
+                    <Button
+                      text="Reject Match"
+                      size="lg"
+                      className="rounded-full bg-error-500 justify-between"
+                      onPress={() => {
+                        router.push({
+                          pathname: "/matches/[matchId]/reject",
                           params: { matchId: data.id },
                         });
                       }}

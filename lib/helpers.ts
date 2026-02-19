@@ -1,4 +1,5 @@
 import { Address } from "@/types/address";
+import { ClaimStatus } from "@/types/claim";
 import { FollowUp, OutreachAction } from "@/types/follow-up";
 import {
   MatchConfidence,
@@ -267,8 +268,6 @@ export function getMatchStatusDisplay(status: MatchStatus) {
       return "Rejected";
     case MatchStatus.CLAIMED:
       return "Claimed";
-    case MatchStatus.EXPIRED:
-      return "Expired";
   }
 }
 
@@ -280,8 +279,6 @@ export function getMatchStatusColor(status: MatchStatus) {
       return "red";
     case MatchStatus.CLAIMED:
       return "green";
-    case MatchStatus.EXPIRED:
-      return "gray";
   }
 }
 
@@ -312,3 +309,18 @@ export function getMatchRecommendationDisplay(
       return "Different person";
   }
 }
+
+export const getClaimStatusDisplay = (status: ClaimStatus) => {
+  switch (status) {
+    case ClaimStatus.PENDING:
+      return "Pending";
+    case ClaimStatus.VERIFIED:
+      return "Verified";
+    case ClaimStatus.REJECTED:
+      return "Rejected";
+    case ClaimStatus.DISPUTED:
+      return "Disputed";
+    case ClaimStatus.CANCELLED:
+      return "Cancelled";
+  }
+};

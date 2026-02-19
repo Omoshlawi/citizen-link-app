@@ -46,7 +46,6 @@ export enum MatchStatus {
   PENDING = "PENDING", // Match found, awaiting user action
   REJECTED = "REJECTED", // User rejected match
   CLAIMED = "CLAIMED", // User claimed this match
-  EXPIRED = "EXPIRED", // Match expired without action
 }
 
 export enum MatchConfidence {
