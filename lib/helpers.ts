@@ -1,15 +1,10 @@
 import { Address } from "@/types/address";
-import {
-  CancelClaimFormData,
-  ClaimStatus,
-  DisputeClaimFormData,
-} from "@/types/claim";
+import { ClaimStatus } from "@/types/claim";
 import { FollowUp, OutreachAction } from "@/types/follow-up";
 import {
   MatchConfidence,
   MatchRecommendation,
   MatchStatus,
-  RejectMatchFormData,
 } from "@/types/matches";
 import {
   CompleteReferralFormData,
@@ -329,36 +324,5 @@ export const getClaimStatusDisplay = (status: ClaimStatus) => {
       return "Disputed";
     case ClaimStatus.CANCELLED:
       return "Cancelled";
-  }
-};
-
-export const getMatchRejectReasons = (
-  reason: RejectMatchFormData["reason"],
-) => {
-  switch (reason) {
-    case "DOCUMENT_SUPERSEDED":
-      return "I already replaced this document";
-    case "OWNERSHIP_DENIED":
-      return "This is not my document";
-    default:
-      return "Other";
-  }
-};
-export const getClaimCancelReasons = (
-  reason: CancelClaimFormData["reason"],
-) => {
-  switch (reason) {
-    case "INVALID_SUBMISSION":
-      return "Invalid Submission";
-    default:
-      return "Other";
-  }
-};
-export const getClaimDisputeReasons = (
-  reason: DisputeClaimFormData["reason"],
-) => {
-  switch (reason) {
-    default:
-      return "Other";
   }
 };
