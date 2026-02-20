@@ -9,6 +9,7 @@ import {
 import { Match, MatchStatus } from "@/types/matches";
 
 import { useClaims } from "@/hooks/use-claims";
+import { useDocumentCase } from "@/hooks/use-document-cases";
 import { ClaimStatus } from "@/types/claim";
 import cn from "classnames";
 import { router } from "expo-router";
@@ -25,7 +26,7 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
   match,
   useCase = "list",
 }) => {
-  const images = useMemo(
+  const blurredImages = useMemo(
     () =>
       (match?.foundDocumentCase?.case?.document?.images ?? [])
         .map((at) => at.blurredUrl)
@@ -38,7 +39,11 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
     limit: 1,
   });
   const latestClaim = claims?.[0];
-
+  const { report } = useDocumentCase(
+    latestClaim?.status !== ClaimStatus.VERIFIED
+      ? undefined
+      : latestClaim?.foundDocumentCase?.caseId,
+  );
   return (
     <TouchableOpacity
       activeOpacity={0.9}
@@ -53,7 +58,13 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
     >
       <Box className="w-full">
         {/* Main Image Area */}
-        <ProtectedImages images={images as string[]} />
+        {!report ? (
+          <ProtectedImages images={blurredImages as string[]} />
+        ) : (
+          <ProtectedImages
+            images={report?.document?.images.map((at) => at.url)}
+          />
+        )}
 
         {/* Content Area */}
         {useCase === "list" && (

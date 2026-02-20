@@ -85,7 +85,6 @@ const MatchClaims: FC<MatchClaimProps> = ({ match }) => {
                 icon={Info}
                 label={"date claimed"}
                 value={dayjs(claim.createdAt).format("ddd DD MMM, YYYY")}
-                withBottomOutline
               />
             </VStack>
           </Box>

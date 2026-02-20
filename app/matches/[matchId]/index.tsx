@@ -1,11 +1,10 @@
-import { Button } from "@/components/button";
 import { SegmentedControl } from "@/components/common";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile } from "@/components/list-tile";
 import {
+  MatchActions,
   MatchClaims,
   MatchImagePreview,
-  ViewVerifiedClaimedDocumentDetails,
 } from "@/components/matches";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
@@ -20,13 +19,11 @@ import {
   getMatchRecommendationDisplay,
   getMatchStatusDisplay,
 } from "@/lib/helpers";
-import { ClaimStatus } from "@/types/claim";
 import { MatchStatus } from "@/types/matches";
 import cn from "classnames";
 import dayjs from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import {
-  ArrowRight,
   BrainCircuit,
   Calendar,
   Fingerprint,
@@ -49,7 +46,6 @@ const MatchDetailScreen = () => {
     totalCount,
     isLoading: isLoadingClaims,
     error: claimserror,
-    claims,
   } = useClaims({
     matchId: matchId,
     limit: 1,
@@ -60,21 +56,14 @@ const MatchDetailScreen = () => {
     () => match?.foundDocumentCase.case?.userId !== userSession?.user.id,
     [match?.foundDocumentCase.case?.userId, userSession?.user.id],
   );
-  const canClaim = useMemo(() => {
-    if (!isOwner) return false; // None owners cant view claims
-    if (totalCount === 0) return true; // Mean no claim is raised yet
-    const latestClaimStatus = claims?.[0]?.status;
-    return latestClaimStatus === ClaimStatus.CANCELLED;
-  }, [claims, isOwner, totalCount]);
-  const canRejectMatch = useMemo(() => {
-    if (!isOwner) return false; // None owners cant view claims
-    if (totalCount === 0) return true; // Mean no claim is raised yet
-    return match?.status === MatchStatus.PENDING;
-  }, [isOwner, match?.status, totalCount]);
+
   const dateFomart = "ddd MMM DD, YYYY";
   const [active, setActive] = useState("details");
   return (
-    <ScreenLayout title="Match Detail">
+    <ScreenLayout
+      title="Match Detail"
+      actions={<MatchActions isOwner={isOwner} matchId={matchId} />}
+    >
       <When
         asyncState={{
           isLoading: isLoading || isPending || isLoadingClaims,
@@ -215,39 +204,6 @@ const MatchDetailScreen = () => {
                     </VStack>
                   )}
                   {active === "claim" && <MatchClaims match={data} />}
-                  {/* Actions sections */}
-                  {canClaim && (
-                    <Button
-                      text="Claim Document"
-                      size="lg"
-                      className="rounded-full bg-teal-500 justify-between"
-                      onPress={() => {
-                        router.push({
-                          pathname: "/claims/add",
-                          params: { matchId: data.id },
-                        });
-                      }}
-                      suffixIcon={ArrowRight}
-                    />
-                  )}
-                  {canRejectMatch && (
-                    <Button
-                      text="Reject Match"
-                      size="lg"
-                      className="rounded-full bg-error-500 justify-between"
-                      onPress={() => {
-                        router.push({
-                          pathname: "/matches/[matchId]/reject",
-                          params: {
-                            matchId: data.id,
-                            matchStatus: data.status,
-                          },
-                        });
-                      }}
-                      suffixIcon={ArrowRight}
-                    />
-                  )}
-                  <ViewVerifiedClaimedDocumentDetails matchId={matchId} />
                 </VStack>
               </VStack>
             </ScrollView>

@@ -1,8 +1,7 @@
-import { Button } from "@/components/button";
 import { ProtectedImages } from "@/components/image";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile } from "@/components/list-tile";
-import { ViewVerifiedClaimedDocumentDetails } from "@/components/matches";
+import { ClaimActions } from "@/components/matches";
 import { EmptyState, ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Spinner } from "@/components/ui/spinner";
@@ -13,24 +12,21 @@ import { getClaimStatusDisplay } from "@/lib/helpers";
 import { ClaimStatus } from "@/types/claim";
 import cn from "classnames";
 import dayjs from "dayjs";
-import { router, useLocalSearchParams } from "expo-router";
-import { ArrowRight, Hash, Info } from "lucide-react-native";
+import { useLocalSearchParams } from "expo-router";
+import { Hash, Info } from "lucide-react-native";
 import React from "react";
 import { ScrollView } from "react-native";
-
 const DocumentClaimDetail = () => {
   const { claimId } = useLocalSearchParams<{ claimId: string }>();
   const { error, isLoading, claim } = useClaim(claimId);
-  const cancelableClaimStatus: ClaimStatus[] = [
-    ClaimStatus.PENDING,
-    ClaimStatus.DISPUTED,
-  ];
-  const disputableClaimStatus: ClaimStatus[] = [
-    ClaimStatus.PENDING,
-    ClaimStatus.DISPUTED,
-  ];
+
   return (
-    <ScreenLayout title="Document Claim">
+    <ScreenLayout
+      title="Document Claim"
+      actions={
+        claim && <ClaimActions matchId={claim.matchId} claimId={claim.id} />
+      }
+    >
       <When
         asyncState={{ isLoading, error, data: claim }}
         loading={() => <Spinner />}
@@ -122,43 +118,6 @@ const DocumentClaimDetail = () => {
                       </VStack>
                     </Box>
                   </VStack>
-
-                  {/* Actions sections */}
-                  {cancelableClaimStatus.includes(data.status) && (
-                    <Button
-                      text="Cancel Claim"
-                      size="lg"
-                      className="rounded-full bg-error-500 justify-between"
-                      onPress={() => {
-                        router.push({
-                          pathname: "/claims/[claimId]/cancel",
-                          params: {
-                            claimId: data.id,
-                            claimStatus: data.status,
-                          },
-                        });
-                      }}
-                      suffixIcon={ArrowRight}
-                    />
-                  )}
-                  {disputableClaimStatus.includes(data.status) && (
-                    <Button
-                      text="Dispute Claim"
-                      size="lg"
-                      className="rounded-full bg-blue-500 justify-between"
-                      onPress={() => {
-                        router.push({
-                          pathname: "/claims/[claimId]/dispute",
-                          params: {
-                            claimId: data.id,
-                            claimStatus: data.status,
-                          },
-                        });
-                      }}
-                      suffixIcon={ArrowRight}
-                    />
-                  )}
-                  <ViewVerifiedClaimedDocumentDetails matchId={data?.matchId} />
                 </VStack>
               </VStack>
             </ScrollView>
