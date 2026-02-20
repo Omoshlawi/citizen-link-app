@@ -2,7 +2,11 @@ import { Button } from "@/components/button";
 import { SegmentedControl } from "@/components/common";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile } from "@/components/list-tile";
-import { MatchClaims, MatchImagePreview } from "@/components/matches";
+import {
+  MatchClaims,
+  MatchImagePreview,
+  ViewVerifiedClaimedDocumentDetails,
+} from "@/components/matches";
 import { ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Spinner } from "@/components/ui/spinner";
@@ -243,6 +247,7 @@ const MatchDetailScreen = () => {
                       suffixIcon={ArrowRight}
                     />
                   )}
+                  <ViewVerifiedClaimedDocumentDetails matchId={matchId} />
                 </VStack>
               </VStack>
             </ScrollView>

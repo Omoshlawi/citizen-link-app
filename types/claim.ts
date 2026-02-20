@@ -6,6 +6,7 @@ import {
 import { User } from "better-auth";
 import { z } from "zod";
 import { PickupStation } from "./address";
+import { FoundDocumentCase } from "./cases";
 
 export enum ClaimStatus {
   PENDING = "PENDING",
@@ -28,6 +29,7 @@ export interface Claim {
   userId: string;
   user?: User;
   foundDocumentCaseId: string;
+  foundDocumentCase: FoundDocumentCase;
   attachments: ClaimAttachment[];
   matchId: string;
   status: ClaimStatus;

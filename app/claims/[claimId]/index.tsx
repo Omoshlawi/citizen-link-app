@@ -1,7 +1,8 @@
 import { Button } from "@/components/button";
+import { ProtectedImages } from "@/components/image";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile } from "@/components/list-tile";
-import { ClaimAttachment } from "@/components/matches";
+import { ViewVerifiedClaimedDocumentDetails } from "@/components/matches";
 import { EmptyState, ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Spinner } from "@/components/ui/spinner";
@@ -46,7 +47,9 @@ const DocumentClaimDetail = () => {
                     </Text>
                     <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
                       <VStack className="px-4" space="xs">
-                        <ClaimAttachment claim={data} />
+                        <ProtectedImages
+                          images={data.attachments.map((at) => at.storageKey)}
+                        />
                       </VStack>
                     </Box>
                   </VStack>
@@ -155,6 +158,7 @@ const DocumentClaimDetail = () => {
                       suffixIcon={ArrowRight}
                     />
                   )}
+                  <ViewVerifiedClaimedDocumentDetails matchId={data?.matchId} />
                 </VStack>
               </VStack>
             </ScrollView>

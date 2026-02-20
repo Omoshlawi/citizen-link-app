@@ -273,17 +273,6 @@ export function getMatchStatusDisplay(status: MatchStatus) {
   }
 }
 
-export function getMatchStatusColor(status: MatchStatus) {
-  switch (status) {
-    case MatchStatus.PENDING:
-      return "orange";
-    case MatchStatus.REJECTED:
-      return "red";
-    case MatchStatus.CLAIMED:
-      return "green";
-  }
-}
-
 export function getMatchConfidenceDisplay(confidence: MatchConfidence) {
   switch (confidence) {
     case MatchConfidence.HIGH:

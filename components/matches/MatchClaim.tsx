@@ -20,6 +20,8 @@ type MatchClaimProps = {
 const MatchClaims: FC<MatchClaimProps> = ({ match }) => {
   const { isLoading, claims } = useClaims({
     matchId: match.id,
+    orderBy: "-createdAt",
+    limit: 100,
   });
 
   if (isLoading) return <Spinner />;

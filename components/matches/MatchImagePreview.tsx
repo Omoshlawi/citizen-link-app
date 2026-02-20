@@ -1,21 +1,20 @@
-import Color from "color";
-import { ChevronLeft, ChevronRight, FileType } from "lucide-react-native";
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useMemo } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-import { authClient } from "@/lib/auth-client";
-import { BASE_URL } from "@/lib/constants";
 import {
+  getClaimStatusDisplay,
   getMatchRecommendationDisplay,
-  getMatchStatusColor,
   getMatchStatusDisplay,
 } from "@/lib/helpers";
-import { Match } from "@/types/matches";
+import { Match, MatchStatus } from "@/types/matches";
 
+import { useClaims } from "@/hooks/use-claims";
+import { ClaimStatus } from "@/types/claim";
+import cn from "classnames";
 import { router } from "expo-router";
+import { ProtectedImages } from "../image";
 import { Box } from "../ui/box";
-import { Icon } from "../ui/icon";
-import { Image } from "../ui/image";
+import { HStack } from "../ui/hstack";
 
 type MatchImagePreviewProps = {
   match: Match;
@@ -26,25 +25,19 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
   match,
   useCase = "list",
 }) => {
-  const { data: userSession } = authClient.useSession();
-  const [index, setIndex] = useState(0);
-
   const images = useMemo(
-    () => match?.foundDocumentCase?.case?.document?.images ?? [],
+    () =>
+      (match?.foundDocumentCase?.case?.document?.images ?? [])
+        .map((at) => at.blurredUrl)
+        .filter(Boolean),
     [match],
   );
-  const currentImage = images[index]?.blurredUrl;
-
-  const navigate = (direction: number) => {
-    setIndex((prev) => (prev + direction + images.length) % images.length);
-  };
-
-  const imageSource = {
-    uri: `${BASE_URL}/api/files/stream?fileName=${currentImage}`,
-    headers: { Authorization: `Bearer ${userSession?.session?.token}` },
-  };
-
-  const statusColor = getMatchStatusColor(match.status);
+  const { claims } = useClaims({
+    matchId: match.id,
+    orderBy: "-createdAt",
+    limit: 1,
+  });
+  const latestClaim = claims?.[0];
 
   return (
     <TouchableOpacity
@@ -60,36 +53,7 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
     >
       <Box className="w-full">
         {/* Main Image Area */}
-        <Box className="w-full aspect-[4/3] items-center justify-center relative">
-          {currentImage ? (
-            <Image
-              source={imageSource}
-              alt="Doc"
-              className="w-full h-full"
-              resizeMode="contain"
-            />
-          ) : (
-            <Icon as={FileType} size={80 as any} className="opacity-70" />
-          )}
-
-          {/* Minimalist Navigation Arrows */}
-          {images.length > 1 && (
-            <View className="absolute inset-x-0 flex-row justify-between px-2">
-              <TouchableOpacity
-                onPress={() => navigate(-1)}
-                className="p-2 bg-black/20 rounded-full"
-              >
-                <Icon as={ChevronLeft} className="text-white" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => navigate(1)}
-                className="p-2 bg-black/20 rounded-full"
-              >
-                <Icon as={ChevronRight} className="text-white" />
-              </TouchableOpacity>
-            </View>
-          )}
-        </Box>
+        <ProtectedImages images={images as string[]} />
 
         {/* Content Area */}
         {useCase === "list" && (
@@ -103,19 +67,40 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
                   {match.matchScore}% Match
                 </Text>
               </View>
-              <View
-                style={{
-                  backgroundColor: Color(statusColor).alpha(0.1).toString(),
-                }}
-                className="px-3 py-1 rounded-full"
-              >
+              <HStack space="sm">
                 <Text
-                  style={{ color: statusColor }}
-                  className="text-[10px] font-bold uppercase"
+                  className={cn(
+                    "text-[10px] font-bold uppercase text-white px-2 py-1 rounded-full",
+                    {
+                      "bg-orange-500": match.status === MatchStatus.PENDING,
+                      "bg-green-500": match.status === MatchStatus.CLAIMED,
+                      "bg-red-500": match.status === MatchStatus.REJECTED,
+                    },
+                  )}
                 >
-                  {getMatchStatusDisplay(match.status)}
+                  Match {getMatchStatusDisplay(match.status)}
                 </Text>
-              </View>
+                {latestClaim && (
+                  <Text
+                    className={cn(
+                      "text-[10px] font-bold uppercase text-white px-2 py-1 rounded-full",
+                      {
+                        "bg-orange-500":
+                          latestClaim.status === ClaimStatus.PENDING,
+                        "bg-green-500":
+                          latestClaim.status === ClaimStatus.VERIFIED,
+                        "bg-red-500":
+                          latestClaim.status === ClaimStatus.REJECTED ||
+                          latestClaim.status === ClaimStatus.CANCELLED,
+                        "bg-blue-500":
+                          latestClaim.status === ClaimStatus.DISPUTED,
+                      },
+                    )}
+                  >
+                    Claim {getClaimStatusDisplay(latestClaim?.status)}
+                  </Text>
+                )}
+              </HStack>
             </View>
 
             <Text
