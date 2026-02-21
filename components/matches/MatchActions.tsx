@@ -130,7 +130,7 @@ const MatchActions: FC<MatchActionsProps> = ({ isOwner, matchId }) => {
         disabled={!report}
         onPress={() => {
           router.push({
-            pathname: "/claims/[claimId]/schedule-collection",
+            pathname: "/claims/[claimId]/schedule-handover",
             params: {
               claimId: latestClaim?.id,
             },

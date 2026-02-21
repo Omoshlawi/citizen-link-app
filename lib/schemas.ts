@@ -240,3 +240,10 @@ export const rejectMatchSchema = statusTransitionReasonsSchema;
 export const cancelClaimSchema = statusTransitionReasonsSchema;
 
 export const disputeClaimSchema = statusTransitionReasonsSchema;
+
+export const scheduleClaimHandoverSchema = z.object({
+  pickupStationId: z.uuid().optional(),
+  addressId: z.uuid().optional(),
+  preferredHandoverDate: z.date(),
+  preferedCollectionPoint: z.enum(["station", "address"]),
+});

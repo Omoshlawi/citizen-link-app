@@ -4,13 +4,16 @@ import {
   APIListResponse,
   constructUrl,
 } from "@/lib/api";
+import { ZOD_IS0_DATE_FORMAT } from "@/lib/constants";
 import { invalidateCache } from "@/lib/helpers";
 import {
   CancelClaimFormData,
   Claim,
   ClaimFormData,
   DisputeClaimFormData,
+  ScheduleClaimHandoverFormData,
 } from "@/types/claim";
+import dayjs from "dayjs";
 import useSWR from "swr";
 import { useMergePaginationInfo } from "./usePagination";
 
@@ -39,8 +42,31 @@ const disputeClaim = async (claimId: string, data: DisputeClaimFormData) => {
   return res.data;
 };
 
+const scheduleClaimHandover = async (
+  claimId: string,
+  data: ScheduleClaimHandoverFormData,
+) => {
+  const res = await apiFetch<Claim>(`/claim/${claimId}/schedule-handover`, {
+    method: "POST",
+    data: {
+      ...data,
+      pickupStationId:
+        data.preferedCollectionPoint === "station"
+          ? data.pickupStationId
+          : undefined,
+      addressId:
+        data.preferedCollectionPoint === "address" ? data.addressId : undefined,
+      preferredHandoverDate: dayjs(data.preferredHandoverDate).format(
+        ZOD_IS0_DATE_FORMAT,
+      ),
+    },
+  });
+  invalidateCache();
+  return res.data;
+};
+
 export const useClaimApi = () => {
-  return { claimMatch, cancelClaim, disputeClaim };
+  return { claimMatch, cancelClaim, disputeClaim, scheduleClaimHandover };
 };
 
 export const useClaim = (

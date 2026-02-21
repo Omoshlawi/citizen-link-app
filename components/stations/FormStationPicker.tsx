@@ -41,9 +41,9 @@ const FormStationPicker = <T extends FieldValues>({
 }: FormStationPickerProps<T>) => {
   const [search, setSearch] = useState<string>("");
   const {
-    stations: nearbyHealthFacilities,
-    error: nearbyError,
-    isLoading: nearbyIsLoading,
+    stations,
+    error: stationsError,
+    isLoading: isLoadingStations,
   } = usePickupStations({ search }, "state");
   return (
     <Controller
@@ -51,54 +51,60 @@ const FormStationPicker = <T extends FieldValues>({
       name={name}
       render={({ field, fieldState: { invalid, error } }) => (
         <ActionSheetWrapper
-          loading={nearbyIsLoading}
-          renderTrigger={({ onPress }) => (
-            <FormControl
-              isInvalid={invalid}
-              size="md"
-              isDisabled={field.disabled}
-              isReadOnly={true}
-              isRequired={false}
-              className="w-full"
-              {...formControlProps}
-            >
-              {!!label && (
-                <FormControlLabel>
-                  <FormControlLabelText>{label}</FormControlLabelText>
-                </FormControlLabel>
-              )}
-              <Input className="my-1" size="md" {...inputWrapperProps}>
-                {leftSection}
-                <InputField
-                  placeholder="Select option"
-                  {...inputProps}
-                  onPress={onPress}
-                  readOnly
-                />
-                <InputSlot className="absolute inset-0" onPress={onPress} />
-                <InputSlot className="px-3" onPress={onPress}>
-                  <InputIcon as={ChevronDown} />
-                </InputSlot>
-              </Input>
-              {error && (
-                <FormControlError>
-                  <FormControlErrorIcon
-                    as={AlertCircleIcon}
-                    className="text-red-500"
+          loading={isLoadingStations}
+          renderTrigger={({ onPress }) => {
+            const station = stations.find(
+              (station) => station.id === field.value,
+            );
+            return (
+              <FormControl
+                isInvalid={invalid}
+                size="md"
+                isDisabled={field.disabled}
+                isReadOnly={true}
+                isRequired={false}
+                className="w-full"
+                {...formControlProps}
+              >
+                {!!label && (
+                  <FormControlLabel>
+                    <FormControlLabelText>{label}</FormControlLabelText>
+                  </FormControlLabel>
+                )}
+                <Input className="my-1" size="md" {...inputWrapperProps}>
+                  {leftSection}
+                  <InputField
+                    placeholder="Select option"
+                    {...inputProps}
+                    onPress={onPress}
+                    readOnly
+                    value={station?.name}
                   />
-                  <FormControlErrorText className="text-red-500">
-                    {error.message}
-                  </FormControlErrorText>
-                </FormControlError>
-              )}
-              {helperText && !error && (
-                <FormControlHelper>
-                  <FormControlHelperText>{helperText}</FormControlHelperText>
-                </FormControlHelper>
-              )}
-            </FormControl>
-          )}
-          data={nearbyHealthFacilities}
+                  <InputSlot className="absolute inset-0" onPress={onPress} />
+                  <InputSlot className="px-3" onPress={onPress}>
+                    <InputIcon as={ChevronDown} />
+                  </InputSlot>
+                </Input>
+                {error && (
+                  <FormControlError>
+                    <FormControlErrorIcon
+                      as={AlertCircleIcon}
+                      className="text-red-500"
+                    />
+                    <FormControlErrorText className="text-red-500">
+                      {error.message}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+                {helperText && !error && (
+                  <FormControlHelper>
+                    <FormControlHelperText>{helperText}</FormControlHelperText>
+                  </FormControlHelper>
+                )}
+              </FormControl>
+            );
+          }}
+          data={stations}
           renderItem={({ item, close }) => (
             <TouchableOpacity
               onPress={() => {
@@ -160,11 +166,11 @@ const FormStationPicker = <T extends FieldValues>({
             </TouchableOpacity>
           )}
           renderEmptyState={() => {
-            if (error || nearbyError) {
-              console.log(error, nearbyError);
+            if (error || stationsError) {
+              console.log(error, stationsError);
 
               return (
-                <ErrorState error={(error as any) || (nearbyError as any)} />
+                <ErrorState error={(error as any) || (stationsError as any)} />
               );
             }
             return <EmptyState message="No pickup stations found" />;
