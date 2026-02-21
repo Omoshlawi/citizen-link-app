@@ -5,7 +5,7 @@ import { ClaimStatus } from "@/types/claim";
 import { MatchStatus } from "@/types/matches";
 import cn from "classnames";
 import { router } from "expo-router";
-import { Calendar, MoreVertical, X } from "lucide-react-native";
+import { MoreVertical, Wallet, X } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { Button, ButtonIcon } from "../ui/button";
 import { AddIcon, Icon } from "../ui/icon";
@@ -125,20 +125,20 @@ const MatchActions: FC<MatchActionsProps> = ({ isOwner, matchId }) => {
         </MenuItemLabel>
       </MenuItem>
       <MenuItem
-        key="Schedule collection"
-        textValue="Schedule collection"
+        key="Make payment"
+        textValue="Make payment"
         disabled={!report}
         onPress={() => {
-          router.push({
-            pathname: "/claims/[claimId]/schedule-handover",
-            params: {
-              claimId: latestClaim?.id,
-            },
-          });
+          // router.push({
+          //   pathname: "/claims/[claimId]/schedule-handover",
+          //   params: {
+          //     claimId: latestClaim?.id,
+          //   },
+          // });
         }}
       >
         <Icon
-          as={Calendar}
+          as={Wallet}
           size="sm"
           className={cn("mr-2 text-blue-500", {
             "text-gray-400": !report,
@@ -148,7 +148,7 @@ const MatchActions: FC<MatchActionsProps> = ({ isOwner, matchId }) => {
           size="sm"
           className={cn("text-blue-500", { "text-gray-400": !report })}
         >
-          Schedule Collection
+          Make Payment
         </MenuItemLabel>
       </MenuItem>
     </Menu>

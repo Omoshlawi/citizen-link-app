@@ -228,6 +228,10 @@ export const claimFormSchema = z.object({
     .min(4),
   matchId: z.uuid(),
   // attachments: z.string().nonempty().array().nonempty().max(2),
+  pickupStationId: z.uuid().optional(),
+  addressId: z.uuid().optional(),
+  preferredHandoverDate: z.date(),
+  preferedCollectionPoint: z.enum(["station", "address"]),
 });
 
 export const statusTransitionReasonsSchema = z.object({
@@ -240,10 +244,3 @@ export const rejectMatchSchema = statusTransitionReasonsSchema;
 export const cancelClaimSchema = statusTransitionReasonsSchema;
 
 export const disputeClaimSchema = statusTransitionReasonsSchema;
-
-export const scheduleClaimHandoverSchema = z.object({
-  pickupStationId: z.uuid().optional(),
-  addressId: z.uuid().optional(),
-  preferredHandoverDate: z.date(),
-  preferedCollectionPoint: z.enum(["station", "address"]),
-});

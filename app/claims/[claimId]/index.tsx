@@ -13,7 +13,7 @@ import { ClaimStatus } from "@/types/claim";
 import cn from "classnames";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
-import { Hash, Info } from "lucide-react-native";
+import { Calendar, Hash, Info } from "lucide-react-native";
 import React from "react";
 import { ScrollView } from "react-native";
 const DocumentClaimDetail = () => {
@@ -95,6 +95,18 @@ const DocumentClaimDetail = () => {
                           value={dayjs(data.createdAt).format(
                             "ddd DD MMM, YYYY",
                           )}
+                          withBottomOutline
+                        />
+                        <DisplayTile
+                          icon={Calendar}
+                          label={"Preferred handover date"}
+                          value={
+                            data.preferredHandoverDate
+                              ? dayjs(data.preferredHandoverDate).format(
+                                  "ddd DD MMM, YYYY",
+                                )
+                              : "Not set"
+                          }
                           withBottomOutline
                         />
                       </VStack>

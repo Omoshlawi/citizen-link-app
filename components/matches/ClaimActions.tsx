@@ -3,7 +3,7 @@ import { useDocumentCase } from "@/hooks/use-document-cases";
 import { ClaimStatus } from "@/types/claim";
 import cn from "classnames";
 import { router } from "expo-router";
-import { Calendar, MoreVertical, X } from "lucide-react-native";
+import { MoreVertical, Wallet, X } from "lucide-react-native";
 import React, { FC } from "react";
 import { Button, ButtonIcon } from "../ui/button";
 import { Icon } from "../ui/icon";
@@ -133,20 +133,20 @@ const ClaimActions: FC<ClaimActionsProps> = ({ matchId, claimId }) => {
         </MenuItemLabel>
       </MenuItem>
       <MenuItem
-        key="Schedule collection"
-        textValue="Schedule collection"
+        key="Make payment"
+        textValue="Make payment"
         disabled={!report}
         onPress={() => {
-          router.push({
-            pathname: "/claims/[claimId]/schedule-handover",
-            params: {
-              claimId: latestClaim?.id,
-            },
-          });
+          // router.push({
+          //   pathname: "/claims/[claimId]/schedule-handover",
+          //   params: {
+          //     claimId: latestClaim?.id,
+          //   },
+          // });
         }}
       >
         <Icon
-          as={Calendar}
+          as={Wallet}
           size="sm"
           className={cn("mr-2 text-blue-500", {
             "text-gray-400": !report,
@@ -156,7 +156,7 @@ const ClaimActions: FC<ClaimActionsProps> = ({ matchId, claimId }) => {
           size="sm"
           className={cn("text-blue-500", { "text-gray-400": !report })}
         >
-          Schedule Collection
+          Make Payment
         </MenuItemLabel>
       </MenuItem>
     </Menu>

@@ -2,7 +2,6 @@ import {
   cancelClaimSchema,
   claimFormSchema,
   disputeClaimSchema,
-  scheduleClaimHandoverSchema,
 } from "@/lib/schemas";
 import { User } from "better-auth";
 import { z } from "zod";
@@ -58,6 +57,3 @@ export interface ClaimUserResponse {
 export type ClaimFormData = z.infer<typeof claimFormSchema>;
 export type CancelClaimFormData = z.infer<typeof cancelClaimSchema>;
 export type DisputeClaimFormData = z.infer<typeof disputeClaimSchema>;
-export type ScheduleClaimHandoverFormData = z.infer<
-  typeof scheduleClaimHandoverSchema
->;

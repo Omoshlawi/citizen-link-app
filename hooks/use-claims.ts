@@ -11,7 +11,6 @@ import {
   Claim,
   ClaimFormData,
   DisputeClaimFormData,
-  ScheduleClaimHandoverFormData,
 } from "@/types/claim";
 import dayjs from "dayjs";
 import useSWR from "swr";
@@ -20,7 +19,18 @@ import { useMergePaginationInfo } from "./usePagination";
 const claimMatch = async (data: ClaimFormData & { attachments: string[] }) => {
   const res = await apiFetch<Claim>(`/claim`, {
     method: "POST",
-    data,
+    data: {
+      ...data,
+      pickupStationId:
+        data.preferedCollectionPoint === "station"
+          ? data.pickupStationId
+          : undefined,
+      addressId:
+        data.preferedCollectionPoint === "address" ? data.addressId : undefined,
+      preferredHandoverDate: dayjs(data.preferredHandoverDate).format(
+        ZOD_IS0_DATE_FORMAT,
+      ),
+    },
   });
   invalidateCache();
   return res.data;
@@ -42,31 +52,8 @@ const disputeClaim = async (claimId: string, data: DisputeClaimFormData) => {
   return res.data;
 };
 
-const scheduleClaimHandover = async (
-  claimId: string,
-  data: ScheduleClaimHandoverFormData,
-) => {
-  const res = await apiFetch<Claim>(`/claim/${claimId}/schedule-handover`, {
-    method: "POST",
-    data: {
-      ...data,
-      pickupStationId:
-        data.preferedCollectionPoint === "station"
-          ? data.pickupStationId
-          : undefined,
-      addressId:
-        data.preferedCollectionPoint === "address" ? data.addressId : undefined,
-      preferredHandoverDate: dayjs(data.preferredHandoverDate).format(
-        ZOD_IS0_DATE_FORMAT,
-      ),
-    },
-  });
-  invalidateCache();
-  return res.data;
-};
-
 export const useClaimApi = () => {
-  return { claimMatch, cancelClaim, disputeClaim, scheduleClaimHandover };
+  return { claimMatch, cancelClaim, disputeClaim };
 };
 
 export const useClaim = (

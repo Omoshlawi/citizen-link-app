@@ -1,3 +1,4 @@
+import { useAddresses } from "@/hooks/use-addresses";
 import { useClaimApi } from "@/hooks/use-claims";
 import { handleApiErrors, uploadFile } from "@/lib/api";
 import { claimFormSchema } from "@/lib/schemas";
@@ -16,7 +17,13 @@ import {
 import { ScrollView } from "react-native";
 import { Button } from "../button";
 import { DocumentScannerInput } from "../cases";
-import { CollapsibleFormSection, FormTextArea } from "../form-inputs";
+import {
+  CollapsibleFormSection,
+  FormDatePicker,
+  FormSelectInput,
+  FormTextArea,
+} from "../form-inputs";
+import { FormStationPicker } from "../stations";
 import Toaster from "../toaster";
 import {
   FormControl,
@@ -48,6 +55,7 @@ const ClaimForm: FC<ClaimFormProps> = ({ match }) => {
   });
   const toast = useToast();
   const { claimMatch } = useClaimApi();
+  const { addresses } = useAddresses();
   const [scanned, setScanned] = useState<string[]>([]);
   const [uploadingFiles, setUploadingFiles] = useState(false);
 
@@ -151,6 +159,43 @@ const ClaimForm: FC<ClaimFormProps> = ({ match }) => {
   return (
     <ScrollView>
       <VStack space="lg">
+        <CollapsibleFormSection title="Collection details">
+          <FormSelectInput
+            controll={form.control}
+            name="preferedCollectionPoint"
+            label="Collection Preference"
+            data={[
+              {
+                value: "station",
+                label: "Collect at our nearest station",
+              },
+              { value: "address", label: "Collect at address of your choice" },
+            ]}
+          />
+          {form.watch("preferedCollectionPoint") === "address" && (
+            <FormSelectInput
+              controll={form.control}
+              name="addressId"
+              label="Address"
+              data={addresses.map((address) => ({
+                value: address.id,
+                label: address.label as string,
+              }))}
+            />
+          )}
+          {form.watch("preferedCollectionPoint") === "station" && (
+            <FormStationPicker
+              controll={form.control}
+              name="pickupStationId"
+              label="Pickup Station"
+            />
+          )}
+          <FormDatePicker
+            controll={form.control}
+            name="preferredHandoverDate"
+            label="Preferred collection Date"
+          />
+        </CollapsibleFormSection>
         <CollapsibleFormSection title="Support document">
           <DocumentScannerInput
             onScannedDocumentsChange={setScanned}
