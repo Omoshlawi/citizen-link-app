@@ -5,14 +5,14 @@ import Toaster from "@/components/toaster";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { useClaimApi } from "@/hooks/use-claims";
+import { useTransitionReasons } from "@/hooks/use-transition-reasons";
 import { handleApiErrors } from "@/lib/api";
-import { getClaimDisputeReasons } from "@/lib/helpers";
 import { disputeClaimSchema } from "@/lib/schemas";
 import { DisputeClaimFormData } from "@/types/claim";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
-import React, { useMemo } from "react";
+import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 const DisputeClaim = () => {
@@ -23,14 +23,12 @@ const DisputeClaim = () => {
     resolver: zodResolver(disputeClaimSchema),
     defaultValues: { reason: "OTHER" },
   });
-
-  const reasons = useMemo(() => {
-    const _reason: DisputeClaimFormData["reason"][] = ["OTHER"];
-    return _reason.map((r) => ({
-      value: r,
-      label: getClaimDisputeReasons(r) as string,
-    }));
-  }, []);
+  const { reasons } = useTransitionReasons({
+    entityType: "Claim",
+    fromStatus: "REJECTED",
+    toStatus: "DISPUTED",
+    auto: "false",
+  });
 
   const onSubmit: SubmitHandler<DisputeClaimFormData> = async (data) => {
     try {
@@ -74,7 +72,10 @@ const DisputeClaim = () => {
     <ScreenLayout title="Dispute Claim">
       <VStack space="lg">
         <FormSelectInput
-          data={reasons}
+          data={reasons.map((r) => ({
+            value: r.id,
+            label: r.label,
+          }))}
           controll={form.control}
           name="reason"
           label="Reason"

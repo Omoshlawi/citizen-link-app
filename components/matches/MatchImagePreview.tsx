@@ -105,6 +105,8 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
                           latestClaim.status === ClaimStatus.CANCELLED,
                         "bg-blue-500":
                           latestClaim.status === ClaimStatus.DISPUTED,
+                        "bg-amber-500":
+                          latestClaim.status === ClaimStatus.UNDER_REVIEW,
                       },
                     )}
                   >

@@ -12,26 +12,12 @@ import {
   RiskInterpretation,
 } from "@/types/screening";
 import { mutate } from "./api";
-import { SCREENING_FORM_BOOLEAN_OPTIONS, SMOKING_OPTIONS } from "./constants";
 
 export const getInitials = (name: string) => {
   return name
     .split(" ")
     .map((n) => n[0])
     .join("");
-};
-
-export const getBooleanDisplayValue = (value: string | number) => {
-  return (
-    SCREENING_FORM_BOOLEAN_OPTIONS.find((option) => option.value === value)
-      ?.label || "N/A"
-  );
-};
-
-export const getSmokingDisplayValue = (value: string | number) => {
-  return (
-    SMOKING_OPTIONS.find((option) => option.value === value)?.label || "N/A"
-  );
 };
 
 export const getRiskInterpretation = (interpretation?: RiskInterpretation) => {
@@ -313,5 +299,7 @@ export const getClaimStatusDisplay = (status: ClaimStatus) => {
       return "Disputed";
     case ClaimStatus.CANCELLED:
       return "Cancelled";
+    case ClaimStatus.UNDER_REVIEW:
+      return "Under Review";
   }
 };

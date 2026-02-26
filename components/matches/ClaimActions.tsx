@@ -34,10 +34,7 @@ const ClaimActions: FC<ClaimActionsProps> = ({ matchId, claimId }) => {
     ClaimStatus.PENDING,
     ClaimStatus.DISPUTED,
   ];
-  const disputableClaimStatus: ClaimStatus[] = [
-    ClaimStatus.PENDING,
-    ClaimStatus.DISPUTED,
-  ];
+  const disputableClaimStatus: ClaimStatus[] = [ClaimStatus.REJECTED];
 
   if (isLoadingClaims || isLoadingCase) return <Spinner />;
 

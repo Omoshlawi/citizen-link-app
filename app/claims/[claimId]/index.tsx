@@ -77,10 +77,12 @@ const DocumentClaimDetail = () => {
                                   "bg-red-600":
                                     data.status === ClaimStatus.REJECTED ||
                                     data.status === ClaimStatus.CANCELLED,
-                                  "bg-blue-600":
-                                    data.status === ClaimStatus.PENDING,
                                   "bg-yellow-600":
+                                    data.status === ClaimStatus.PENDING,
+                                  "bg-blue-600":
                                     data.status === ClaimStatus.DISPUTED,
+                                  "bg-amber-600":
+                                    data.status === ClaimStatus.UNDER_REVIEW,
                                 },
                               )}
                               size="xs"

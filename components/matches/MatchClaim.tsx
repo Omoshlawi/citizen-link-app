@@ -72,8 +72,9 @@ const MatchClaims: FC<MatchClaimProps> = ({ match }) => {
                       "bg-red-600":
                         claim.status === ClaimStatus.REJECTED ||
                         claim.status === ClaimStatus.CANCELLED,
-                      "bg-blue-600": claim.status === ClaimStatus.PENDING,
-                      "bg-yellow-600": claim.status === ClaimStatus.DISPUTED,
+                      "bg-yellow-600": claim.status === ClaimStatus.PENDING,
+                      "bg-blue-600": claim.status === ClaimStatus.DISPUTED,
+                      "bg-amber-600": claim.status === ClaimStatus.UNDER_REVIEW,
                     })}
                     size="xs"
                   >

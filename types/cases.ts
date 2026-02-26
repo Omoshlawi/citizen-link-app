@@ -10,6 +10,7 @@ import { Address } from "./address";
 
 export interface DocumentCase {
   id: string;
+  caseNumber: string;
   userId: string;
   addressId: string;
   address?: Address;
@@ -28,7 +29,6 @@ export enum LostDocumentCaseStatus {
   DRAFT = "DRAFT", // When the document is in draft status
   SUBMITTED = "SUBMITTED", // When user submit lost document info
   COMPLETED = "COMPLETED", // When the document is reunited with the owner
-
 }
 
 export enum FoundDocumentCaseStatus {

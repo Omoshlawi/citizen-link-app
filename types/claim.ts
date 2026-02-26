@@ -14,6 +14,7 @@ export enum ClaimStatus {
   REJECTED = "REJECTED",
   DISPUTED = "DISPUTED",
   CANCELLED = "CANCELLED",
+  UNDER_REVIEW = "UNDER_REVIEW",
 }
 
 export interface ClaimAttachment {
