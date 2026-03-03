@@ -76,7 +76,7 @@ const CasesListView = () => {
                   )}
                   <VStack space="md" className="flex-1">
                     <HStack className="items-center justify-between" space="sm">
-                      <Heading size="xs">{item.document?.ownerName}</Heading>
+                      <Heading size="xs">{item.document?.fullName}</Heading>
                       <Text
                         size="2xs"
                         className="bg-teal-100 dark:bg-teal-600 px-2 py-1 rounded-full text-teal-500 dark:text-white absolute right-2 top-1"
@@ -91,7 +91,7 @@ const CasesListView = () => {
                         size="sm"
                         className="text-typography-500"
                       />
-                      <Text size="xs">{`${item.document?.type.name} number: ${
+                      <Text size="xs">{`${item.document?.type.name} No: ${
                         item.document?.documentNumber ?? "N/A"
                       }`}</Text>
                     </HStack>

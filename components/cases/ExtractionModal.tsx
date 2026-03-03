@@ -3,14 +3,12 @@ import {
   useProcessExtractionProgress,
 } from "@/hooks/useDocumentExtraction";
 import {
-  ConfidenceScore,
-  Document,
   DocumentCase,
   DocumentCaseExtractionFormData,
   Extraction,
-  ImageAnalysisResult,
-  ProgressEvent,
-  SecurityQuestion,
+  ExtractionProgressEvent,
+  TextExtractionOutput,
+  VisionExtractionOutput,
 } from "@/types/cases";
 import { ArrowRight } from "lucide-react-native";
 import React, { FC, useEffect, useRef, useState } from "react";
@@ -29,11 +27,6 @@ import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 import AiInteractionStep from "./AiInteractionStep";
-import {
-  DataExtractionConfidenceScore,
-  DataExtractionStep,
-  ImageAnalysis,
-} from "./DataExtractionStep";
 import ProgressEventStep from "./ProgressEventStep";
 
 interface ExtractionModalProps {
@@ -49,10 +42,12 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
   onExtractionComplete,
   onClose,
 }) => {
-  const [progressEvents, setProgressEvents] = useState<ProgressEvent[]>([]);
+  const [progressEvents, setProgressEvents] = useState<
+    ExtractionProgressEvent[]
+  >([]);
   const { percentage, error } = useProcessExtractionProgress(
     progressEvents,
-    data.caseType
+    data.caseType,
   );
   const { extract, socketRef, addEventListener } = useDocumentExtraction();
   const hasExtractedRef = useRef(false);
@@ -61,10 +56,10 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
   useEffect(() => {
     const cleanup = addEventListener(
       `stream_progress:${extraction.id}`,
-      (progressData: ProgressEvent) => {
+      (progressData: ExtractionProgressEvent) => {
         console.log(progressData);
         setProgressEvents((p) => [...p, progressData]);
-      }
+      },
     );
 
     return cleanup;
@@ -184,10 +179,10 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
                   status === "completed"
                     ? "Image Validation Complete"
                     : status === "error"
-                    ? "Error validating image"
-                    : status === "loading"
-                    ? "Validating image"
-                    : "Pending Validation"
+                      ? "Error validating image"
+                      : status === "loading"
+                        ? "Validating image"
+                        : "Pending Validation"
                 }
                 renderData={(data) => {
                   if (data) {
@@ -195,117 +190,76 @@ const ExtractionModal: FC<ExtractionModalProps> = ({
                   }
                 }}
               />
+
               <ProgressEventStep
                 events={progressEvents}
-                step="IMAGE_ANALYSIS"
-                title="Image Analysis"
+                step="VISION_EXTRACTION"
+                title="Vision Extraction"
                 renderDescription={(status) =>
                   status === "completed"
-                    ? "Image analysis Complete"
+                    ? "Vision Extraction Complete"
                     : status === "error"
-                    ? "Error analysing image"
-                    : status === "loading"
-                    ? "Analysing image"
-                    : "Pending Validation"
+                      ? "Error Extracting Vision"
+                      : status === "loading"
+                        ? "Extracting Vision"
+                        : "Pending Vision Extraction"
                 }
                 renderData={(data) => {
                   if (data) {
                     return (
-                      <AiInteractionStep<ImageAnalysisResult>
-                        aiInteraction={data}
-                        renderParsedResponse={(analysis) => (
-                          <ImageAnalysis analysis={analysis} />
-                        )}
-                      />
-                    );
-                  }
-                }}
-              />
-              <ProgressEventStep
-                events={progressEvents}
-                step="DATA_EXTRACTION"
-                title="Data Extraction"
-                renderDescription={(status) =>
-                  status === "completed"
-                    ? "Data Extraction Complete"
-                    : status === "error"
-                    ? "Error Extracting data"
-                    : status === "loading"
-                    ? "Extracting data from image"
-                    : "Pending data extraction"
-                }
-                renderData={(data) => {
-                  if (data) {
-                    return (
-                      <AiInteractionStep<Document>
+                      <AiInteractionStep<VisionExtractionOutput>
                         aiInteraction={data}
                         renderParsedResponse={(parsedData) => (
-                          <DataExtractionStep document={parsedData} />
+                          <Text>{JSON.stringify(parsedData, null, 2)}</Text>
                         )}
                       />
                     );
                   }
                 }}
               />
-              {data.caseType === "FOUND" && (
-                <ProgressEventStep
-                  events={progressEvents}
-                  step="SECURITY_QUESTIONS"
-                  title="Security Question Generation"
-                  renderDescription={(status) =>
-                    status === "completed"
-                      ? "Security Questions generation Complete"
-                      : status === "error"
-                      ? "Error generating Security Question"
-                      : status === "loading"
-                      ? "Generating sequrity questions"
-                      : "Pending security question generation"
-                  }
-                  renderData={(data) => {
-                    if (data) {
-                      return (
-                        <AiInteractionStep<{ questions: SecurityQuestion[] }>
-                          aiInteraction={data}
-                          renderParsedResponse={({ questions }) => (
-                            <Card className="p-2 mt-2">
-                              {questions.map((q, i) => (
-                                <Text key={i}>
-                                  {i + 1}.{q.question}({q.answer})
-                                </Text>
-                              ))}
-                            </Card>
-                          )}
-                        />
-                      );
-                    }
-                  }}
-                />
-              )}
+
               <ProgressEventStep
                 events={progressEvents}
-                step="CONFIDENCE_SCORE"
-                title="Confidence Scoring"
+                step="TEXT_EXTRACTION"
+                title="Text Extraction"
                 renderDescription={(status) =>
                   status === "completed"
-                    ? "Confidence scoring Complete"
+                    ? "Text Extraction Complete"
                     : status === "error"
-                    ? "Error validating image"
-                    : status === "loading"
-                    ? "Confidence scoring"
-                    : "Pending Validation"
+                      ? "Error Extracting Text"
+                      : status === "loading"
+                        ? "Extracting Text"
+                        : "Pending Text Extraction"
                 }
                 renderData={(data) => {
                   if (data) {
                     return (
-                      <AiInteractionStep<ConfidenceScore>
+                      <AiInteractionStep<TextExtractionOutput>
                         aiInteraction={data}
-                        renderParsedResponse={(confidenceScore) => (
-                          <DataExtractionConfidenceScore
-                            confidenceScore={confidenceScore}
-                          />
+                        renderParsedResponse={(parsedData) => (
+                          <Text>{JSON.stringify(parsedData, null, 2)}</Text>
                         )}
                       />
                     );
+                  }
+                }}
+              />
+              <ProgressEventStep
+                events={progressEvents}
+                step="DOCUMENT_TYPE_VALIDATION"
+                title="Document Type Validation"
+                renderDescription={(status) =>
+                  status === "completed"
+                    ? "Document Type Validation Complete"
+                    : status === "error"
+                      ? "Error Validating Document Type"
+                      : status === "loading"
+                        ? "Validating Document Type"
+                        : "Pending Document Type Validation"
+                }
+                renderData={(data) => {
+                  if (data) {
+                    return <Text>{data}</Text>;
                   }
                 }}
               />

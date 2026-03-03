@@ -124,26 +124,37 @@ export const caseDocumentFieldSchema = z.object({
   fieldValue: z.string().min(1, "Required"), // All values stored as strings and converted as needed
 });
 
+export const addressComponentSchema = z.object({
+  type: z.string().min(1), // e.g. "county", "state", "province", "zip", "postcode", "city", "street", "ward"
+  value: z.string().min(1),
+});
+
 export const caseDocumentSchema = z.object({
   serialNumber: z.string().optional(), // Secondary identifier like serial number if present
   documentNumber: z.string().optional(), // Generic document number (ID number, passport number, etc.)
   batchNumber: z.string().optional(), // Batch number if available
   issuer: z.string().optional(),
-  ownerName: z.string().min(1, "Owner name required").optional(),
+  surname: z.string().min(1, "Surname required").optional(),
+  givenNames: z.string().min(1, "GivenNames required").optional(),
   dateOfBirth: z.coerce.date().optional(), // Owner's date of birth
   placeOfBirth: z.string().optional(), // Owner's place of birth
   placeOfIssue: z.string().optional(),
   gender: z.enum(["Male", "Female", "Unknown"]).optional(), // Owner's gender
-  nationality: z.string().optional(),
   note: z.string().optional(), // Additional notes, could be also any identifying marks on document as well, any instruction,e.t.c
   typeId: z.string().min(1, "Type required"),
   issuanceDate: z.coerce.date().optional(),
   expiryDate: z.coerce.date().optional(),
-  images: documentImageItemSchema.array().optional(),
+  images: z.string().nonempty().array().max(2).optional(),
   additionalFields: caseDocumentFieldSchema
     .omit({ documentId: true })
     .array()
     .optional(),
+  addressRaw: z.string().optional(),
+  addressCountry: z.string().optional(),
+  addressComponents: addressComponentSchema.array().optional(),
+  photoPresent: z.boolean().optional(),
+  fingerprintPresent: z.boolean().optional(),
+  signaturePresent: z.boolean().optional(),
 });
 
 export const documentFieldSchema = z.object({

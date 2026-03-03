@@ -12,6 +12,7 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 import {
   CollapsibleFormSection,
+  FormCheckBox,
   FormDatePicker,
   FormSelectInput,
   FormTextArea,
@@ -40,6 +41,14 @@ const MannuallyAddLostDocumentForm = () => {
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "additionalFields",
+  });
+  const {
+    fields: addressComponents,
+    append: appendAddressComponent,
+    remove: removeAddressComponent,
+  } = useFieldArray({
+    control: form.control,
+    name: "addressComponents",
   });
 
   const onSubmit: SubmitHandler<LostDocumentCaseFormData> = async (data) => {
@@ -122,9 +131,15 @@ const MannuallyAddLostDocumentForm = () => {
           <CollapsibleFormSection title="Owner information">
             <FormTextInput
               controll={form.control}
-              name="ownerName"
-              label="Owner name"
-              placeholder="e.g John Doe"
+              name="surname"
+              label="Surname"
+              placeholder="e.g Doe"
+            />
+            <FormTextInput
+              controll={form.control}
+              name="givenNames"
+              label="Given names"
+              placeholder="e.g John"
             />
             <FormDatePicker
               controll={form.control}
@@ -140,12 +155,6 @@ const MannuallyAddLostDocumentForm = () => {
               controll={form.control}
               name="gender"
               label="Gender"
-            />
-            <FormTextInput
-              controll={form.control}
-              name="nationality"
-              label="Nationality"
-              placeholder="e.g Kenyan"
             />
           </CollapsibleFormSection>
           <CollapsibleFormSection title="Document details">
@@ -191,6 +200,83 @@ const MannuallyAddLostDocumentForm = () => {
               name="expiryDate"
               label="Date of Expiry"
             />
+          </CollapsibleFormSection>
+          <CollapsibleFormSection
+            title="Address"
+            defaultCollapsed
+            actions={
+              <Button
+                size="xs"
+                variant="outline"
+                onPress={() => appendAddressComponent({ type: "", value: "" })}
+              >
+                <ButtonIcon as={Plus} />
+                <ButtonText>Add Address Component</ButtonText>
+              </Button>
+            }
+          >
+            <FormTextInput
+              controll={form.control}
+              name="addressRaw"
+              label="Address"
+              helperText="Document address"
+            />
+            <Divider />
+            {addressComponents.length === 0 ? (
+              <Text className="text-typography-500 text-center py-4">
+                No address components added. Click {'"Add Address Component"'}{" "}
+                to add address components.
+              </Text>
+            ) : (
+              <VStack space="md">
+                {addressComponents.map((component, index) => (
+                  <VStack key={component.id} space="sm">
+                    <FormTextInput
+                      controll={form.control}
+                      name={`addressComponents.${index}.type`}
+                      label="Type"
+                      helperText="Address component type"
+                    />
+                    <FormTextInput
+                      controll={form.control}
+                      name={`addressComponents.${index}.value`}
+                      label="Value"
+                      helperText="Address component value"
+                    />
+                    <Button
+                      variant="outline"
+                      onPress={() => removeAddressComponent(index)}
+                      aria-label="Remove address component"
+                      action="negative"
+                      className="rounded-full"
+                    >
+                      <ButtonIcon as={Trash} className="text-error-500" />
+                      <ButtonText className="text-error-500">Remove</ButtonText>
+                    </Button>
+                    <Divider />
+                  </VStack>
+                ))}
+              </VStack>
+            )}
+          </CollapsibleFormSection>
+          <CollapsibleFormSection title="Document Biometrics" defaultCollapsed>
+            <VStack space="md">
+              <FormCheckBox
+                controll={form.control}
+                name="fingerprintPresent"
+                label="Fingerprint Present"
+              />
+              <FormCheckBox
+                controll={form.control}
+                name="photoPresent"
+                label="Photo Present"
+              />
+              <FormCheckBox
+                controll={form.control}
+                name="signaturePresent"
+                label="Signature Present"
+              />
+            </VStack>
           </CollapsibleFormSection>
           <CollapsibleFormSection
             title="Custom Fields"

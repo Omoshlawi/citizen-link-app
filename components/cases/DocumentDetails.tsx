@@ -112,6 +112,19 @@ const DocumentDetails: FC<DocumentDetailsProps> = ({ document }) => {
             hideIfNoValue
           />
 
+          <DisplayTile
+            icon={MapPin}
+            label="Address"
+            value={
+              document.addressRaw ??
+              document.addressComponents
+                ?.map((c) => `${c.type} ${c.value}`)
+                .join(", ")
+            }
+            withTopOutline
+            hideIfNoValue
+          />
+
           {additionalFields.map((f, i) => (
             <DisplayTile
               withTopOutline

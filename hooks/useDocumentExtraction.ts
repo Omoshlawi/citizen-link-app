@@ -3,7 +3,7 @@ import {
   DocumentCase,
   DocumentCaseExtractionFormData,
   Extraction,
-  ProgressEvent,
+  ExtractionProgressEvent,
 } from "@/types/cases";
 import { useCallback, useMemo } from "react";
 
@@ -24,7 +24,7 @@ export const useDocumentExtraction = () => {
   const extract = useCallback(
     async (
       extractionId: string,
-      payload: Omit<DocumentCaseExtractionFormData, "extractionId">
+      payload: Omit<DocumentCaseExtractionFormData, "extractionId">,
     ) => {
       if (socketRef.current?.connected) {
         const documentCase = await publishEventWithAck<DocumentCase>(
@@ -32,13 +32,13 @@ export const useDocumentExtraction = () => {
           {
             ...payload,
             extractionId,
-          }
+          },
         );
         return documentCase;
       }
       return undefined;
     },
-    [publishEventWithAck, socketRef]
+    [publishEventWithAck, socketRef],
   );
 
   return {
@@ -49,10 +49,10 @@ export const useDocumentExtraction = () => {
   };
 };
 export const useProcessExtractionProgress = (
-  events: ProgressEvent[],
-  caseType: DocumentCaseExtractionFormData["caseType"]
+  events: ExtractionProgressEvent[],
+  caseType: DocumentCaseExtractionFormData["caseType"],
 ) => {
-  const TOTAL_EVENTS = caseType === "FOUND" ? 10 : 8;
+  const TOTAL_EVENTS = caseType === "FOUND" ? 8 : 8;
   const percentage = useMemo(() => {
     return (events.length / TOTAL_EVENTS) * 100;
   }, [TOTAL_EVENTS, events.length]);

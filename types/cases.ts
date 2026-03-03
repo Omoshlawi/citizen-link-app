@@ -44,45 +44,6 @@ export interface SecurityQuestion {
   answer: string;
 }
 
-export interface ImageAnalysisResult {
-  isSupportedDocument: boolean;
-  detectedDocumentType: string;
-  documentTypeConfidence: number; // 0-100
-  images: {
-    index: number;
-    imageType?: string;
-    quality: number; // 0-100
-    readability: number; // 0-100
-    focus?: number; // 0-100
-    lighting?: number; // 0-100
-    tamperingDetected: boolean;
-    warnings: string[];
-    usableForExtraction?: boolean;
-  }[];
-}
-
-export interface ConfidenceScore {
-  serialNumber: number;
-  documentNumber: number;
-  batchNumber: number;
-  issuer: number;
-  ownerName: number;
-  dateOfBirth: number;
-  placeOfBirth: number;
-  placeOfIssue: number;
-  gender: number;
-  note: number;
-  typeId: number;
-  issuanceDate: number;
-  expiryDate: number;
-  additionalFields: {
-    fieldName: string;
-    nameScore: number;
-    fieldValue: string;
-    valueScore: number;
-  }[];
-}
-
 export interface LostDocumentCase {
   id: string;
   caseId: string;
@@ -100,7 +61,6 @@ export interface FoundDocumentCase {
   createdAt: string;
   updatedAt: string;
   pointAwarded: number;
-  securityQuestion: SecurityQuestion[];
   voided: boolean;
 }
 
@@ -112,6 +72,19 @@ export interface DocumentField {
   fieldValue: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AddressComponent {
+  type: string;
+  value: string;
+}
+
+export interface VisionExtractionOutput {
+
+}
+
+export interface TextExtractionOutput {
+
 }
 
 export interface Document {
@@ -129,7 +102,9 @@ export interface Document {
   placeOfIssue?: string;
   note?: string;
   issuer: string;
-  ownerName: string;
+  fullName: string;
+  surname: string;
+  givenNames: string[];
   typeId: string;
   reportId: string;
   issuanceDate: string;
@@ -139,6 +114,13 @@ export interface Document {
   type: Type;
   images: DocumentImage[];
   additionalFields?: DocumentField[];
+  addressRaw?: string;
+  addressCountry?: string;
+  addressComponents?: AddressComponent[];
+  photoPresent?: boolean;
+  fingerprintPresent?: boolean;
+  signaturePresent?: boolean;
+  isExpired?: boolean;
 }
 
 export interface DocumentImage {
@@ -187,27 +169,33 @@ export interface TokenUsage {
   candidatesTokenCount: number;
 }
 
-export interface AsyncState<TData = any, TError extends Error = Error> {
+export interface AsyncError {
+  message: string;
+  error?: any;
+}
+
+export interface AsyncState<
+  TData = any,
+  TError extends AsyncError = AsyncError,
+> {
   isLoading: boolean;
   error?: TError;
   data?: TData;
 }
-
-export interface AiInteractionProgressEvent {
-  key:
-    | "IMAGE_ANALYSIS"
-    | "DATA_EXTRACTION"
-    | "CONFIDENCE_SCORE"
-    | "SECURITY_QUESTIONS";
+export interface ExtractionAiProgressEvent {
+  key: "VISION_EXTRACTION" | "TEXT_EXTRACTION";
   state: AsyncState<AiInteraction>;
 }
 
-export interface ImageValidationEvent {
-  key: "IMAGE_VALIDATION";
+export type ExtractionProgressEvent =
+  | ExtractionValidationEvent
+  | ExtractionAiProgressEvent;
+export type ExtractionStep = ExtractionProgressEvent["key"];
+
+export interface ExtractionValidationEvent {
+  key: "IMAGE_VALIDATION" | "DOCUMENT_TYPE_VALIDATION";
   state: AsyncState<string>;
 }
-
-export type ProgressEvent = ImageValidationEvent | AiInteractionProgressEvent;
 
 export interface Extraction {
   id: string;
@@ -250,4 +238,5 @@ export type DocumentCaseExtractionFormData = z.infer<
 
 export type LostDocumentCaseFormData = z.infer<typeof lostDocumentCaseSchema>;
 export type CaseDocumentFormData = z.infer<typeof caseDocumentSchema>;
+export type CaseDocumentFormDataWithoutImages = Omit<CaseDocumentFormData, "images">;
 export type CaseFilterFormData = z.infer<typeof caseFilterSchema>;

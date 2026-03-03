@@ -1,8 +1,9 @@
 import { useDocumentCaseApi } from "@/hooks/use-document-cases";
 import { useDocumentTypes } from "@/hooks/use-document-types";
 import { handleApiErrors } from "@/lib/api";
+import { parseDate } from "@/lib/helpers";
 import { caseDocumentSchema } from "@/lib/schemas";
-import { CaseDocumentFormData, DocumentCase } from "@/types/cases";
+import { CaseDocumentFormDataWithoutImages, DocumentCase } from "@/types/cases";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { ArrowRight, Plus, Trash } from "lucide-react-native";
@@ -11,6 +12,7 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 import {
   CollapsibleFormSection,
+  FormCheckBox,
   FormDatePicker,
   FormSelectInput,
   FormTextArea,
@@ -33,45 +35,62 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
   const form = useForm({
     defaultValues: {
       typeId: document?.typeId ?? undefined,
-      ownerName: document?.ownerName ?? undefined,
+      surname: document?.surname ?? undefined,
+      givenNames: document?.givenNames?.join(" ") ?? undefined,
       serialNumber: document?.serialNumber ?? undefined,
       documentNumber: document?.documentNumber ?? undefined,
       batchNumber: document?.batchNumber ?? undefined,
-      dateOfBirth: document?.dateOfBirth
-        ? new Date(document?.dateOfBirth)
-        : undefined,
+      dateOfBirth: parseDate(document?.dateOfBirth),
       placeOfBirth: document?.placeOfBirth ?? undefined,
       placeOfIssue: document?.placeOfIssue ?? undefined,
       gender: document?.gender ?? undefined,
-      nationality: document?.nationality ?? undefined,
       note: document?.note ?? undefined,
-      images: document?.images?.map((img) => ({ url: img.url })) || [],
       additionalFields:
         document?.additionalFields?.map((field) => ({
           fieldName: field.fieldName,
           fieldValue: field.fieldValue,
         })) || [],
-      issuanceDate: document?.issuanceDate
-        ? new Date(document?.issuanceDate)
-        : undefined,
-      expiryDate: document?.expiryDate
-        ? new Date(document?.expiryDate)
-        : undefined,
+      issuanceDate: parseDate(document?.issuanceDate),
+      expiryDate: parseDate(document?.expiryDate),
       issuer: document?.issuer ?? undefined,
+      addressRaw: document?.addressRaw ?? undefined,
+      addressCountry: document?.addressCountry ?? undefined,
+      addressComponents:
+        document?.addressComponents?.map((component) => ({
+          type: component.type,
+          value: component.value,
+        })) ?? undefined,
+      photoPresent: document?.photoPresent ?? undefined,
+      fingerprintPresent: document?.fingerprintPresent ?? undefined,
+      signaturePresent: document?.signaturePresent ?? undefined,
     },
-    resolver: zodResolver(caseDocumentSchema),
+    resolver: zodResolver(caseDocumentSchema.omit({ images: true })),
   });
   const { updateCaseDocument } = useDocumentCaseApi();
   const { documentTypes, isLoading: isDocumentTypesLoading } =
     useDocumentTypes();
   const toast = useToast();
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: additionalFields,
+    append: appendAdditionalField,
+    remove: removeAdditionalField,
+  } = useFieldArray({
     control: form.control,
     name: "additionalFields",
   });
+  const {
+    fields: addressComponents,
+    append: appendAddressComponent,
+    remove: removeAddressComponent,
+  } = useFieldArray({
+    control: form.control,
+    name: "addressComponents",
+  });
 
-  const onSubmit: SubmitHandler<CaseDocumentFormData> = async (data) => {
+  const onSubmit: SubmitHandler<CaseDocumentFormDataWithoutImages> = async (
+    data,
+  ) => {
     try {
       await updateCaseDocument(documentCase.id, document!.id, data);
       // Extract document from the returned case
@@ -90,7 +109,7 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
 
       router.back();
     } catch (error) {
-      const e = handleApiErrors<CaseDocumentFormData>(error);
+      const e = handleApiErrors<CaseDocumentFormDataWithoutImages>(error);
       if ("detail" in e && e.detail) {
         toast.show({
           placement: "top",
@@ -106,7 +125,7 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
         });
       } else {
         Object.entries(e).forEach(([key, val]) =>
-          form.setError(key as keyof CaseDocumentFormData, {
+          form.setError(key as keyof CaseDocumentFormDataWithoutImages, {
             message: val as string,
           }),
         );
@@ -128,9 +147,15 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
         <CollapsibleFormSection title="Owner information">
           <FormTextInput
             controll={form.control}
-            name="ownerName"
-            label="Owner name"
-            placeholder="e.g John Doe"
+            name="surname"
+            label="Surname"
+            placeholder="e.g Doe"
+          />
+          <FormTextInput
+            controll={form.control}
+            name="givenNames"
+            label="Given names"
+            placeholder="e.g John"
           />
           <FormDatePicker
             controll={form.control}
@@ -147,14 +172,8 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
             name="gender"
             label="Gender"
           />
-          <FormTextInput
-            controll={form.control}
-            name="nationality"
-            label="Nationality"
-            placeholder="e.g Kenyan"
-          />
         </CollapsibleFormSection>
-        <CollapsibleFormSection title="Document details">
+        <CollapsibleFormSection title="Document details" defaultCollapsed>
           <FormTextInput
             controll={form.control}
             name="documentNumber"
@@ -199,27 +218,107 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
           />
         </CollapsibleFormSection>
         <CollapsibleFormSection
-          title="Custom Fields"
+          title="Address"
+          defaultCollapsed
           actions={
             <Button
               size="xs"
               variant="outline"
-              onPress={() => append({ fieldName: "", fieldValue: "" })}
+              onPress={() => appendAddressComponent({ type: "", value: "" })}
+            >
+              <ButtonIcon as={Plus} />
+              <ButtonText>Add Address Component</ButtonText>
+            </Button>
+          }
+        >
+          <FormTextInput
+            controll={form.control}
+            name="addressRaw"
+            label="Address"
+            helperText="Document address"
+          />
+          <Divider />
+          {addressComponents.length === 0 ? (
+            <Text className="text-typography-500 text-center py-4">
+              No address components added. Click {'"Add Address Component"'} to
+              add address components.
+            </Text>
+          ) : (
+            <VStack space="md">
+              {addressComponents.map((component, index) => (
+                <VStack key={component.id} space="sm">
+                  <FormTextInput
+                    controll={form.control}
+                    name={`addressComponents.${index}.type`}
+                    label="Type"
+                    helperText="Address component type"
+                  />
+                  <FormTextInput
+                    controll={form.control}
+                    name={`addressComponents.${index}.value`}
+                    label="Value"
+                    helperText="Address component value"
+                  />
+                  <Button
+                    variant="outline"
+                    onPress={() => removeAddressComponent(index)}
+                    aria-label="Remove address component"
+                    action="negative"
+                    className="rounded-full"
+                  >
+                    <ButtonIcon as={Trash} className="text-error-500" />
+                    <ButtonText className="text-error-500">Remove</ButtonText>
+                  </Button>
+                  <Divider />
+                </VStack>
+              ))}
+            </VStack>
+          )}
+        </CollapsibleFormSection>
+        <CollapsibleFormSection title="Document Biometrics" defaultCollapsed>
+          <VStack space="md">
+            <FormCheckBox
+              controll={form.control}
+              name="fingerprintPresent"
+              label="Fingerprint Present"
+            />
+            <FormCheckBox
+              controll={form.control}
+              name="photoPresent"
+              label="Photo Present"
+            />
+            <FormCheckBox
+              controll={form.control}
+              name="signaturePresent"
+              label="Signature Present"
+            />
+          </VStack>
+        </CollapsibleFormSection>
+        <CollapsibleFormSection
+          title="Custom Fields"
+          defaultCollapsed
+          actions={
+            <Button
+              size="xs"
+              variant="outline"
+              onPress={() =>
+                appendAdditionalField({ fieldName: "", fieldValue: "" })
+              }
             >
               <ButtonIcon as={Plus} />
               <ButtonText>Add Field</ButtonText>
             </Button>
           }
         >
-          {fields.length === 0 ? (
+          {additionalFields.length === 0 ? (
             <Text className="text-typography-500 text-center py-4">
               No additional fields added. Click {'"Add Field"'} to add custom
               fields.
             </Text>
           ) : (
             <VStack space="md">
-              {fields.map((field, index) => (
-                <VStack key={field.id} className="items-END" space="sm">
+              {additionalFields.map((field, index) => (
+                <VStack key={field.id} space="sm">
                   <FormTextInput
                     controll={form.control}
                     name={`additionalFields.${index}.fieldName`}
@@ -233,8 +332,8 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
                     placeholder="e.g Bsc. IT"
                   />
                   <Button
-                    variant="solid"
-                    onPress={() => remove(index)}
+                    variant="outline"
+                    onPress={() => removeAdditionalField(index)}
                     aria-label="Remove field"
                     action="negative"
                     className="rounded-full"
@@ -243,9 +342,11 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
                     <ButtonIcon
                       as={Trash}
                       size={18 as any}
-                      className="text-white"
+                      className="text-error-500"
                     />
-                    <ButtonText className="text-white">Remove field</ButtonText>
+                    <ButtonText className="text-error-500">
+                      Remove field
+                    </ButtonText>
                   </Button>
                   <Divider className="my-6" />
                 </VStack>
@@ -254,7 +355,7 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
           )}
         </CollapsibleFormSection>
 
-        <CollapsibleFormSection title="Additional notes">
+        <CollapsibleFormSection title="Additional notes" defaultCollapsed>
           <FormTextArea
             controll={form.control}
             name="note"

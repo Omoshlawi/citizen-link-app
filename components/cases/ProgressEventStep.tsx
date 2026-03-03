@@ -1,7 +1,7 @@
 import {
-  AiInteractionProgressEvent,
-  ImageValidationEvent,
-  ProgressEvent,
+  ExtractionAiProgressEvent,
+  ExtractionProgressEvent,
+  ExtractionValidationEvent,
 } from "@/types/cases";
 import { FC, useEffect, useMemo, useState } from "react";
 import { TouchableOpacity } from "react-native";
@@ -23,20 +23,22 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 import { Status, StatusBadge, StatusIcon } from "./status-component";
 type ImageValidationProgressEventStepProps = {
-  events?: ProgressEvent[];
-  step: ImageValidationEvent["key"];
-  title: string;
-  renderDescription?: (status: Status) => string;
-  renderData?: (data: ImageValidationEvent["state"]["data"]) => React.ReactNode;
-  showPending?: boolean;
-};
-type AiInteractionProgressEventStepProps = {
-  events?: ProgressEvent[];
-  step: AiInteractionProgressEvent["key"];
+  events?: ExtractionProgressEvent[];
+  step: ExtractionValidationEvent["key"];
   title: string;
   renderDescription?: (status: Status) => string;
   renderData?: (
-    data: AiInteractionProgressEvent["state"]["data"]
+    data: ExtractionValidationEvent["state"]["data"],
+  ) => React.ReactNode;
+  showPending?: boolean;
+};
+type AiInteractionProgressEventStepProps = {
+  events?: ExtractionProgressEvent[];
+  step: ExtractionAiProgressEvent["key"];
+  title: string;
+  renderDescription?: (status: Status) => string;
+  renderData?: (
+    data: ExtractionAiProgressEvent["state"]["data"],
   ) => React.ReactNode;
   showPending?: boolean;
 };
@@ -55,13 +57,13 @@ const ProgressEventStep: FC<ProgressEventStepProps> = ({
 }) => {
   const stepEvents = useMemo(
     () => events.filter((e) => e.key === step),
-    [events, step]
+    [events, step],
   );
-  const { isLoading, data, error } = useMemo<ProgressEvent["state"]>(() => {
+  const { isLoading, data, error } = useMemo<ExtractionProgressEvent["state"]>(() => {
     const hasLoadingState = stepEvents.some((e) => e.state.isLoading);
     const hasErrorState = stepEvents.some((e) => e.state.error);
     const data = stepEvents.find(
-      (e) => hasLoadingState && !hasErrorState && e.state.data
+      (e) => hasLoadingState && !hasErrorState && e.state.data,
     )?.state?.data as any;
     const error = stepEvents.find((e) => hasLoadingState && e.state.error)
       ?.state?.error;

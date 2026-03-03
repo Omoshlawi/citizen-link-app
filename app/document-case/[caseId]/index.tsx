@@ -39,7 +39,7 @@ const DocumentCaseDetailScreen = () => {
         success={(docCase?: DocumentCase) => {
           if (!docCase) return <></>;
           const document: Partial<DocumentType> = docCase.document ?? {};
-          const ownerName = document.ownerName ?? "—";
+          const ownerName = document.fullName ?? "—";
           const documentNumber = document.documentNumber ?? "—";
           const documentType = document.type?.name ?? "Document";
           const images = document.images ?? [];

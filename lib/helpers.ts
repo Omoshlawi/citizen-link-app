@@ -11,6 +11,7 @@ import {
   ReferralStatus,
   RiskInterpretation,
 } from "@/types/screening";
+import dayjs from "dayjs";
 import { mutate } from "./api";
 
 export const getInitials = (name: string) => {
@@ -303,3 +304,13 @@ export const getClaimStatusDisplay = (status: ClaimStatus) => {
       return "Under Review";
   }
 };
+
+export function parseDate(
+  dateString: string | undefined | null,
+  defaultNow: boolean = false,
+) {
+  const date = dayjs(dateString);
+  if (dateString && date.isValid()) return date.toDate();
+  if (defaultNow) return dayjs().toDate();
+  return undefined;
+}
