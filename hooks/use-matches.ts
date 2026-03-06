@@ -14,7 +14,6 @@ export const useMatches = (params: Record<string, any> = {}) => {
   const p = useLocalSearchParams<Record<string, any>>();
   const { onPageChange, mergedSearchParams, showPagination } =
     useMergePaginationInfo({
-      minMatchScore: "50",
       ...p,
       ...params,
     });

@@ -236,7 +236,7 @@ export const claimFormSchema = z.object({
       response: z.string().nonempty(),
     })
     .array()
-    .min(4),
+    .default([]),
   matchId: z.uuid(),
   // attachments: z.string().nonempty().array().nonempty().max(2),
   pickupStationId: z.uuid().optional(),

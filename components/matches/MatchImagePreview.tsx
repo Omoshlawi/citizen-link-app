@@ -3,8 +3,8 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 import {
   getClaimStatusDisplay,
-  getMatchRecommendationDisplay,
   getMatchStatusDisplay,
+  getMatchVerdictDisplay,
 } from "@/lib/helpers";
 import { Match, MatchStatus } from "@/types/matches";
 
@@ -75,7 +75,7 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
                   Match #{match.matchNumber}
                 </Text>
                 <Text className="text-lg font-bold text-typography-900">
-                  {match.matchScore}% Match
+                  {match.finalScore * 100}% Match
                 </Text>
               </View>
               <HStack space="sm">
@@ -120,7 +120,7 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
               className="text-sm text-typography-500 italic"
               numberOfLines={2}
             >
-              {getMatchRecommendationDisplay(match.aiAnalysis.recommendation)}
+              {getMatchVerdictDisplay(match.aiVerificationResult.verdict)}
             </Text>
           </Box>
         )}

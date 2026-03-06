@@ -14,21 +14,17 @@ import { VStack } from "@/components/ui/vstack";
 import { useClaims } from "@/hooks/use-claims";
 import { useMatch } from "@/hooks/use-matches";
 import { authClient } from "@/lib/auth-client";
-import {
-  getMatchConfidenceDisplay,
-  getMatchRecommendationDisplay,
-  getMatchStatusDisplay,
-} from "@/lib/helpers";
+import { getMatchStatusDisplay, getMatchVerdictDisplay } from "@/lib/helpers";
 import { MatchStatus } from "@/types/matches";
 import cn from "classnames";
 import dayjs from "dayjs";
 import { useLocalSearchParams } from "expo-router";
 import {
-  BrainCircuit,
   Calendar,
   Fingerprint,
   Hash,
   Info,
+  Loader,
   Percent,
 } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
@@ -123,28 +119,46 @@ const MatchDetailScreen = () => {
                           />
                           <DisplayTile
                             icon={Percent}
-                            label={"Match Score"}
-                            value={`${data?.matchScore}%`}
+                            label={"Vector Score"}
+                            value={`${data?.vectorScore * 100}%`}
                             withTopOutline
                           />
                           <DisplayTile
+                            icon={Percent}
+                            label={"Critical Field Score"}
+                            value={`${data?.exactScore * 100}%`}
+                            withTopOutline
+                          />
+                          <DisplayTile
+                            icon={Percent}
+                            label={"AI Score"}
+                            value={`${data?.aiScore * 100}%`}
+                            withTopOutline
+                          />
+                          <DisplayTile
+                            icon={Percent}
+                            label={"Final Score"}
+                            value={`${data?.finalScore * 100}%`}
+                            withTopOutline
+                          />
+                          {/* <DisplayTile
                             icon={BrainCircuit}
                             label={"Certainity"}
                             value={getMatchConfidenceDisplay(
-                              data.aiAnalysis.confidence,
+                              data.aiVerificationResult.confidence,
                             )}
                             withTopOutline
-                          />
+                          /> */}
                           <DisplayTile
                             icon={Fingerprint}
                             label={"Identity"}
-                            value={getMatchRecommendationDisplay(
-                              data.aiAnalysis.recommendation,
+                            value={getMatchVerdictDisplay(
+                              data.aiVerificationResult.verdict,
                             )}
                             withTopOutline
                           />
                           <DisplayTile
-                            icon={Fingerprint}
+                            icon={Loader}
                             label={"Status"}
                             value={getMatchStatusDisplay(data.status)}
                             withTopOutline
@@ -180,22 +194,22 @@ const MatchDetailScreen = () => {
                       </Text>
                       <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
                         <VStack className="px-4" space="xs">
-                          {(data.aiAnalysis?.fieldAnalysis ?? []).map(
+                          {(data.aiVerificationResult?.fieldAnalysis ?? []).map(
                             (f, i) => (
                               <DisplayTile
                                 withTopOutline={i !== 0}
                                 key={i}
                                 icon={Info}
-                                label={f.fieldName}
-                                value={f.note}
-                                trailing={
-                                  <Text
-                                    className="px-2 py-1 bg-teal-600 rounded-full text-white"
-                                    size="xs"
-                                  >
-                                    {f.confidence}%
-                                  </Text>
-                                }
+                                label={f.field}
+                                value={f.match}
+                                // trailing={
+                                //   <Text
+                                //     className="px-2 py-1 bg-teal-600 rounded-full text-white"
+                                //     size="xs"
+                                //   >
+                                //     {f.match}%
+                                //   </Text>
+                                // }
                               />
                             ),
                           )}

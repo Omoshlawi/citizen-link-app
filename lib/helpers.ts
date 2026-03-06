@@ -1,11 +1,7 @@
 import { Address } from "@/types/address";
 import { ClaimStatus } from "@/types/claim";
 import { FollowUp, OutreachAction } from "@/types/follow-up";
-import {
-  MatchConfidence,
-  MatchRecommendation,
-  MatchStatus,
-} from "@/types/matches";
+import { MatchConfidence, MatchStatus, MatchVerdict } from "@/types/matches";
 import {
   CompleteReferralFormData,
   ReferralStatus,
@@ -273,18 +269,16 @@ export function getMatchConfidenceDisplay(confidence: MatchConfidence) {
   }
 }
 
-export function getMatchRecommendationDisplay(
-  recommendation: MatchRecommendation,
-) {
+export function getMatchVerdictDisplay(recommendation: MatchVerdict) {
   switch (recommendation) {
-    case MatchRecommendation.SAME_PERSON:
-      return "Same person";
-    case MatchRecommendation.LIKELY_SAME:
-      return "Likely same person";
-    case MatchRecommendation.POSSIBLY_SAME:
-      return "Possibly same person";
-    case MatchRecommendation.DIFFERENT_PERSON:
-      return "Different person";
+    case MatchVerdict.NO_MATCH:
+      return "No match";
+    case MatchVerdict.POSSIBLE_MATCH:
+      return "Possible Match";
+    case MatchVerdict.PROBABLE_MATCH:
+      return "Probable Match";
+    case MatchVerdict.VERIFIED_MATCH:
+      return "Verified Match";
   }
 }
 

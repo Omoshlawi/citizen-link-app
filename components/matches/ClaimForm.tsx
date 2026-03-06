@@ -46,7 +46,7 @@ const ClaimForm: FC<ClaimFormProps> = ({ match }) => {
   const form = useForm({
     resolver: zodResolver(claimFormSchema),
     defaultValues: {
-      securityQuestions: match.foundDocumentCase.securityQuestion.map((q) => ({
+      securityQuestions: match.securityQuestions.map((q) => ({
         question: q.question,
         response: "",
       })),
