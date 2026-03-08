@@ -4,18 +4,30 @@ import { FoundDocumentCase, LostDocumentCase } from "./cases";
 
 export interface Match {
   id: string;
+  verdict: MatchVerdict;
   matchNumber: number;
   vectorScore: number;
   exactScore: number;
-  aiScore: number;
+  aiScore?: number;
   finalScore: number;
-  aiInteractionId: string;
+  aiInteractionId?: string;
   lostDocumentCaseId: string;
   lostDocumentCase: LostDocumentCase;
   foundDocumentCaseId: string;
   foundDocumentCase: FoundDocumentCase;
-  aiVerificationResult: AiAnalysis;
-  securityQuestions: { question: string; answer: string }[];
+  layer2FieldScores: {
+    threshold: number;
+    fields: {
+      field: string;
+      score: number;
+      weight: number;
+      matched: boolean;
+      contribution: number;
+      maskedCandidatevalue: string;
+    }[];
+  };
+  aiVerificationResult?: AiAnalysis;
+  securityQuestions?: { question: string; answer: string }[];
   status: MatchStatus;
   createdAt: string;
   updatedAt: string;

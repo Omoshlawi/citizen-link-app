@@ -18,11 +18,7 @@ type MatchActionsProps = {
 };
 
 const MatchActions: FC<MatchActionsProps> = ({ isOwner, matchId }) => {
-  const {
-    totalCount,
-    isLoading: isLoadingClaims,
-    claims,
-  } = useClaims({
+  const { isLoading: isLoadingClaims, claims } = useClaims({
     matchId: matchId,
     limit: 1,
     orderBy: "-createdAt",
@@ -34,15 +30,16 @@ const MatchActions: FC<MatchActionsProps> = ({ isOwner, matchId }) => {
 
   const canClaim = useMemo(() => {
     if (!isOwner) return false; // None owners cant view claims
-    if (totalCount === 0) return true; // Mean no claim is raised yet
+    if (claims?.length === 0) return true; // Mean no claim is raised yet
     const latestClaimStatus = claims?.[0]?.status;
     return latestClaimStatus === ClaimStatus.CANCELLED;
-  }, [claims, isOwner, totalCount]);
+  }, [claims, isOwner]);
+
   const canRejectMatch = useMemo(() => {
     if (!isOwner) return false; // None owners cant view claims
-    if (totalCount === 0) return true; // Mean no claim is raised yet
+    if (claims?.length === 0) return true; // Mean no claim is raised yet
     return match?.status === MatchStatus.PENDING;
-  }, [isOwner, match?.status, totalCount]);
+  }, [claims, isOwner, match?.status]);
 
   const { report, isLoading: isLoadingCase } = useDocumentCase(
     latestClaim?.status !== ClaimStatus.VERIFIED

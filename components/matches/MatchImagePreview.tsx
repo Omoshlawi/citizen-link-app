@@ -120,7 +120,7 @@ const MatchImagePreview: FC<MatchImagePreviewProps> = ({
               className="text-sm text-typography-500 italic"
               numberOfLines={2}
             >
-              {getMatchVerdictDisplay(match.aiVerificationResult.verdict)}
+              {getMatchVerdictDisplay(match.verdict)}
             </Text>
           </Box>
         )}

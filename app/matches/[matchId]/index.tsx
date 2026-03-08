@@ -87,7 +87,11 @@ const MatchDetailScreen = () => {
                     <SegmentedControl
                       data={[
                         { label: "Details", value: "details", show: true },
-                        { label: "AI Analysis", value: "analysis", show: true },
+                        {
+                          label: "Analysis",
+                          value: "analysis",
+                          show: true,
+                        },
                         {
                           label: "Claims",
                           value: "claim",
@@ -119,26 +123,26 @@ const MatchDetailScreen = () => {
                           />
                           <DisplayTile
                             icon={Percent}
-                            label={"Vector Score"}
-                            value={`${data?.vectorScore * 100}%`}
+                            label={"Vector Similarity"}
+                            value={`${(data?.vectorScore * 100).toFixed(2)}%`}
                             withTopOutline
                           />
-                          <DisplayTile
+                          {/* <DisplayTile
                             icon={Percent}
                             label={"Critical Field Score"}
-                            value={`${data?.exactScore * 100}%`}
+                            value={`${(data?.exactScore * 100).toFixed(2)}%`}
                             withTopOutline
-                          />
-                          <DisplayTile
+                          /> */}
+                          {/* <DisplayTile
                             icon={Percent}
                             label={"AI Score"}
                             value={`${data?.aiScore * 100}%`}
                             withTopOutline
-                          />
+                          /> */}
                           <DisplayTile
                             icon={Percent}
-                            label={"Final Score"}
-                            value={`${data?.finalScore * 100}%`}
+                            label={"Match Score"}
+                            value={`${(data?.finalScore * 100).toFixed(2)}%`}
                             withTopOutline
                           />
                           {/* <DisplayTile
@@ -152,9 +156,7 @@ const MatchDetailScreen = () => {
                           <DisplayTile
                             icon={Fingerprint}
                             label={"Identity"}
-                            value={getMatchVerdictDisplay(
-                              data.aiVerificationResult.verdict,
-                            )}
+                            value={getMatchVerdictDisplay(data.verdict)}
                             withTopOutline
                           />
                           <DisplayTile
@@ -194,6 +196,25 @@ const MatchDetailScreen = () => {
                       </Text>
                       <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
                         <VStack className="px-4" space="xs">
+                          {(data.layer2FieldScores?.fields ?? []).map(
+                            (f, i) => (
+                              <DisplayTile
+                                withTopOutline={i !== 0}
+                                key={i}
+                                icon={Info}
+                                label={f.field}
+                                value={f.maskedCandidatevalue || "-"}
+                                trailing={
+                                  <Text
+                                    className="px-2 py-1 bg-teal-600 rounded-full text-white"
+                                    size="xs"
+                                  >
+                                    {(f.contribution * 100).toFixed(2)}%
+                                  </Text>
+                                }
+                              />
+                            ),
+                          )}
                           {(data.aiVerificationResult?.fieldAnalysis ?? []).map(
                             (f, i) => (
                               <DisplayTile

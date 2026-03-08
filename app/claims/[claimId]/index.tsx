@@ -114,24 +114,29 @@ const DocumentClaimDetail = () => {
                       </VStack>
                     </Box>
                   </VStack>
-                  <VStack className=" pt-6" space="md">
-                    <Text className="text-sm font-semibold text-typography-800">
-                      My response
-                    </Text>
-                    <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
-                      <VStack className="px-4" space="xs">
-                        {claim?.verification?.userResponses?.map((res, i) => (
-                          <DisplayTile
-                            withTopOutline={i !== 0}
-                            icon={Info}
-                            label={res.question}
-                            value={res.response}
-                            key={i}
-                          />
-                        ))}
+                  {claim?.verification?.userResponses &&
+                    claim?.verification?.userResponses.length > 0 && (
+                      <VStack className=" pt-6" space="md">
+                        <Text className="text-sm font-semibold text-typography-800">
+                          My response
+                        </Text>
+                        <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
+                          <VStack className="px-4" space="xs">
+                            {claim?.verification?.userResponses?.map(
+                              (res, i) => (
+                                <DisplayTile
+                                  withTopOutline={i !== 0}
+                                  icon={Info}
+                                  label={res.question}
+                                  value={res.response}
+                                  key={i}
+                                />
+                              ),
+                            )}
+                          </VStack>
+                        </Box>
                       </VStack>
-                    </Box>
-                  </VStack>
+                    )}
                 </VStack>
               </VStack>
             </ScrollView>
