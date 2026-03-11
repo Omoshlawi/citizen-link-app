@@ -1,3 +1,4 @@
+export { default as KeyboardAvoidingLayout } from "./KeyboardAvoidingLayout";
 export { default as LandingScreenLayout } from "./LandingScreenLayout";
 export {
   default as LayoutViewTabs,

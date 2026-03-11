@@ -13,9 +13,9 @@ import { router } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
 import React, { FC, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
 import { Button } from "../button";
 import { FormDatePicker, FormSelectInput, FormTextArea } from "../form-inputs";
+import { KeyboardAvoidingLayout } from "../layout";
 import Toaster from "../toaster";
 import { Box } from "../ui/box";
 import { useToast } from "../ui/toast";
@@ -152,7 +152,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
   };
   return (
     <Box className="w-full h-full">
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingLayout>
         <VStack className="w-full items-center" space="sm">
           <DocumentScannerInput
             onScannedDocumentsChange={setScanned}
@@ -186,7 +186,7 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
             loading={uploadingFiles}
           />
         </VStack>
-      </ScrollView>
+      </KeyboardAvoidingLayout>
       {extractionModalVisible && !!extractionRef.current && (
         <ExtractionModal
           extraction={extractionRef.current}

@@ -1,6 +1,6 @@
 import { Button } from "@/components/button";
 import { FormPasswordInput, FormTextInput } from "@/components/form-inputs";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import Logo from "@/components/Logo";
 import Toaster from "@/components/toaster";
 import { Heading } from "@/components/ui/heading";
@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import React from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 const SignUpScreen = () => {
   const form = useForm({
@@ -92,9 +92,9 @@ const SignUpScreen = () => {
   };
   return (
     <ScreenLayout title="Create account">
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingLayout>
         <VStack className="justify-between items-center w-full pb-12">
-          <Logo className="w-full" mode="name" />
+          <Logo className="w-full" mode="horizontal" resizeMode="contain" />
           <VStack space="lg" className="w-full mt-4">
             <Heading>Create Account</Heading>
             <FormTextInput
@@ -162,7 +162,7 @@ const SignUpScreen = () => {
             </TouchableOpacity>
           </VStack>
         </VStack>
-      </ScrollView>
+      </KeyboardAvoidingLayout>
     </ScreenLayout>
   );
 };

@@ -13,7 +13,7 @@ import { TouchableOpacity } from "react-native";
 const SignInScreen = () => {
   return (
     <Box className="w-full h-full flex-1 flex-col justify-between items-center px-4 py-20 bg-background-app">
-      <Logo />
+      <Logo className="w-80 h-80" />
       <VStack className="w-full" space="lg">
         <Heading className="text-center">Sign In to continue</Heading>
         <Button

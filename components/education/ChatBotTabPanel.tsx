@@ -1,7 +1,8 @@
 import { useChatbot } from "@/hooks/useChatbot";
 import { Recycle, Send } from "lucide-react-native";
 import React, { useState } from "react";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { KeyboardAvoidingLayout } from "../layout";
 import { Box } from "../ui/box";
 import { Button, ButtonIcon } from "../ui/button";
 import { Card } from "../ui/card";
@@ -40,7 +41,7 @@ const ChatBotTabPanel = () => {
         cancer
       </Text>
       <Card className="w-full flex flex-1">
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <KeyboardAvoidingLayout>
           <VStack space="md">
             <HStack space="md">
               <VStack space="sm" className="flex-1">
@@ -102,7 +103,7 @@ const ChatBotTabPanel = () => {
               </Button>
             </HStack>
           </VStack>
-        </ScrollView>
+        </KeyboardAvoidingLayout>
       </Card>
     </VStack>
   );

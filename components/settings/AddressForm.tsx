@@ -8,7 +8,6 @@ import { router } from "expo-router";
 import { ArrowRight } from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
 import { Button } from "../button";
 import {
   CollapsibleFormSection,
@@ -17,6 +16,7 @@ import {
   FormSelectInput,
   FormTextInput,
 } from "../form-inputs";
+import { KeyboardAvoidingLayout } from "../layout";
 import Toaster from "../toaster";
 import { Box } from "../ui/box";
 import { useToast } from "../ui/toast";
@@ -112,14 +112,14 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
         Object.entries(e).forEach(([key, val]) =>
           form.setError(key as keyof AddressFormData, {
             message: val as string,
-          })
+          }),
         );
       }
     }
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <KeyboardAvoidingLayout>
       <VStack space="md">
         <CollapsibleFormSection title="General">
           <FormSelectInput
@@ -256,7 +256,7 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
           onPress={form.handleSubmit(onSubmit)}
         />
       </VStack>
-    </ScrollView>
+    </KeyboardAvoidingLayout>
   );
 };
 

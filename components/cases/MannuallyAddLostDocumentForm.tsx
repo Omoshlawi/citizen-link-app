@@ -9,7 +9,6 @@ import { router } from "expo-router";
 import { ArrowRight, Plus, Trash } from "lucide-react-native";
 import React from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
 import {
   CollapsibleFormSection,
   FormCheckBox,
@@ -18,6 +17,7 @@ import {
   FormTextArea,
   FormTextInput,
 } from "../form-inputs";
+import { KeyboardAvoidingLayout } from "../layout";
 import Toaster from "../toaster";
 import { Box } from "../ui/box";
 import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
@@ -97,7 +97,7 @@ const MannuallyAddLostDocumentForm = () => {
 
   return (
     <Box className="flex flex-1 w-full">
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <KeyboardAvoidingLayout>
         <VStack className="w-full items-center" space="sm">
           <CollapsibleFormSection title="Basic Information">
             <FormSelectInput
@@ -357,7 +357,7 @@ const MannuallyAddLostDocumentForm = () => {
             <ButtonIcon as={ArrowRight} className="text-white" />
           </Button>
         </VStack>
-      </ScrollView>
+      </KeyboardAvoidingLayout>
     </Box>
   );
 };

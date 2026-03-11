@@ -1,6 +1,6 @@
 import { Button } from "@/components/button";
 import { FormPasswordInput, FormTextInput } from "@/components/form-inputs";
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
 import Logo from "@/components/Logo";
 import Toaster from "@/components/toaster";
 import { Box } from "@/components/ui/box";
@@ -95,43 +95,45 @@ const EmailSignInScreen = () => {
   };
   return (
     <ScreenLayout title="Sign in with email">
-      <VStack className="justify-between items-center w-full h-full pb-12">
-        <Logo />
-        <VStack space="lg" className="w-full">
-          <Heading>Log In</Heading>
-          <FormTextInput
-            controll={form.control}
-            name="email"
-            label={"Email"}
-            placeholder={"Enter Email..."}
-            autoCapitalize="none"
-            keyboardType={"email-address"}
-          />
+      <KeyboardAvoidingLayout>
+        <VStack className="justify-between items-center w-full h-full pb-12">
+          <Logo className="w-80 h-80" />
+          <VStack space="lg" className="w-full">
+            <Heading>Log In</Heading>
+            <FormTextInput
+              controll={form.control}
+              name="email"
+              label={"Email"}
+              placeholder={"Enter Email..."}
+              autoCapitalize="none"
+              keyboardType={"email-address"}
+            />
 
-          <FormPasswordInput
-            controll={form.control}
-            name="password"
-            label="Password"
-            placeholder="********"
-            autoCapitalize="none"
-          />
+            <FormPasswordInput
+              controll={form.control}
+              name="password"
+              label="Password"
+              placeholder="********"
+              autoCapitalize="none"
+            />
 
-          <Box className="flex-row items-center justify-end">
-            <Link href="/auth/forgot-password" withAnchor>
-              <Text className="text-sm text-typography-link">
-                Forgot Password {"\u2192"}
-              </Text>
-            </Link>
-          </Box>
-          <Button
-            onPress={form.handleSubmit(onSubmit)}
-            disabled={form.formState.isSubmitting}
-            loading={form.formState.isSubmitting}
-            text="Login"
-            suffixIcon={ArrowRightIcon}
-          />
+            <Box className="flex-row items-center justify-end">
+              <Link href="/auth/forgot-password" withAnchor>
+                <Text className="text-sm text-typography-link">
+                  Forgot Password {"\u2192"}
+                </Text>
+              </Link>
+            </Box>
+            <Button
+              onPress={form.handleSubmit(onSubmit)}
+              disabled={form.formState.isSubmitting}
+              loading={form.formState.isSubmitting}
+              text="Login"
+              suffixIcon={ArrowRightIcon}
+            />
+          </VStack>
         </VStack>
-      </VStack>
+      </KeyboardAvoidingLayout>
     </ScreenLayout>
   );
 };

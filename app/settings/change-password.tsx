@@ -1,10 +1,8 @@
-import { ScreenLayout } from "@/components/layout";
+import { KeyboardAvoidingLayout, ScreenLayout } from "@/components/layout";
+import Logo from "@/components/Logo";
 import Toaster from "@/components/toaster";
-import { Box } from "@/components/ui/box";
 import { Button, ButtonText } from "@/components/ui/button";
-import { FormControl } from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
-import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import { VStack } from "@/components/ui/vstack";
 import { authClient } from "@/lib/auth-client";
@@ -92,13 +90,11 @@ const ChangePasswordScreen = () => {
     }
   };
   return (
-    <ScreenLayout title="">
-      <Box className="flex-1 items-center justify-center p-4 bg-background-100">
-        <FormControl className="p-4 border border-outline-200 rounded-lg w-full bg-background-50">
-          <VStack space="lg">
-            <Text className="text-2xl font-bold text-center mb-8">
-              Change Password
-            </Text>
+    <ScreenLayout title="Change Password">
+      <KeyboardAvoidingLayout>
+        <VStack className="justify-between h-full items-center w-full pb-12">
+          <Logo className="w-80 h-80" />
+          <VStack space="lg" className="w-full">
             <Controller
               control={form.control}
               name="currentPassword"
@@ -159,14 +155,15 @@ const ChangePasswordScreen = () => {
             <Button
               onPress={form.handleSubmit(onSubmit)}
               disabled={form.formState.isSubmitting}
+              className="rounded-full bg-background-btn"
             >
-              <ButtonText size="lg" className="text-background-100">
+              <ButtonText size="lg" className="text-white">
                 Change Password
               </ButtonText>
             </Button>
           </VStack>
-        </FormControl>
-      </Box>
+        </VStack>
+      </KeyboardAvoidingLayout>
     </ScreenLayout>
   );
 };

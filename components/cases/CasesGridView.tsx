@@ -94,7 +94,7 @@ const CasesGridView = () => {
                   </Box>
                   <VStack space="xs" className="flex-1">
                     <Heading size="xs" className="flex-1" numberOfLines={1}>
-                      {item.document?.ownerName}
+                      {item.document?.fullName}
                     </Heading>
                     <HStack className="items-center" space="xs">
                       <Icon
