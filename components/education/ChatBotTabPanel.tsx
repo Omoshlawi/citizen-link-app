@@ -40,7 +40,7 @@ const ChatBotTabPanel = () => {
         Ask me anything about CHP Training, Screening Procidures, or cervical
         cancer
       </Text>
-      <Card className="w-full flex flex-1">
+      <Card className="w-full flex flex-1 dark:bg-background-btn">
         <KeyboardAvoidingLayout>
           <VStack space="md">
             <HStack space="md">

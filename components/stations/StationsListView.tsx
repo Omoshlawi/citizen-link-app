@@ -38,7 +38,7 @@ const StationsListView = ({}: StationsListViewProps) => {
         ListEmptyComponent={<EmptyState message="No facilities found" />}
         ItemSeparatorComponent={() => <Box className="h-2" />}
         renderItem={({ item }) => (
-          <Card size="md" variant="elevated">
+          <Card size="md" variant="elevated" className="dark:bg-background-btn">
             <HStack className="items-center" space="sm">
               <Icon
                 as={Store}

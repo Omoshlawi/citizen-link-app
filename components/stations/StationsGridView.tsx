@@ -49,7 +49,12 @@ const StationsGridView = ({}: StationsGridViewProps) => {
         contentContainerStyle={{ paddingBottom: GAP }}
         ListEmptyComponent={<EmptyState message="No facilities found" />}
         renderItem={({ item }) => (
-          <Card size="md" variant="elevated" style={{ width: CARD_WIDTH }}>
+          <Card
+            size="md"
+            variant="elevated"
+            style={{ width: CARD_WIDTH }}
+            className="dark:bg-background-btn"
+          >
             <VStack space="sm" className="flex-1">
               <Box className="w-full h-24 rounded-sm relative">
                 <Icon
