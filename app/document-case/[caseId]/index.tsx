@@ -1,8 +1,10 @@
 import {
   CaseActions,
   CaseDocumentImages,
+  CaseTimeline,
   DocumentDetails,
 } from "@/components/cases";
+import { SegmentedControl } from "@/components/common";
 import { ScreenLayout } from "@/components/layout";
 import { DisplayTile, DisplayTile3 } from "@/components/list-tile";
 import { ErrorState, When } from "@/components/state-full-widgets";
@@ -30,8 +32,12 @@ import { ScrollView } from "react-native";
 const DocumentCaseDetailScreen = () => {
   const { caseId } = useLocalSearchParams<{ caseId: string }>();
   const { report, error, isLoading } = useDocumentCase(caseId as string);
+  const [activeTab, setActiveTab] = React.useState<string>("case-details");
   return (
-    <ScreenLayout title="Case Details">
+    <ScreenLayout
+      title="Case Details"
+      actions={report && <CaseActions documentCase={report} />}
+    >
       <When
         asyncState={{ isLoading, error, data: report }}
         error={(e) => <ErrorState error={e} />}
@@ -100,7 +106,7 @@ const DocumentCaseDetailScreen = () => {
 
               <CaseDocumentImages images={images} documentType={documentType} />
 
-              <VStack space="xs" className="items-center pt-5">
+              <VStack space="xs" className="items-center py-5">
                 <Heading size="xl" className="text-typography-900">
                   {ownerName}
                 </Heading>
@@ -109,52 +115,71 @@ const DocumentCaseDetailScreen = () => {
                 </Text>
               </VStack>
 
+              <SegmentedControl
+                data={[
+                  { label: "Case", value: "case-details" },
+                  { label: "Document", value: "document-details" },
+                  { label: "Timeline", value: "timeline" },
+                ]}
+                value={activeTab}
+                onChange={setActiveTab}
+              />
+
               {/* Details section */}
-              <VStack className="pt-6" space="md">
-                <Text className="text-sm font-semibold text-typography-800">
-                  Case Details
-                </Text>
-                <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
-                  <VStack className="px-4" space="xs">
-                    <DisplayTile
-                      icon={Briefcase}
-                      label={"Case Type"}
-                      value={
-                        docCase.lostDocumentCase ? "Lost case" : "Found Case"
-                      }
-                    />
-                    <DisplayTile
-                      icon={Hash}
-                      label={"Case Number"}
-                      value={docCase.caseNumber}
-                      withTopOutline
-                    />
-                    <DisplayTile
-                      icon={Calendar}
-                      label={docCase.lostDocumentCase ? "Lost" : "Found"}
-                      value={dayjs(eventDate).format(dateFomart)}
-                      withTopOutline
-                    />
-                    <DisplayTile
-                      icon={Calendar}
-                      label={"Tags"}
-                      value={
-                        docCase.tags.length > 0
-                          ? docCase.tags.join(", ")
-                          : undefined
-                      }
-                      hideIfNoValue
-                      withTopOutline
-                    />
-                  </VStack>
-                </Box>
-              </VStack>
+              {activeTab === "case-details" && (
+                <VStack className="pt-6" space="md">
+                  <Text className="text-sm font-semibold text-typography-800">
+                    Case Details
+                  </Text>
+                  <Box className="rounded-xl bg-background-0 dark:bg-background-btn border border-outline-100 overflow-hidden">
+                    <VStack className="px-4" space="xs">
+                      <DisplayTile
+                        icon={Briefcase}
+                        label={"Case Type"}
+                        value={
+                          docCase.lostDocumentCase ? "Lost case" : "Found Case"
+                        }
+                      />
+                      <DisplayTile
+                        icon={Hash}
+                        label={"Case Number"}
+                        value={docCase.caseNumber}
+                        withTopOutline
+                      />
+                      <DisplayTile
+                        icon={Calendar}
+                        label={docCase.lostDocumentCase ? "Lost" : "Found"}
+                        value={dayjs(eventDate).format(dateFomart)}
+                        withTopOutline
+                      />
+                      <DisplayTile
+                        icon={Calendar}
+                        label={"Tags"}
+                        value={
+                          docCase.tags.length > 0
+                            ? docCase.tags.join(", ")
+                            : undefined
+                        }
+                        hideIfNoValue
+                        withTopOutline
+                      />
+                    </VStack>
+                  </Box>
+                </VStack>
+              )}
 
               {/* Document details Field Section */}
-              <DocumentDetails document={document as any} />
+              {activeTab === "document-details" && (
+                <DocumentDetails document={document as any} />
+              )}
+
+              {/* Timeline section */}
+              {activeTab === "timeline" && (
+                <CaseTimeline documentCase={docCase} />
+              )}
 
               {/* Address section */}
-              {address?.address1 && (
+              {activeTab === "case-details" && address?.address1 && (
                 <Box className="pt-6">
                   <DisplayTile3
                     icon={MapPin}
@@ -178,7 +203,9 @@ const DocumentCaseDetailScreen = () => {
               )}
 
               {/* Actions */}
-              <CaseActions documentCase={docCase} />
+              <Text className="text-center text-typography-400 text-xs pt-4">
+                Created {dayjs(docCase!.createdAt).format(dateFomart)}
+              </Text>
             </ScrollView>
           );
         }}

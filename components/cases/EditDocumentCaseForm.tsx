@@ -9,7 +9,6 @@ import { router } from "expo-router";
 import { ArrowRight, Plus, Trash } from "lucide-react-native";
 import React, { FC } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
 import {
   CollapsibleFormSection,
   FormCheckBox,
@@ -18,6 +17,7 @@ import {
   FormTextArea,
   FormTextInput,
 } from "../form-inputs";
+import { KeyboardAvoidingLayout } from "../layout";
 import Toaster from "../toaster";
 import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
 import { Divider } from "../ui/divider";
@@ -134,7 +134,7 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <KeyboardAvoidingLayout>
       <VStack space="md">
         <CollapsibleFormSection title="Basic Information">
           <FormSelectInput
@@ -376,7 +376,7 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
           <ButtonIcon as={ArrowRight} className="text-white" />
         </Button>
       </VStack>
-    </ScrollView>
+    </KeyboardAvoidingLayout>
   );
 };
 

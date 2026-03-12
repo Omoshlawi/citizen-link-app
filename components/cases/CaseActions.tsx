@@ -6,9 +6,14 @@ import {
   FoundDocumentCaseStatus,
   LostDocumentCaseStatus,
 } from "@/types/cases";
-import dayjs from "dayjs";
+import cn from "classnames";
 import { router } from "expo-router";
-import { ArrowRight } from "lucide-react-native";
+import {
+  ArrowRight,
+  Edit,
+  FolderTree,
+  MoreVertical,
+} from "lucide-react-native";
 import React, { FC, useMemo } from "react";
 import Toaster from "../toaster";
 import {
@@ -18,6 +23,9 @@ import {
 } from "../ui/actionsheet";
 import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
 import { Heading } from "../ui/heading";
+import { Icon } from "../ui/icon";
+import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from "../ui/menu";
+import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
 import { useToast } from "../ui/toast";
 import { VStack } from "../ui/vstack";
@@ -26,9 +34,9 @@ type CaseActionsProps = {
   documentCase: DocumentCase;
 };
 const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
-  const { submitDocumentCase } = useDocumentCaseApi();
+  const { submitFoundDocumentCase, submitLostDocumentCase } =
+    useDocumentCaseApi();
 
-  const dateFomart = "DD MMMM YYYY";
   const casetype: CaseType = docCase.foundDocumentCase ? "FOUND" : "LOST";
   const foundCase = docCase.foundDocumentCase;
   const lostCase = docCase.lostDocumentCase;
@@ -59,7 +67,11 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
   const handleAcceptAndContinue = async () => {
     setSubmitting(true);
     try {
-      await submitDocumentCase(docCase.id);
+      if (casetype === "FOUND") {
+        await submitFoundDocumentCase(docCase.foundDocumentCase!.id);
+      } else {
+        await submitLostDocumentCase(docCase.lostDocumentCase!.id);
+      }
       setShowActionsheet(false);
     } catch (error) {
       const e = handleApiErrors(error);
@@ -79,108 +91,163 @@ const CaseActions: FC<CaseActionsProps> = ({ documentCase: docCase }) => {
       setSubmitting(false);
     }
   };
-  return (
-    <VStack space="sm" className="pt-4">
-      {(foundCase?.status === FoundDocumentCaseStatus.DRAFT ||
-        lostCase?.status === LostDocumentCaseStatus.DRAFT) && (
-        <>
-          <Button
-            size="lg"
-            variant="solid"
-            action="secondary"
-            className="rounded-full bg-background-btn justify-between"
-            onPress={() => {
-              router.push({
-                pathname: "/document-case/[caseId]/edit",
-                params: { caseId: docCase.id },
-              });
-            }}
-          >
-            <ButtonText className="text-white">
-              Review & Edit Document details
-            </ButtonText>
-            <ButtonIcon as={ArrowRight} className="text-white" />
-          </Button>
-          <Button
-            size="lg"
-            action="primary"
-            className="rounded-full bg-teal-500 justify-between"
-            onPress={() => setShowActionsheet(true)}
-            disabled={submitting}
-          >
-            {submitting && <ButtonSpinner className="text-white" />}
-            <ButtonText className="font-semibold text-white">
-              {casetype === "LOST" ? "Submit" : "Submit for verification"}
-            </ButtonText>
-            <ButtonIcon as={ArrowRight} className="text-white" />
-          </Button>
-          <Actionsheet
-            isOpen={showActionsheet}
-            onClose={() => {
-              // prevent closig intill submission is complete
-              if (!submitting) {
-                setShowActionsheet(false);
-              }
-            }}
-          >
-            <ActionsheetBackdrop />
-            <ActionsheetContent>
-              <VStack className="w-full" space="lg">
-                <Heading className="text-center">Confirm</Heading>
-                <Text className="text-start text-typography-400 px-2 pb-2">
-                  By continuing, you confirm that the details you have entered
-                  are accurate.
-                  <Text className="font-semibold">
-                    After submitting, you will not be able to edit the document
-                    details.
-                  </Text>
-                  <Text>{"\n\n"}</Text>
-                  {casetype === "FOUND" && (
-                    <Text>
-                      To verify this document, please either:{"\n"}- Drop the
-                      document at the nearest station for official verification,
-                      or
-                      {"\n"}- Request retrieval so a Citizen Link agent can come
-                      and collect it from you.
-                    </Text>
-                  )}
-                </Text>
-                <Button
-                  onPress={handleAcceptAndContinue}
-                  className="bg-background-btn rounded-full justify-between"
-                  disabled={submitting}
-                >
-                  {submitting && <ButtonSpinner className="text-white" />}
-                  <ButtonText className="text-white">
-                    Confirm and submit
-                  </ButtonText>
-                  <ButtonIcon as={ArrowRight} className="text-white" />
-                </Button>
-              </VStack>
-            </ActionsheetContent>
-          </Actionsheet>
-        </>
-      )}
+  const disabled =
+    (foundCase?.status !== FoundDocumentCaseStatus.DRAFT &&
+      lostCase?.status !== LostDocumentCaseStatus.DRAFT) ||
+    submitting;
 
-      {canViewMatches && (
-        <Button
-          className="rounded-full justify-between"
-          onPress={() =>
+  return (
+    <>
+      <Menu
+        placement="top"
+        offset={5}
+        disabledKeys={["Settings"]}
+        trigger={({ ...triggerProps }) => {
+          return (
+            <Button
+              {...triggerProps}
+              size="lg"
+              className="rounded-full p-3.5"
+              variant="link"
+            >
+              <ButtonIcon as={MoreVertical} />
+            </Button>
+          );
+        }}
+      >
+        <MenuItem disabled textValue="Actions">
+          <MenuItemLabel className="font-bold">Actions</MenuItemLabel>
+        </MenuItem>
+        <MenuSeparator />
+
+        <MenuItem
+          key="Review & Edit Document details"
+          textValue="Review & Edit Document details"
+          disabled={disabled}
+          onPress={() => {
+            router.push({
+              pathname: "/document-case/[caseId]/edit",
+              params: { caseId: docCase.id },
+            });
+          }}
+        >
+          <Icon
+            as={Edit}
+            size="sm"
+            className={cn("mr-2 text-blue-500 ", {
+              "text-gray-400": disabled,
+            })}
+          />
+          <MenuItemLabel
+            size="sm"
+            className={cn("text-blue-500", {
+              "text-gray-400": disabled,
+            })}
+          >
+            Review & Edit Document details
+          </MenuItemLabel>
+        </MenuItem>
+
+        <MenuItem
+          key="Submit for verification"
+          textValue="Submit for verification"
+          disabled={disabled}
+          onPress={() => {
+            setShowActionsheet(true);
+          }}
+        >
+          {submitting ? (
+            <Spinner />
+          ) : (
+            <Icon
+              as={ArrowRight}
+              size="sm"
+              className={cn("mr-2 text-teal-500", {
+                "text-gray-400": disabled,
+              })}
+            />
+          )}
+          <MenuItemLabel
+            size="sm"
+            className={cn("text-teal-500", {
+              "text-gray-400": disabled,
+            })}
+          >
+            Submit for verification
+          </MenuItemLabel>
+        </MenuItem>
+
+        <MenuItem
+          key="View document matches"
+          textValue="View document matches"
+          disabled={!canViewMatches}
+          onPress={() => {
             router.push({
               pathname: "/document-case/[caseId]/matches",
               params: { caseId: docCase.id },
-            })
-          }
+            });
+          }}
         >
-          <ButtonText>View document matches</ButtonText>
-          <ButtonIcon as={ArrowRight} />
-        </Button>
-      )}
-
-      <Text className="text-center text-typography-400 text-xs pt-4">
-        Created {dayjs(docCase!.createdAt).format(dateFomart)}
-      </Text>
-    </VStack>
+          <Icon
+            as={FolderTree}
+            size="sm"
+            className={cn("mr-2 text-orange-500", {
+              "text-gray-400": !canViewMatches,
+            })}
+          />
+          <MenuItemLabel
+            size="sm"
+            className={cn("text-orange-500", {
+              "text-gray-400": !canViewMatches,
+            })}
+          >
+            View document matches
+          </MenuItemLabel>
+        </MenuItem>
+      </Menu>
+      <Actionsheet
+        isOpen={showActionsheet}
+        onClose={() => {
+          // prevent closig intill submission is complete
+          if (!submitting) {
+            setShowActionsheet(false);
+          }
+        }}
+      >
+        <ActionsheetBackdrop />
+        <ActionsheetContent>
+          <VStack className="w-full" space="lg">
+            <Heading className="text-center">Confirm</Heading>
+            <Text className="text-start text-typography-400 px-2 pb-2">
+              By continuing, you confirm that the details you have entered are
+              accurate.
+              <Text className="font-semibold">
+                After submitting, you will not be able to edit the document
+                details.
+              </Text>
+              <Text>{"\n\n"}</Text>
+              {casetype === "FOUND" && (
+                <Text>
+                  To verify this document, please either:{"\n"}- Drop the
+                  document at the nearest station for official verification, or
+                  {"\n"}- Request retrieval so a Citizen Link agent can come and
+                  collect it from you.
+                </Text>
+              )}
+            </Text>
+            <Button
+              onPress={handleAcceptAndContinue}
+              className="bg-background-btn rounded-full justify-between"
+              disabled={submitting}
+            >
+              {submitting && <ButtonSpinner className="text-white" />}
+              <ButtonText className="text-white">Confirm and submit</ButtonText>
+              <ButtonIcon as={ArrowRight} className="text-white" />
+            </Button>
+          </VStack>
+        </ActionsheetContent>
+      </Actionsheet>
+    </>
   );
 };
 

@@ -44,7 +44,7 @@ export const useDocumentCases = (params: CaseFilterFormData = {}) => {
 };
 export const useDocumentCase = (
   caseId?: string,
-  params?: Record<string, any>
+  params?: Record<string, any>,
 ) => {
   const url = constructUrl(`/documents/cases/${caseId}`, {
     v: "custom:include(foundDocumentCase,lostDocumentCase,document:include(type, images),document:include(additionalFields),address:include(locale))",
@@ -62,7 +62,7 @@ export const useDocumentCase = (
 };
 
 export const createFoundDocumentCase = async (
-  payload: FoundDocumentCaseFormData
+  payload: FoundDocumentCaseFormData,
 ) => {
   const foundDocumentCase = await apiFetch<DocumentCase>(
     "/documents/cases/found",
@@ -72,7 +72,7 @@ export const createFoundDocumentCase = async (
         ...payload,
         eventDate: dayjs(payload?.eventDate).format("YYYY-MM-DD"),
       },
-    }
+    },
   );
   mutate("/documents/cases");
   return foundDocumentCase.data;
@@ -80,7 +80,7 @@ export const createFoundDocumentCase = async (
 
 export const updateFoundDocumentCase = async (
   caseId: string,
-  payload: FoundDocumentCaseFormData
+  payload: FoundDocumentCaseFormData,
 ) => {
   const foundDocumentCase = await apiFetch<DocumentCase>(
     `/documents/cases/${caseId}`,
@@ -90,14 +90,14 @@ export const updateFoundDocumentCase = async (
         ...payload,
         eventDate: dayjs(payload?.eventDate).format("YYYY-MM-DD"),
       },
-    }
+    },
   );
   mutate("/documents/cases");
   return foundDocumentCase.data;
 };
 
 export const createLostDocumentCase = async (
-  payload: LostDocumentCaseFormData
+  payload: LostDocumentCaseFormData,
 ) => {
   const lostDocumentCase = await apiFetch<DocumentCase>(
     "/documents/cases/lost",
@@ -118,7 +118,7 @@ export const createLostDocumentCase = async (
           ? dayjs(payload?.expiryDate).format("YYYY-MM-DD")
           : undefined,
       },
-    }
+    },
   );
   mutate("/documents/cases");
   return lostDocumentCase.data;
@@ -126,7 +126,7 @@ export const createLostDocumentCase = async (
 
 export const updateLostDocumentCase = async (
   caseId: string,
-  payload: LostDocumentCaseFormData
+  payload: LostDocumentCaseFormData,
 ) => {
   const lostDocumentCase = await apiFetch<DocumentCase>(
     `/documents/cases/${caseId}`,
@@ -136,7 +136,7 @@ export const updateLostDocumentCase = async (
         ...payload,
         eventDate: dayjs(payload?.eventDate).format("YYYY-MM-DD"),
       },
-    }
+    },
   );
   mutate("/documents/cases");
   return lostDocumentCase.data;
@@ -144,14 +144,14 @@ export const updateLostDocumentCase = async (
 
 export const deleteDocumentCase = async (
   caseId: string,
-  purge: boolean = false
+  purge: boolean = false,
 ) => {
   const documentCase = await apiFetch<DocumentCase>(
     `/documents/cases/${caseId}`,
     {
       method: "DELETE",
       params: { purge },
-    }
+    },
   );
   mutate("/documents/cases");
   return documentCase.data;
@@ -162,7 +162,7 @@ export const restoreDocumentCase = async (caseId: string) => {
     `/documents/cases/${caseId}/restore`,
     {
       method: "POST",
-    }
+    },
   );
   mutate("/documents/cases");
   return documentCase.data;
@@ -171,7 +171,7 @@ export const restoreDocumentCase = async (caseId: string) => {
 export const updateCaseDocument = async (
   caseId: string,
   documentId: string,
-  payload: CaseDocumentFormData
+  payload: CaseDocumentFormData,
 ) => {
   const documentCase = await apiFetch<DocumentCase>(
     `/documents/cases/${caseId}/documents/${documentId}`,
@@ -189,7 +189,7 @@ export const updateCaseDocument = async (
           ? dayjs(payload?.expiryDate).format("YYYY-MM-DD")
           : undefined,
       },
-    }
+    },
   );
   mutate("/documents/cases");
   return documentCase.data;
@@ -198,11 +198,11 @@ export const updateCaseDocument = async (
 const uploadDocumentImage = async (
   caseId: string,
   documentId: string,
-  data: { images: string[] }
+  data: { images: string[] },
 ) => {
   const images = await apiFetch<{ images: DocumentImage[] }>(
     `/documents/cases/${caseId}/documents/${documentId}/images`,
-    { method: "POST", data }
+    { method: "POST", data },
   );
   mutate(`/documents/cases`);
   return images.data.images ?? [];
@@ -210,25 +210,35 @@ const uploadDocumentImage = async (
 
 const updateDocumentCase = async (
   caseId: string,
-  payload: Partial<FoundDocumentCaseFormData>
+  payload: Partial<FoundDocumentCaseFormData>,
 ) => {
   const documentCase = await apiFetch<DocumentCase>(
     `/documents/cases/${caseId}`,
     {
       method: "PATCH",
       data: payload,
-    }
+    },
   );
   mutate("/documents/cases");
   return documentCase.data;
 };
 
-const submitDocumentCase = async (caseId: string) => {
+const submitLostDocumentCase = async (lostCaseId: string) => {
   const documentCase = await apiFetch<DocumentCase>(
-    `/documents/cases/${caseId}/submit`,
+    `/documents/cases/lost/${lostCaseId}/submit`,
     {
       method: "POST",
-    }
+    },
+  );
+  mutate("/documents/cases");
+  return documentCase.data;
+};
+const submitFoundDocumentCase = async (foundCaseId: string) => {
+  const documentCase = await apiFetch<DocumentCase>(
+    `/documents/cases/found/${foundCaseId}/submit`,
+    {
+      method: "POST",
+    },
   );
   mutate("/documents/cases");
   return documentCase.data;
@@ -239,7 +249,7 @@ const verifyDocumentCase = async (caseId: string) => {
     `/documents/cases/${caseId}/verify`,
     {
       method: "POST",
-    }
+    },
   );
   mutate("/documents/cases");
   return documentCase.data;
@@ -250,7 +260,7 @@ const rejectDocumentCase = async (caseId: string) => {
     `/documents/cases/${caseId}/reject`,
     {
       method: "POST",
-    }
+    },
   );
   mutate("/documents/cases");
   return documentCase.data;
@@ -267,7 +277,8 @@ export const useDocumentCaseApi = () => {
     uploadDocumentImage,
     updateCaseDocument,
     updateDocumentCase,
-    submitDocumentCase,
+    submitFoundDocumentCase,
+    submitLostDocumentCase,
     verifyDocumentCase,
     rejectDocumentCase,
   };

@@ -11,3 +11,15 @@ export interface TransitionReason {
   updatedAt: string;
   voided: boolean;
 }
+
+export interface StatusTransition {
+  id: string;
+  entityId: string;
+  entityType: string;
+  fromStatus: string;
+  toStatus: string;
+  reasonId: string;
+  comment: string;
+  changedById: string;
+  createdAt: string;
+}
