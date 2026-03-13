@@ -174,20 +174,20 @@ const AiInteractionStep = <T extends object>({
               Status:
             </Text>
             <Badge
-              className={aiData.success ? "bg-green-600" : "bg-red-500"}
+              className={aiData.callSuccess ? "bg-green-600" : "bg-red-500"}
               variant="solid"
             >
-              <BadgeText>{aiData.success ? "Success" : "Failed"}</BadgeText>
+              <BadgeText>{aiData.callSuccess ? "Success" : "Failed"}</BadgeText>
             </Badge>
           </HStack>
 
-          {aiData.errorMessage && (
+          {aiData.callError && (
             <Box className="mt-2">
               <Text size="sm" className="text-typography-500">
                 Error Message:
               </Text>
               <Text size="sm" className="text-red-500">
-                {aiData.errorMessage}
+                {aiData.callError}
               </Text>
             </Box>
           )}

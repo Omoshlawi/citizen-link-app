@@ -73,7 +73,7 @@ const levelKeys = ["level1", "level2", "level3", "level4", "level5"] as const;
 
 export const addressSchema = z.object({
   type: z.enum(["HOME", "WORK", "BILLING", "SHIPPING", "OFFICE", "OTHER"]),
-  label: optionalNullableString,
+  label: z.string().nonempty("Label is required"),
   address1: z.string().trim().min(1, "Address line 1 is required").max(255),
   address2: optionalNullableString,
   landmark: optionalNullableString,

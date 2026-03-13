@@ -1,11 +1,11 @@
 import { router } from "expo-router";
 import { Bell, UserCircle } from "lucide-react-native";
 import React, { FC } from "react";
+import Logo from "../Logo";
 import { Box } from "../ui/box";
 import { Button } from "../ui/button";
 import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
-import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 import SafeAreaScreen from "./SafeAreaScreen";
 
@@ -17,8 +17,11 @@ const LandingScreenLayout: FC<LandingScreenLayoutProps> = ({ children }) => {
     <SafeAreaScreen mode="padded">
       <VStack className="flex-1 h-full w-full ">
         {/* APP bar */}
-        <HStack className="justify-between items-center p-4 b">
-          <Text className="text-2xl font-bold ">LOGO</Text>
+        <HStack
+          className="justify-between items-center p-4 "
+          style={{ height: 56 }}
+        >
+          <Logo mode="name" className="h-full w-32" resizeMode="cover" />
           <HStack space="xl" className="items-center">
             <Button
               action="default"

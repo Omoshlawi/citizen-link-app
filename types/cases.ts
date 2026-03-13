@@ -144,6 +144,8 @@ export interface Type {
   voided: boolean;
 }
 
+
+
 export interface AiInteraction {
   id: string;
   userId: string;
@@ -157,10 +159,13 @@ export interface AiInteraction {
   tokenUsage: TokenUsage;
   processingTime?: string;
   estimatedCost?: string;
-  success: boolean;
-  errorMessage?: string;
+  callSuccess: boolean;
+  callError?: string;
   retryCount: number;
   createdAt: string;
+  parseSuccess?: boolean;
+  parseError?: any;
+  parsedResponse?: any;
 }
 
 export interface TokenUsage {

@@ -21,6 +21,8 @@ import Toaster from "../toaster";
 import { Box } from "../ui/box";
 import { useToast } from "../ui/toast";
 import { VStack } from "../ui/vstack";
+import AddressFieldsInput from "./AddressFieldsInput";
+
 const LEVEL_FIELDS: AddressLevelKey[] = [
   "level1",
   "level2",
@@ -43,8 +45,9 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
     if (date.isValid()) return date.toDate();
     return undefined;
   }, [address]);
+  const { locales } = useAddressLocales();
   const form = useForm({
-    defaultValues: {
+    values: {
       type: address?.type ?? "OTHER",
       label: address?.label ?? "",
       address1: address?.address1 ?? "",
@@ -57,7 +60,11 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
       level5: address?.level5 ?? "",
       cityVillage: address?.cityVillage ?? "",
       stateProvince: address?.stateProvince ?? "",
-      country: address?.country ?? "ke",
+      country:
+        address?.country ??
+        address?.localeId ??
+        locales.find((l) => l.code === "ke-default")?.country ??
+        "ke",
       postalCode: address?.postalCode ?? "",
       latitude: address?.latitude ?? null,
       longitude: address?.longitude ?? null,
@@ -66,13 +73,21 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
       endDate,
       preferred: address?.preferred ?? false,
       formatted: address?.formatted ?? "",
-      localeId: address?.localeId ?? "",
+      localeId:
+        address?.localeId ??
+        locales.find((l) => l.code === "ke-default")?.id ??
+        "",
     },
     resolver: zodResolver(addressSchema),
   });
   const { createAddress, updateAddress } = useAddressesApi();
-  const { locales } = useAddressLocales();
   const toast = useToast();
+  const selectedLocaleId = form.watch("localeId");
+  const selectedLocale = useMemo(() => {
+    return locales.find((l) => l.id === selectedLocaleId);
+  }, [selectedLocaleId, locales]);
+  const level1 = form.watch("level1");
+  const level2 = form.watch("level2");
 
   const onSubmit: SubmitHandler<AddressFormData> = async (data) => {
     try {
@@ -153,20 +168,21 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
             controll={form.control}
             name="address1"
             placeholder="Address 1"
-            helperText="Normally apartment name e.g Qwetu homes"
+            helperText="Building/house number and street"
           />
           <FormTextInput
             label="Address 2"
             controll={form.control}
             name="address2"
             placeholder="Address 2"
-            helperText="Normally House number e.g QTU-011"
+            helperText="Apartment, suite, floor, etc"
           />
           <FormTextInput
             label="Landmark"
             controll={form.control}
             name="landmark"
-            placeholder="Address 2"
+            placeholder="Landmark"
+            helperText="Nearby landmark or directions"
           />
           <Box className="mt-4">
             <FormCheckBox
@@ -177,14 +193,52 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
           </Box>
         </CollapsibleFormSection>
         <CollapsibleFormSection title="Administrative levels">
-          {LEVEL_FIELDS?.map((level) => (
-            <FormTextInput
-              controll={form.control}
-              name={level}
-              key={level}
-              label={level}
-            />
-          ))}
+          {LEVEL_FIELDS?.map((level) => {
+            const label =
+              selectedLocale?.formatSpec?.levels.find((l) => l.level === level)
+                ?.label ?? level;
+            if (
+              selectedLocale?.country === "KE" &&
+              ["level1", "level2", "level3"].includes(level)
+            ) {
+              const _level =
+                level === "level1" ? 1 : level === "level2" ? 2 : 3;
+              const parentName =
+                level === "level2"
+                  ? level1
+                  : level === "level3"
+                    ? level2
+                    : undefined;
+
+              return (
+                <AddressFieldsInput
+                  key={level}
+                  control={form.control}
+                  label={label}
+                  name={level}
+                  level={_level}
+                  parentName={parentName}
+                  onChange={(value) => {
+                    if (level === "level1") {
+                      form.setValue("level2", "");
+                      form.setValue("level3", "");
+                    }
+                    if (level === "level2") {
+                      form.setValue("level3", "");
+                    }
+                  }}
+                />
+              );
+            }
+            return (
+              <FormTextInput
+                controll={form.control}
+                name={level}
+                key={level}
+                label={label}
+              />
+            );
+          })}
         </CollapsibleFormSection>
         <CollapsibleFormSection title="Legacy & Contact" defaultCollapsed>
           <FormTextInput
@@ -209,7 +263,7 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
             helperText="Legacy address"
           />
           <FormTextInput
-            label="Postal cODE"
+            label="Postal Code"
             controll={form.control}
             name="postalCode"
             placeholder="postal Code"

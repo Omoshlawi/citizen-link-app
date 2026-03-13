@@ -1,48 +1,47 @@
 import mime from "mime";
-import RNBlobUtil from "react-native-blob-util";
 import { apiFetch } from "./apiFetch";
 import { constructUrl } from "./constructUrl";
+import handleApiErrors from "./handleApiErrors";
 
 export const uploadFile = async (
   fileUri: string,
-  onProgress?: (percent: number) => void
+  onProgress?: (percent: number) => void,
 ): Promise<string> => {
   try {
-    const path = fileUri.replace(/^file:\/\//i, "");
+    const fileName = fileUri.split("/").pop();
 
-    const { size } = await RNBlobUtil.fs.stat(path);
+    const formData = new FormData();
+    formData.append("file", {
+      uri: fileUri,
+      type: mime.getType(fileUri) || "application/octet-stream",
+      name: fileName,
+    } as any);
 
-    const fileName = path.split(/[\\/]/).pop() || "upload";
-
-    const mimeType = mime.getType(path) || "application/octet-stream";
-
-    const url = constructUrl("/files/upload-url", {
-      fileName,
-      size,
-      mimeType,
-    });
+    const url = constructUrl("/files/upload");
 
     const {
-      data: { url: signedUrl, key },
-    } = await apiFetch<{ url: string; key: string }>(url);
-
-    await RNBlobUtil.fetch(
-      "PUT",
-      signedUrl,
-      {
-        "Content-Type": mimeType,
+      data: { key },
+    } = await apiFetch(url, {
+      method: "POST",
+      data: formData,
+      onUploadProgress: (progressEvent) => {
+        if (!progressEvent.total) return;
+        const percent = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total,
+        );
+        onProgress?.(percent);
       },
-      RNBlobUtil.wrap(path)
-    )
-      .uploadProgress((written, total) => {
-        onProgress?.(Math.floor((written / total) * 100));
-      })
-      .progress((received, total) => {
-        // optional - download progress if you ever reuse for GET
-      });
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     return key;
   } catch (err: any) {
-    throw new Error(`Upload failed for ${fileUri}: ${err.message}`);
+    const errorDetail = handleApiErrors(err)?.detail;
+    throw new Error(
+      `Upload failed for ${fileUri}: ${errorDetail}`,
+      { cause: err }, // Preserves original stack trace!
+    );
   }
 };
