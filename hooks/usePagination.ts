@@ -15,7 +15,7 @@ export const usePagination = (options?: UsePaginationOptions) => {
   } = options ?? {};
   const { searchParams: params, updateParams } = useSearchParamsExtended();
   const [paginationParams, setPaginationParam] = useState<URLSearchParams>(
-    new URLSearchParams()
+    new URLSearchParams(),
   );
   const searchParams = context === "router" ? params : paginationParams;
   const limit = searchParams?.get("limit") ?? `${defaultLimit}`;
@@ -26,7 +26,7 @@ export const usePagination = (options?: UsePaginationOptions) => {
       const _limit = Number(limit);
       return totalCount > _limit;
     },
-    [limit]
+    [limit],
   );
 
   const onPageChange = useCallback(
@@ -38,7 +38,7 @@ export const usePagination = (options?: UsePaginationOptions) => {
           return new URLSearchParams(state);
         });
     },
-    [updateParams, context, setPaginationParam]
+    [updateParams, context, setPaginationParam],
   );
   return {
     limit,
@@ -50,10 +50,10 @@ export const usePagination = (options?: UsePaginationOptions) => {
 
 export const useMergePaginationInfo = (
   params: Record<string, string> = {},
-  options?: UsePaginationOptions
+  options?: UsePaginationOptions,
 ) => {
   const { limit, onPageChange, page, showPagination } = usePagination(options);
-  const mergedParams = { ...params, limit: String(limit), page: String(page) };
+  const mergedParams = { limit: String(limit), page: String(page), ...params };
 
   return {
     mergedSearchParams: mergedParams as Record<string, string>,
