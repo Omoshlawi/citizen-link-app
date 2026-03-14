@@ -1,11 +1,11 @@
 import ScreenLayout from "@/components/layout/ScreenLayout";
-import { Text } from "@/components/ui/text";
+import { EmptyState } from "@/components/state-full-widgets";
 import React from "react";
 
 const Nortifications = () => {
   return (
     <ScreenLayout title="Notifications">
-      <Text>Notifications</Text>
+      <EmptyState message="no notifications" />
     </ScreenLayout>
   );
 };

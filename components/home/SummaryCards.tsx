@@ -1,6 +1,6 @@
 import { useDocumentCases } from "@/hooks/use-document-cases";
 import { useMatches } from "@/hooks/use-matches";
-import { cn } from "@gluestack-ui/utils/nativewind-utils";
+import cn from "classnames";
 import { Link, router } from "expo-router";
 import { Cable, File, LucideIcon, Users } from "lucide-react-native";
 import React, { useMemo } from "react";
@@ -25,6 +25,7 @@ const SummaryCards = () => {
       icon: LucideIcon;
       iconClassName: string;
       navigateTo?: React.ComponentProps<typeof Link>["href"];
+      className?: string;
     }[]
   >(() => {
     return [
@@ -33,6 +34,7 @@ const SummaryCards = () => {
         value: lostCount,
         icon: File,
         iconClassName: "text-red-500 dark:text-red-800",
+        className: "border-l-4 border-l-red-600",
         navigateTo: { pathname: "/cases", params: { caseType: "LOST" } },
       },
       {
@@ -40,6 +42,7 @@ const SummaryCards = () => {
         value: foundCount,
         icon: File,
         iconClassName: "text-green-500 dark:text-green-800",
+        className: "border-l-4 border-l-green-600",
         navigateTo: { pathname: "/cases", params: { caseType: "FOUND" } },
       },
       {
@@ -47,6 +50,7 @@ const SummaryCards = () => {
         value: matchesCount,
         icon: Cable,
         iconClassName: "text-yellow-500 dark:text-yellow-800",
+        className: "border-l-4 border-l-yellow-600",
         navigateTo: { pathname: "/matches", params: {} },
       },
       {
@@ -54,6 +58,7 @@ const SummaryCards = () => {
         value: 0,
         icon: Users,
         iconClassName: "text-blue-500 dark:text-blue-800",
+        className: "border-l-4 border-l-blue-600",
       },
     ];
   }, [foundCount, lostCount, matchesCount]);
@@ -62,7 +67,10 @@ const SummaryCards = () => {
       {cards.map((card, index) => (
         <TouchableOpacity
           key={index}
-          className="flex-1 min-w-[48%] rounded-3xl bg-background-btn w-[48%] p-3 gap-3"
+          className={cn(
+            "flex-1 min-w-[48%] rounded-3xl bg-background-0 dark:bg-background-btn w-[48%] p-3 gap-3",
+            card.className,
+          )}
           disabled={!card.navigateTo}
           onPress={() => router.push(card.navigateTo!)}
         >
@@ -76,7 +84,7 @@ const SummaryCards = () => {
               className={cn(card.iconClassName, "font-bold")}
             />
           </Box>
-          <Text className="text-white" size="sm">
+          <Text className="" size="sm">
             {card.title}
           </Text>
         </TouchableOpacity>

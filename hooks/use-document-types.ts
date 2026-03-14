@@ -2,10 +2,11 @@ import { APIFetchResponse, constructUrl, useApi } from "@/lib/api";
 import { DocumentType } from "@/types/cases";
 
 // lists all document types
-export const useDocumentTypes = () => {
+export const useDocumentTypes = (params: Record<string, any> = {}) => {
   const url = constructUrl("/documents/types", {
     limit: 100,
-    includeVoided: true,
+    includeVoided: false,
+    ...params,
   });
   const { data, error, isLoading, mutate } =
     useApi<APIFetchResponse<{ results: DocumentType[] }>>(url);

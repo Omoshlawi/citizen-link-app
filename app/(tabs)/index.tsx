@@ -1,4 +1,4 @@
-import { RecentActivity, SummaryCards } from "@/components/home";
+import { SummaryCards, SupportedDocuments } from "@/components/home";
 import LandingScreenLayout from "@/components/layout/LandingScreenLayout";
 import { Box } from "@/components/ui/box";
 import { Heading } from "@/components/ui/heading";
@@ -27,13 +27,13 @@ export default function HomeScreen() {
             {new Date().getHours() < 12
               ? "Good Morning"
               : new Date().getHours() < 18
-              ? "Good Afternoon"
-              : "Good Evening"}
+                ? "Good Afternoon"
+                : "Good Evening"}
             , {userSession?.user?.name}
           </Heading>
 
           <SummaryCards />
-          <RecentActivity />
+          <SupportedDocuments />
         </ScrollView>
       </Box>
     </LandingScreenLayout>

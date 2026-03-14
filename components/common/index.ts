@@ -4,3 +4,4 @@ export { default as DateTimePickerInput } from "./date-time-picker";
 export { default as Pagination } from "./Pagination";
 export { default as Search } from "./Search";
 export { default as SegmentedControl } from "./SegmentedControl";
+export { default as TablerIcon, TablerIconName } from "./TablerIcon";

@@ -79,13 +79,9 @@ export interface AddressComponent {
   value: string;
 }
 
-export interface VisionExtractionOutput {
+export interface VisionExtractionOutput {}
 
-}
-
-export interface TextExtractionOutput {
-
-}
+export interface TextExtractionOutput {}
 
 export interface Document {
   id: string;
@@ -143,8 +139,6 @@ export interface Type {
   requiredVerification: string;
   voided: boolean;
 }
-
-
 
 export interface AiInteraction {
   id: string;
@@ -223,14 +217,17 @@ export interface DocumentType {
     | "LEGAL"
     | "OTHER"; // A
   name: string;
-  loyaltyPoints: number;
   description: string;
   icon: string;
+  loyaltyPoints: number;
+  serviceFee: string;
+  finderReward: string;
+  totalAmount: string;
+  currency: string;
   createdAt: string;
   updatedAt: string;
   replacementInstructions: string;
   averageReplacementCost: number;
-  requiredVerification: "LOW" | "STANDARD" | "HIGH" | "INSTITUTIONAL";
   voided: boolean;
 }
 
@@ -243,5 +240,8 @@ export type DocumentCaseExtractionFormData = z.infer<
 
 export type LostDocumentCaseFormData = z.infer<typeof lostDocumentCaseSchema>;
 export type CaseDocumentFormData = z.infer<typeof caseDocumentSchema>;
-export type CaseDocumentFormDataWithoutImages = Omit<CaseDocumentFormData, "images">;
+export type CaseDocumentFormDataWithoutImages = Omit<
+  CaseDocumentFormData,
+  "images"
+>;
 export type CaseFilterFormData = z.infer<typeof caseFilterSchema>;
