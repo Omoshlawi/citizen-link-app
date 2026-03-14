@@ -5,10 +5,10 @@ import { ErrorState, When } from "@/components/state-full-widgets";
 import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
 import { Center } from "@/components/ui/center";
+import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon";
 import { Spinner } from "@/components/ui/spinner";
 import { Text } from "@/components/ui/text";
-import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
 import { useDocumentTypes } from "@/hooks/use-document-types";
 import { router } from "expo-router";
@@ -17,7 +17,7 @@ import React from "react";
 import { FlatList, Pressable } from "react-native";
 
 const DocumentTypes = () => {
-  const { documentTypes, error, isLoading } = useDocumentTypes({});
+  const { documentTypes, error, isLoading, mutate } = useDocumentTypes({});
 
   return (
     <ScreenLayout title="Supported Documents">
@@ -52,6 +52,8 @@ const DocumentTypes = () => {
               data={documentTypes}
               keyExtractor={(item) => item.id}
               numColumns={2}
+              refreshing={isLoading}
+              onRefresh={() => mutate()}
               columnWrapperStyle={{ gap: 12 }}
               contentContainerStyle={{ gap: 12, paddingBottom: 24 }}
               showsVerticalScrollIndicator={false}
@@ -71,7 +73,9 @@ const DocumentTypes = () => {
                     <Card className="bg-background-0 dark:bg-background-btn rounded-3xl p-4 flex-1 border border-outline-50">
                       <VStack space="sm">
                         {/* Icon pill */}
-                        <Box className={`self-start rounded-xl p-2.5 ${cat.bg}`}>
+                        <Box
+                          className={`self-start rounded-xl p-2.5 ${cat.bg}`}
+                        >
                           <TablerIcon
                             name={iconName}
                             size={22}
@@ -90,7 +94,9 @@ const DocumentTypes = () => {
                         </Text>
 
                         {/* Category badge */}
-                        <Box className={`self-start rounded-full px-2 py-0.5 ${cat.bg}`}>
+                        <Box
+                          className={`self-start rounded-full px-2 py-0.5 ${cat.bg}`}
+                        >
                           <Text size="xs" className={`${cat.text} font-medium`}>
                             {docType.category.charAt(0) +
                               docType.category.slice(1).toLowerCase()}
@@ -105,7 +111,10 @@ const DocumentTypes = () => {
                           <Text size="xs" className="text-typography-400">
                             Service fee
                           </Text>
-                          <Text size="xs" className="text-teal-600 font-semibold">
+                          <Text
+                            size="xs"
+                            className="text-teal-600 font-semibold"
+                          >
                             {docType.currency} {docType.serviceFee}
                           </Text>
                         </HStack>
@@ -115,7 +124,10 @@ const DocumentTypes = () => {
                           <Box className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                           <Text size="xs" className="text-typography-400">
                             Earn{" "}
-                            <Text size="xs" className="text-amber-600 font-semibold">
+                            <Text
+                              size="xs"
+                              className="text-amber-600 font-semibold"
+                            >
                               {docType.loyaltyPoints} pts
                             </Text>
                           </Text>

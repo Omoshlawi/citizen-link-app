@@ -24,10 +24,8 @@ type StationsGridViewProps = {};
 
 const StationsGridView = ({}: StationsGridViewProps) => {
   const params = useLocalSearchParams();
-  const { stations, error, isLoading, ...pagination } = usePickupStations(
-    params,
-    "router",
-  );
+  const { stations, error, isLoading, mutate, ...pagination } =
+    usePickupStations(params, "router");
 
   if (isLoading) {
     return <Spinner />;
@@ -42,6 +40,8 @@ const StationsGridView = ({}: StationsGridViewProps) => {
         data={stations}
         keyExtractor={(item) => item.id}
         numColumns={NUM_COLUMNS}
+        refreshing={isLoading}
+        onRefresh={() => mutate()}
         columnWrapperStyle={{
           justifyContent: "space-between",
           marginBottom: GAP,

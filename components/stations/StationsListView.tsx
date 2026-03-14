@@ -18,10 +18,8 @@ type StationsListViewProps = {};
 
 const StationsListView = ({}: StationsListViewProps) => {
   const params = useLocalSearchParams();
-  const { stations, error, isLoading, ...pagination } = usePickupStations(
-    params,
-    "router",
-  );
+  const { stations, error, isLoading, mutate, ...pagination } =
+    usePickupStations(params, "router");
 
   if (isLoading) {
     return <Spinner />;
@@ -36,6 +34,8 @@ const StationsListView = ({}: StationsListViewProps) => {
         data={stations}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={<EmptyState message="No facilities found" />}
+        refreshing={isLoading}
+        onRefresh={() => mutate()}
         ItemSeparatorComponent={() => <Box className="h-2" />}
         renderItem={({ item }) => (
           <Card size="md" variant="elevated" className="dark:bg-background-btn">

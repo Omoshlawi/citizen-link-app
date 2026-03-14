@@ -25,7 +25,7 @@ const NUM_COLUMNS = 2;
 const CARD_WIDTH = (SCREEN_WIDTH - CARD_PADDING * 2 - GAP) / NUM_COLUMNS;
 
 const CasesGridView = () => {
-  const { cases, error, isLoading, ...pagination } = useDocumentCases();
+  const { cases, error, isLoading, mutate, ...pagination } = useDocumentCases();
   const { data: userSession, isPending } = authClient.useSession();
 
   if (isLoading || isPending) {
@@ -41,6 +41,8 @@ const CasesGridView = () => {
         keyExtractor={(item) => item.id}
         numColumns={NUM_COLUMNS}
         showsVerticalScrollIndicator={false}
+        refreshing={isLoading}
+        onRefresh={() => mutate()}
         columnWrapperStyle={{
           justifyContent: "space-between",
           marginBottom: GAP,

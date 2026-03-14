@@ -135,6 +135,7 @@ const SecurityAndPrivacySection = () => {
               }
               title="Sessions"
               description="View Active Sessions"
+              onPress={() => router.push("/settings/sessions" as any)}
               trailing={
                 <MaterialCommunityIcons
                   name="chevron-right"

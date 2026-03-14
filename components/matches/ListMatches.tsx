@@ -16,7 +16,7 @@ type ListMatchesProps = {
 
 const ListMatches: FC<ListMatchesProps> = ({ documentCase }) => {
   const params = useLocalSearchParams<Record<string, any>>();
-  const { matches, error, isLoading, ...pagination } = useMatches({
+  const { matches, error, isLoading, mutate, ...pagination } = useMatches({
     documentCaseId: documentCase?.id,
   });
   if (isLoading) return <Spinner />;
@@ -33,6 +33,8 @@ const ListMatches: FC<ListMatchesProps> = ({ documentCase }) => {
           data={matches}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<EmptyState message="No matches found" />}
+          refreshing={isLoading}
+          onRefresh={() => mutate()}
           ItemSeparatorComponent={() => (
             // <Box className="h-4 bg-background-0 dark:bg-background-btn " />
             <Divider className="mt-4" />

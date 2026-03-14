@@ -19,7 +19,7 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 const CasesListView = () => {
-  const { cases, error, isLoading, ...pagination } = useDocumentCases();
+  const { cases, error, isLoading, mutate, ...pagination } = useDocumentCases();
   const { data: userSession, isPending } = authClient.useSession();
 
   if (isLoading || isPending) {
@@ -37,6 +37,8 @@ const CasesListView = () => {
         ListEmptyComponent={<EmptyState message="No Cases found" />}
         ItemSeparatorComponent={() => <Box className="h-2" />}
         showsVerticalScrollIndicator={false}
+        refreshing={isLoading}
+        onRefresh={() => mutate()}
         renderItem={({ item }) => {
           const url = item.document?.images?.[0]?.url;
           return (
