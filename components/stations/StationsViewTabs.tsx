@@ -1,4 +1,4 @@
-import { GridIcon, ListIcon, MapIcon } from "lucide-react-native";
+import { GridIcon, ListIcon } from "lucide-react-native";
 import React, { FC } from "react";
 import { Button, ButtonIcon } from "../ui/button";
 import { HStack } from "../ui/hstack";
@@ -46,7 +46,7 @@ const StationsViewTabs: FC<StationsViewTabsProps> = ({
           }`}
         />
       </Button>
-      <Button
+      {/* <Button
         size="xs"
         action="secondary"
         className={`${
@@ -60,7 +60,7 @@ const StationsViewTabs: FC<StationsViewTabsProps> = ({
           size="md"
           className={`${activeView === "map" ? "text-white" : "text-teal-500"}`}
         />
-      </Button>
+      </Button> */}
     </HStack>
   );
 };

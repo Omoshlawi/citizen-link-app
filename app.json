@@ -57,6 +57,14 @@
         {
           "cameraPermission": "Grant camera access to scan documents."
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
     ],
     "experiments": {
