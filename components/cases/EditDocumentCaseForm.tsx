@@ -231,13 +231,6 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
             </Button>
           }
         >
-          <FormTextInput
-            controll={form.control}
-            name="addressRaw"
-            label="Address"
-            helperText="Document address"
-          />
-          <Divider />
           {addressComponents.length === 0 ? (
             <Text className="text-typography-500 text-center py-4">
               No address components added. Click {'"Add Address Component"'} to
@@ -251,13 +244,13 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
                     controll={form.control}
                     name={`addressComponents.${index}.type`}
                     label="Type"
-                    helperText="Address component type"
+                    helperText="Address component type e.g County"
                   />
                   <FormTextInput
                     controll={form.control}
                     name={`addressComponents.${index}.value`}
                     label="Value"
-                    helperText="Address component value"
+                    helperText="Address component value e.g Nairobi"
                   />
                   <Button
                     variant="outline"
@@ -269,7 +262,9 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
                     <ButtonIcon as={Trash} className="text-error-500" />
                     <ButtonText className="text-error-500">Remove</ButtonText>
                   </Button>
-                  <Divider />
+                  {index < addressComponents.length - 1 && (
+                    <Divider className="my-6" />
+                  )}
                 </VStack>
               ))}
             </VStack>
@@ -348,7 +343,9 @@ const EditDocumentCaseForm: FC<EditDocumentCaseFormProps> = ({
                       Remove field
                     </ButtonText>
                   </Button>
-                  <Divider className="my-6" />
+                  {index < additionalFields.length - 1 && (
+                    <Divider className="my-6" />
+                  )}
                 </VStack>
               ))}
             </VStack>

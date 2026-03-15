@@ -1,4 +1,3 @@
-import { useAddresses } from "@/hooks/use-addresses";
 import { useDocumentCaseApi } from "@/hooks/use-document-cases";
 import { useDocumentTypes } from "@/hooks/use-document-types";
 import { handleApiErrors } from "@/lib/api";
@@ -18,6 +17,7 @@ import {
   FormTextInput,
 } from "../form-inputs";
 import { KeyboardAvoidingLayout } from "../layout";
+import { FormAddressPicker } from "../settings";
 import Toaster from "../toaster";
 import { Box } from "../ui/box";
 import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
@@ -34,7 +34,6 @@ const MannuallyAddLostDocumentForm = () => {
     resolver: zodResolver(lostDocumentCaseSchema),
   });
 
-  const { addresses } = useAddresses();
   const { documentTypes } = useDocumentTypes();
   const { createLostDocumentCase } = useDocumentCaseApi();
   const toast = useToast();
@@ -106,15 +105,11 @@ const MannuallyAddLostDocumentForm = () => {
               data={documentTypes.map((d) => ({ value: d.id, label: d.name }))}
               label="Document Type"
             />
-            <FormSelectInput
+            <FormAddressPicker
               controll={form.control}
               name="addressId"
               label="Address"
               helperText="Where you lost the document"
-              data={addresses.map((a) => ({
-                label: a.label as string,
-                value: a.id,
-              }))}
             />
             <FormDatePicker
               controll={form.control}
@@ -215,13 +210,6 @@ const MannuallyAddLostDocumentForm = () => {
               </Button>
             }
           >
-            <FormTextInput
-              controll={form.control}
-              name="addressRaw"
-              label="Address"
-              helperText="Document address"
-            />
-            <Divider />
             {addressComponents.length === 0 ? (
               <Text className="text-typography-500 text-center py-4">
                 No address components added. Click {'"Add Address Component"'}{" "}
@@ -235,13 +223,13 @@ const MannuallyAddLostDocumentForm = () => {
                       controll={form.control}
                       name={`addressComponents.${index}.type`}
                       label="Type"
-                      helperText="Address component type"
+                      helperText="Address component type e.g County"
                     />
                     <FormTextInput
                       controll={form.control}
                       name={`addressComponents.${index}.value`}
                       label="Value"
-                      helperText="Address component value"
+                      helperText="Address component value e.g Nairobi"
                     />
                     <Button
                       variant="outline"
@@ -253,7 +241,9 @@ const MannuallyAddLostDocumentForm = () => {
                       <ButtonIcon as={Trash} className="text-error-500" />
                       <ButtonText className="text-error-500">Remove</ButtonText>
                     </Button>
-                    <Divider />
+                    {index < addressComponents.length - 1 && (
+                      <Divider className="my-6" />
+                    )}
                   </VStack>
                 ))}
               </VStack>
@@ -329,7 +319,7 @@ const MannuallyAddLostDocumentForm = () => {
                         Remove field
                       </ButtonText>
                     </Button>
-                    <Divider className="my-6" />
+                    {index < fields.length - 1 && <Divider className="my-6" />}
                   </VStack>
                 ))}
               </VStack>

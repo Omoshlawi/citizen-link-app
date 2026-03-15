@@ -41,6 +41,7 @@ export const useAddresses = (defaultFilters: AddressFilters = {}) => {
     onPageChange,
     showPagination: showPagination(rest.totalCount),
     onFilterChange: setFilters,
+    filters,
   };
 };
 

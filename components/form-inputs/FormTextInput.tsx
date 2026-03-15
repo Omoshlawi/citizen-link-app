@@ -57,6 +57,7 @@ const FormTextInput = <T extends FieldValues>({
           )}
           <Input
             variant="outline"
+            // className="rounded-3xl"
             {...inputWrapperProps}
             isInvalid={!!error?.message}
           >

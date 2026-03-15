@@ -23,6 +23,7 @@ import {
   FormSelectInput,
   FormTextArea,
 } from "../form-inputs";
+import { FormAddressPicker } from "../settings";
 import { FormStationPicker } from "../stations";
 import Toaster from "../toaster";
 import {
@@ -174,14 +175,10 @@ const ClaimForm: FC<ClaimFormProps> = ({ match }) => {
             ]}
           />
           {form.watch("preferedCollectionPoint") === "address" && (
-            <FormSelectInput
+            <FormAddressPicker
               controll={form.control}
               name="addressId"
               label="Address"
-              data={addresses.map((address) => ({
-                value: address.id,
-                label: address.label as string,
-              }))}
             />
           )}
           {form.watch("preferedCollectionPoint") === "station" && (

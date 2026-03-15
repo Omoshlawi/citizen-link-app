@@ -1,4 +1,3 @@
-import { useAddresses } from "@/hooks/use-addresses";
 import { useDocumentExtraction } from "@/hooks/useDocumentExtraction";
 import { mutate, uploadFile } from "@/lib/api";
 import { documentCaseExtractionSchema } from "@/lib/schemas";
@@ -14,8 +13,9 @@ import { ArrowRight } from "lucide-react-native";
 import React, { FC, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../button";
-import { FormDatePicker, FormSelectInput, FormTextArea } from "../form-inputs";
+import { FormDatePicker, FormTextArea } from "../form-inputs";
 import { KeyboardAvoidingLayout } from "../layout";
+import { FormAddressPicker } from "../settings";
 import Toaster from "../toaster";
 import { Box } from "../ui/box";
 import { useToast } from "../ui/toast";
@@ -38,7 +38,6 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
     defaultValues: { caseType, eventDate: dayjs().toDate() },
     resolver: zodResolver(documentCaseExtractionSchema),
   });
-  const { addresses } = useAddresses();
   const { startExtraction } = useDocumentExtraction();
 
   const onSubmit: SubmitHandler<DocumentCaseExtractionFormData> = async (
@@ -158,15 +157,11 @@ const ScanDocumentCaseForm: FC<ScanDocumentCaseFormProps> = ({ caseType }) => {
             onScannedDocumentsChange={setScanned}
             maxNumDocuments={2}
           />
-          <FormSelectInput
+          <FormAddressPicker
             controll={form.control}
             name="addressId"
             label="Address"
             helperText="Where you found the document"
-            data={addresses.map((a) => ({
-              label: a.label as string,
-              value: a.id,
-            }))}
           />
           <FormDatePicker
             controll={form.control}

@@ -38,7 +38,7 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
   const startDate = useMemo(() => {
     const date = dayjs(address?.startDate ?? "");
     if (date.isValid()) return date.toDate();
-    return undefined;
+    return dayjs().toDate();
   }, [address]);
   const endDate = useMemo(() => {
     const date = dayjs(address?.endDate ?? "");
@@ -171,14 +171,14 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
             helperText="Building/house number and street"
           />
           <FormTextInput
-            label="Address 2"
+            label={"Address 2(Optional)"}
             controll={form.control}
             name="address2"
             placeholder="Address 2"
             helperText="Apartment, suite, floor, etc"
           />
           <FormTextInput
-            label="Landmark"
+            label="Landmark(Optional)"
             controll={form.control}
             name="landmark"
             placeholder="Landmark"
@@ -214,7 +214,7 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
                 <AddressFieldsInput
                   key={level}
                   control={form.control}
-                  label={label}
+                  label={`${label}${level !== "level1" ? " (Optional)" : ""}`}
                   name={level}
                   level={_level}
                   parentName={parentName}
@@ -235,41 +235,41 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
                 controll={form.control}
                 name={level}
                 key={level}
-                label={label}
+                label={`${label}${level !== "level1" ? " (Optional)" : ""}`}
               />
             );
           })}
         </CollapsibleFormSection>
         <CollapsibleFormSection title="Legacy & Contact" defaultCollapsed>
           <FormTextInput
-            label="City Village"
+            label="City Village(Optional)"
             controll={form.control}
             name="cityVillage"
             placeholder="City village"
             helperText="Legacy address"
           />
           <FormTextInput
-            label="State Provice"
+            label="State Provice(Optional)"
             controll={form.control}
             name="stateProvince"
             placeholder="State province"
             helperText="Legacy address"
           />
           <FormTextInput
-            label="Country"
+            label="Country(Optional)"
             controll={form.control}
             name="country"
             placeholder="State province"
             helperText="Legacy address"
           />
           <FormTextInput
-            label="Postal Code"
+            label="Postal Code(Optional)"
             controll={form.control}
             name="postalCode"
             placeholder="postal Code"
           />
           <FormTextInput
-            label="Plus Code"
+            label="Plus Code(Optional)"
             controll={form.control}
             name="plusCode"
             placeholder="Plus Code"
@@ -278,14 +278,14 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
         </CollapsibleFormSection>
         <CollapsibleFormSection title="Geolocation" defaultCollapsed>
           <FormTextInput
-            label="Latitude"
+            label="Latitude(Optional)"
             controll={form.control}
             name="latitude"
             placeholder="Latitude"
           />
 
           <FormTextInput
-            label="Latitude"
+            label="Longitude(Optional)"
             controll={form.control}
             name="longitude"
             placeholder="Longitude"
@@ -298,7 +298,7 @@ const AddressForm: FC<AddressFormProps> = ({ address }) => {
             name="startDate"
           />
           <FormDatePicker
-            label="End date"
+            label="End date(Optional)"
             controll={form.control}
             name="endDate"
           />

@@ -25,8 +25,8 @@ type ActionSheetWrapperProps<T> = {
   renderPagination?: () => React.ReactNode;
   valueExtractor?: (item: T) => string;
   searchable?: boolean;
-  renderEmptyState?: () => React.ReactNode;
-  renderErrorState?: () => React.ReactNode;
+  renderEmptyState?: (args: { close: () => void }) => React.ReactNode;
+  renderFooter?: (args: { close: () => void }) => React.ReactNode;
   searchText?: string;
   onSearchTextChange?: (text: string) => void;
   loading?: boolean;
@@ -45,12 +45,13 @@ const ActionSheetWrapper = <T,>({
   loading = false,
   maxHeight = "80%",
   renderPagination,
+  renderFooter,
 }: ActionSheetWrapperProps<T>) => {
   const [showActionsheet, setShowActionsheet] = React.useState(false);
   const handleOpen = () => setShowActionsheet(true);
   const handleClose = useCallback(
     () => setShowActionsheet(false),
-    [setShowActionsheet]
+    [setShowActionsheet],
   );
 
   const fallbackValueExtractor = React.useCallback(
@@ -62,7 +63,7 @@ const ActionSheetWrapper = <T,>({
       }
       return String(idx);
     },
-    [valueExtractor]
+    [valueExtractor],
   );
 
   const fallbackLabelExtractor = React.useCallback((item: any) => {
@@ -84,7 +85,7 @@ const ActionSheetWrapper = <T,>({
         </ActionsheetItemText>
       </ActionsheetItem>
     ),
-    [fallbackLabelExtractor, handleClose]
+    [fallbackLabelExtractor, handleClose],
   );
 
   const _renderItem = React.useCallback(
@@ -94,12 +95,12 @@ const ActionSheetWrapper = <T,>({
       ) : (
         <DefaultItem item={item} />
       ),
-    [renderItem, handleClose, DefaultItem]
+    [renderItem, handleClose, DefaultItem],
   );
 
   const _keyExtractor = React.useCallback(
     (item: T, idx: number) => fallbackValueExtractor(item, idx),
-    [fallbackValueExtractor]
+    [fallbackValueExtractor],
   );
 
   return (
@@ -134,7 +135,10 @@ const ActionSheetWrapper = <T,>({
             keyExtractor={
               _keyExtractor as (item: unknown, index: number) => string
             }
-            ListEmptyComponent={renderEmptyState}
+            ListEmptyComponent={() =>
+              renderEmptyState?.({ close: handleClose })
+            }
+            ListFooterComponent={() => renderFooter?.({ close: handleClose })}
           />
           {renderPagination?.()}
         </ActionsheetContent>

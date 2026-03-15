@@ -20,7 +20,10 @@ const CollapsibleFormSection: FC<CollapsibleFormSectionProps> = ({
 }) => {
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
   return (
-    <Card variant="elevated" className="dark:bg-background-btn w-full">
+    <Card
+      variant="elevated"
+      className="dark:bg-background-btn w-full rounded-3xl"
+    >
       <VStack>
         <HStack className="justify-between mb-4">
           <TouchableOpacity

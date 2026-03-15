@@ -185,10 +185,10 @@ const DocumentCaseDetailScreen = () => {
                     icon={MapPin}
                     label={address.label as string}
                     value1="Location"
-                    value2={`${address.address1} ${
-                      address.address2 ? ", " + address.address2 : ""
-                    }`}
-                    value3={`${address.landmark}\n${[
+                    value2={[address.address1, address.address2]
+                      .filter(Boolean)
+                      .join(", ")}
+                    value3={`${address.landmark ? address.landmark + "\n" : ""}${[
                       address.level4,
                       address.level3,
                       address.level2,
